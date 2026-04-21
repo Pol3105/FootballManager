@@ -2,7 +2,10 @@ package it.uniroma3.siw.siw_football.model;
 
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.List;
 
 @Entity
 public class Team {
@@ -20,7 +23,14 @@ public class Team {
     @ManyToOne(fetch = FetchType.LAZY)
     private Tournament tournament;
 
+    //Relacion : Un equipo esta formado por muchos jugadores
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Player> players = new ArrayList<>();
+
     public Team() {}
+
+    public List<Player> getPlayers() { return players; }
+    public void setPlayers(List<Player> teams) { this.players = teams; }
 
     // Getters, Setters y Equals/HashCode basados en 'name'
     public Long getId() { return id; }

@@ -18,17 +18,21 @@ public class Tournament {
     private LocalDate startDate;
 
     // Relación: Un torneo tiene muchos equipos
-    // 'mappedBy' indica que el dueño de la relación es el campo 'tournament' en la clase Team
-    // 'cascade' asegura que si borramos un torneo, podemos decidir qué pasa con los equipos
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Team> teams = new ArrayList<>();
 
+    // Relación: Un torneo tiene muchos equipos
+    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Match> matches = new ArrayList<>();
+
     public Tournament() {}
 
-    // Getters y Setters...
+
     public List<Team> getTeams() { return teams; }
     public void setTeams(List<Team> teams) { this.teams = teams; }
-    // (Añade el resto de getters/setters del nombre y fechas)
+
+    public List<Match> getMatchs() { return matches; }
+    public void setMatchs(List<Match> match) { this.matches = match; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
