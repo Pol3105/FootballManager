@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${team.name} + ' - Detalles'">Detalles del Equipo</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <link th:href="@{/css/team.css}" rel="stylesheet" />
+</head>
+<body>
+
+<div class="container">
+    <a href="javascript:history.back()" class="back-link">← Volver atrás</a>
+
+    <div class="header-section">
+        <h1 th:text="${team.name}">Nombre del Equipo</h1>
+        <p><strong>Año de Fundación:</strong> <span th:text="${team.foundationYear}">1900</span></p>
+    </div>
+    
+    <h3>Plantilla de Jugadores</h3>
+    
+    <div th:if="${#lists.isEmpty(team.players)}" class="empty-state">
+        <p>No hay jugadores registrados en este equipo.</p>
+    </div>
+
+    <div th:each="player : ${team.players}" class="player-card">
+        <span class="player-name" th:text="${player.name} + ' ' + ${player.surname}">Nombre Apellido</span>
+        <span class="player-position" th:text="${player.position}">Posición</span>
+    </div>
+
+</div>
+
+</body>
+</html>

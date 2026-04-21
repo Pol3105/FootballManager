@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${tournament.name} + ' - Detalles'">Detalles del Torneo</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <link th:href="@{/css/tournament.css}" rel="stylesheet" />
+</head>
+<body>
+
+<div class="container">
+    <a th:href="@{/}" class="back-link">← Volver a Inicio</a>
+
+    <div class="header-section">
+        <h1 th:text="${tournament.name}">Nombre del Torneo</h1>
+        <p><strong>Fecha de inicio:</strong> <span th:text="${tournament.startDate}">Fecha</span></p>
+
+        <div class="admin-actions" style="margin-top: 15px;">
+            <a th:href="@{/admin/tournament/edit/{id}(id=${tournament.id})}" 
+            class="btn-edit" style="background: #f1c40f; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; margin-right: 10px;">
+            ✏️ Modificar
+            </a>
+            
+            <button type="button" class="btn-delete" 
+                th:onclick="'confirmDelete(' + ${tournament.id} + ')'"
+                style="background: #e74c3c; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">
+                🗑️ Borrar Torneo
+            </button>
+
+        </div>
+    </div>
+    
+    <h3>Equipos Inscritos</h3>
+    <div class="team-grid">
+        <a th:each="team : ${tournament.teams}" th:href="@{/team/{id}(id=${team.id})}" class="team-badge" style="text-decoration: none;" th:text="${team.name}">Equipo</a>
+        <div th:if="${#lists.isEmpty(tournament.teams)}" class="empty-state">No hay equipos inscritos.</div>
+    </div>
+
+    <h3>Calendario de Partidos</h3>
+    
+    <div th:if="${#lists.isEmpty(tournament.matches)}" class="empty-state">
+        <p>Aún no hay partidos programados en este torneo.</p>
+    </div>
+
+    <div th:each="match : ${tournament.matches}" class="match-card">
+        <div class="match-info">
+            <div class="teams-score">
+                <strong th:text="${match.homeTeam.name}">Local</strong> 
+                <span class="score" th:text="${match.homeScore} + ' - ' + ${match.awayScore}">0 - 0</span> 
+                <strong th:text="${match.awayTeam.name}">Visitante</strong>
+            </div>
+            <p class="match-meta">
+                📅 <span th:text="${#temporals.format(match.matchDate, 'dd/MM/yyyy HH:mm')}">Fecha</span> | 
+                👨‍⚖️ Árbitro: <span th:text="${match.referee.name} + ' ' + ${match.referee.surname}">Nombre</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmDelete(id) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¡No podrás revertir esto!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#2ecc71',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, bórralo',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Si el usuario confirma, navegamos a la ruta de borrado
+            window.location.href = "/admin/tournament/delete/" + id;
+        }
+    })
+}
+</script>
+</body>
+</html>

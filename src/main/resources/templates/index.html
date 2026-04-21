@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SIW Football - Inicio</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <link th:href="@{/css/index.css}" rel="stylesheet" />
+</head>
+<body>
+    <h1>⚽ SIW Football Manager</h1>
+
+    <a th:href="@{/admin/tournament/new}" style="display: inline-block; background: #3498db; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; margin-bottom: 20px;">+ Crear Nuevo Torneo (Admin)</a>
+    
+    <div th:each="t : ${tournaments}" class="card">
+        <h2 th:text="${t.name}">Nombre del Torneo</h2>
+        <p><strong>Inicio:</strong> <span th:text="${t.startDate}">01/01/2026</span></p>
+        <div>
+            <strong>Torneos:</strong>
+            <a th:href="@{/tournament/{id}(id=${t.id})}" th:text="${t.name}"></a>
+        </div>
+    </div>
+</body>
+</html>

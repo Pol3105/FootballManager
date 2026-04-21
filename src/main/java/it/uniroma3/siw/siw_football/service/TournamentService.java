@@ -27,6 +27,14 @@ public class TournamentService {
     }
 
     /**
+     * Busco un torneo basandome en el ID
+     */
+    @Transactional(readOnly = true)
+    public Tournament findById(Long id) {
+        return tournamentRepository.findById(id).orElse(null);
+    }
+
+    /**
      * Recupera todos los torneos.
      */
     public Iterable<Tournament> findAll() {
@@ -46,4 +54,22 @@ public class TournamentService {
             tournament.getTeams().add(team); // Actualizamos la lista del torneo
         }
     }
+
+    /**
+     * Lógica : Añadir un torneo.∫
+     */
+    @Transactional
+    public void save(Tournament tournament) {
+        tournamentRepository.save(tournament);
+    }
+
+    /**
+     * Lógica : Eliminar un torneo por su ID.∫
+     */
+    @Transactional
+    public void deleteById(Long id) {
+        tournamentRepository.deleteById(id);
+    }
+
+
 }

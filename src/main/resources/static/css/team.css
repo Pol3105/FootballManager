@@ -1,0 +1,4 @@
+/* team.css */
+.player-card { background: #f8f9fa; border-left: 4px solid #f39c12; padding: 12px 20px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+.player-name { font-weight: bold; font-size: 1.1em; }
+.player-position { background: #34495e; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; }

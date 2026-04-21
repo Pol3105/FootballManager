@@ -43,11 +43,29 @@ Initial Spring Boot setup. Configured PostgreSQL via Docker Compose. Established
 Implemented the core Domain Model (User, Tournament, Team). Configured JPA @OneToMany/@ManyToOne relationships. Created Repositories and TournamentService. Implemented DataInitializer for automatic database seeding.
 
 ### Phase 2: Complete Domain Model & Complex Relationships
+
 * **Entities & Persistence:** Implemented the remaining mandatory entities (`Player`, `Referee`, `Match`).
 * **Complex Mapping:** Configured advanced JPA relationships, specifically managing multiple foreign keys from `Match` to `Team` (`home_team_id` and `away_team_id`) using `@JoinColumn`, and linking matches to their respective `Tournament`.
 * **Business Logic:** Created `PlayerService`, `RefereeService`, and `MatchService` to enforce the 3-Layer architecture rule (no direct repository access from controllers/initializers).
 * **Data Seeding:** Upgraded the `DataInitializer` with a phased execution to safely inject players (e.g., Vinícius, Dybala), referees (Collina), and a complete match (Real Madrid vs AS Roma) without duplicating data on restarts.
 
+### Phase 3: Presentation Layer, Spring Security & Admin CRUD
+
+* **Navigation Flow:** Implemented a full user journey from the Index (Tournament list) to Tournament Details (Match calendar and Participating teams) and finally to Team Details (Full player rosters).
+
+* **Strict 3-Layer Enforcement:** Refactored the TournamentController to exclusively interact with the TournamentService, ensuring the Repository remains encapsulated.
+
+* **Tournament Management (CRUD):**
+    -Implemented full lifecycle management for Tournament entities.
+
+    -Developed a dynamic Form Handling system with Thymeleaf, capable of distinguishing between Create and Update operations via ID persistence.
+
+    -Integrated @DateTimeFormat to synchronize ISO date inputs from HTML5 with Java LocalDate objects.
+
+* **UI/UX Enhancements:**
+    -Modular CSS: Transitioned from inline styles to a structured CSS architecture (global.css, tournament.css, team.css) served from the Spring Boot static resources.
+
+    -Interactivity: Integrated SweetAlert2 for administrative delete confirmations, replacing standard browser alerts with a modern UI.
 
 
 

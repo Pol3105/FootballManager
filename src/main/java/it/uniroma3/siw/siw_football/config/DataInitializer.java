@@ -1,6 +1,12 @@
 package it.uniroma3.siw.siw_football.config;
 
 
+import java.time.LocalDate;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
 import it.uniroma3.siw.siw_football.model.Match;
 import it.uniroma3.siw.siw_football.model.Player;
 import it.uniroma3.siw.siw_football.model.Referee;
@@ -15,11 +21,6 @@ import it.uniroma3.siw.siw_football.service.MatchService;
 import it.uniroma3.siw.siw_football.service.PlayerService;
 import it.uniroma3.siw.siw_football.service.RefereeService;
 import it.uniroma3.siw.siw_football.service.TournamentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -46,7 +47,7 @@ public class DataInitializer implements CommandLineRunner {
 
             Tournament champions = new Tournament();
             champions.setName("Champions League 2026");
-            champions.setDate(LocalDate.of(2026, 9, 1));
+            champions.setStartDate(LocalDate.of(2026, 9, 1));
             champions = tournamentService.saveTournament(champions);
 
             Team madrid = new Team();

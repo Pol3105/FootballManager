@@ -1,0 +1,9 @@
+
+body { font-family: sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+.card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+h1 { color: #1a73e8; }
+.team-tag { display: inline-block; background: #e8f0fe; color: #1967d2; padding: 5px 10px; border-radius: 15px; margin-right: 5px; font-size: 0.9em; }
+    
+
+
+
