@@ -67,5 +67,28 @@ Implemented the core Domain Model (User, Tournament, Team). Configured JPA @OneT
 
     -Interactivity: Integrated SweetAlert2 for administrative delete confirmations, replacing standard browser alerts with a modern UI.
 
+### Phase 4: Advanced Relationship Management & Match Engine
 
+* **Relationship Refactoring (The "Safety Switch"):**
+    * Redesigned JPA Cascade strategies. Removed `CascadeType.ALL` from independent entities (`Teams`/`Players`) to prevent accidental deletions when removing a `Tournament`.
+    * Established a **ManyToMany** relationship between `Tournament` and `Team`, allowing teams to participate in multiple competitions simultaneously.
 
+* **Match Management & Logic Engine:**
+    * Implemented a contextual **Match CRUD**: Matches are managed and displayed directly within their respective Tournament view.
+    * **Business Rules & Integrity:**
+        * Developed a validation layer to prevent "Self-Matches" (Home Team == Away Team).
+        * Initialized scores to `0-0` by default at the entity level to ensure data consistency in the UI.
+    * **Automatic Cleanup Logic:** Refactored `TournamentService` to automatically delete all associated matches when a team is removed from a specific tournament, ensuring no "orphan" data remains.
+
+* **Advanced UI/UX & Security:**
+    * **Thymeleaf 3.1 Security Migration:** Adapted event handlers (SweetAlert2) to use `th:data-*` attributes, complying with modern security standards against XSS and template injection.
+    * **Contextual Forms:** Developed a hybrid "Create/Update" form for matches that filters teams based on tournament enrollment and referees based on system availability.
+    * **Interactive Confirmations:** Extended **SweetAlert2** integration to cover sensitive actions like team removal and match deletion, providing clear warnings about data consequences.
+
+---
+
+### 💡 Key Logic Highlight: Data Integrity
+
+To ensure the database remains clean, we implemented a custom removal flow:
+1. When a team is removed from a tournament, we query the `MatchRepository` for any existing encounters involving that team in that specific competition.
+2. These matches are deleted **before** breaking the Many-to-Many link, maintaining perfect referential integrity.

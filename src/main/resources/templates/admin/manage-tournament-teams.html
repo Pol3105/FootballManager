@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestionar Inscripciones</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+</head>
+<body class="page">
+    <div class="container">
+        <a th:href="@{/tournament/{id}(id=${tournament.id})}" class="back-link">← Volver al Torneo</a>
+        
+        <header class="section-header">
+            <h1>🛡️ Gestionar Equipos: <span th:text="${tournament.name}">Nombre</span></h1>
+            <p class="text-muted">Inscribe o retira equipos de esta competición.</p>
+        </header>
+
+        <div class="grid-players">
+            <div th:each="team : ${allTeams}" class="player-card">
+                <span class="player-card__name" th:text="${team.name}">Nombre Equipo</span>
+                
+                <div th:if="${#lists.contains(tournament.teams, team)}">
+                    <button type="button" 
+                            class="btn btn--danger" 
+                            th:data-tid="${tournament.id}"
+                            th:data-id="${team.id}"
+                            th:data-name="${team.name}"
+                            onclick="confirmRemoveTeam(this)"
+                            style="padding: 4px 10px; font-size: 0.8rem;">
+                        Retirar
+                    </button>
+                </div>
+                
+                <div th:unless="${#lists.contains(tournament.teams, team)}">
+                    <a th:href="@{/admin/tournament/{id}/add-team/{teamId}(id=${tournament.id}, teamId=${team.id})}" 
+                       class="btn btn--primary" style="padding: 4px 10px; font-size: 0.8rem;">Inscribir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmRemoveTeam(btn) {
+    // Extraemos los datos de los atributos data- que pusimos arriba
+    const tournamentId = btn.getAttribute('data-tid');
+    const teamId = btn.getAttribute('data-id');
+    const teamName = btn.getAttribute('data-name');
+
+    Swal.fire({
+        title: '¿Retirar al ' + teamName + '?',
+        text: "¡Atención! Se eliminarán todos los partidos y resultados de este equipo en este torneo.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e63946', 
+        cancelButtonColor: '#2ecc71', 
+        confirmButtonText: 'Sí, retirar equipo',
+        cancelButtonText: 'Mantener equipo'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/admin/tournament/" + tournamentId + "/remove-team/" + teamId;
+        }
+    })
+}
+</script>
+</body>
+</html>

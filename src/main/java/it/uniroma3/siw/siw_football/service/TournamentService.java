@@ -1,13 +1,18 @@
 package it.uniroma3.siw.siw_football.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import it.uniroma3.siw.siw_football.model.Match;
 import it.uniroma3.siw.siw_football.model.Team;
 import it.uniroma3.siw.siw_football.model.Tournament;
+import it.uniroma3.siw.siw_football.repository.MatchRepository;
 import it.uniroma3.siw.siw_football.repository.TeamRepository;
 import it.uniroma3.siw.siw_football.repository.TournamentRepository;
+
 
 @Service
 public class TournamentService {
@@ -17,6 +22,9 @@ public class TournamentService {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private MatchRepository matchRepository;
 
     /**
      * Guarda un torneo en la base de datos.
@@ -42,7 +50,7 @@ public class TournamentService {
     }
 
     /**
-     * Lógica compleja: Añadir un equipo existente a un torneo.∫
+     * Lógica compleja: Añadir un equipo existente a un torneo
      */
     @Transactional
     public void addTeamToTournament(Long tournamentId, Long teamId) {
@@ -50,8 +58,33 @@ public class TournamentService {
         Team team = teamRepository.findById(teamId).orElse(null);
 
         if (tournament != null && team != null) {
-            team.setTournament(tournament); // Establecemos la relación
-            tournament.getTeams().add(team); // Actualizamos la lista del torneo
+            if (!team.getTournaments().contains(tournament)) {
+                team.getTournaments().add(tournament);
+            }
+
+            if (!tournament.getTeams().contains(team)) {
+                tournament.getTeams().add(team);
+            }
+        }
+    }
+
+    /**
+     * Lógica compleja: Quitar un equipo de un torneo
+     */
+    @Transactional
+    public void removeTeamFromTournament(Long tournamentId, Long teamId) {
+        Tournament tournament = tournamentRepository.findById(tournamentId).orElse(null);
+        Team team = teamRepository.findById(teamId).orElse(null);
+        if (tournament != null && team != null) {
+
+            List<Match> matchesToDelete = matchRepository.findByTournamentAndTeam(tournament, team);
+
+            matchRepository.deleteAll(matchesToDelete);
+
+            tournament.getTeams().remove(team);
+            team.getTournaments().remove(tournament);
+
+            tournamentRepository.save(tournament);
         }
     }
 
@@ -68,7 +101,14 @@ public class TournamentService {
      */
     @Transactional
     public void deleteById(Long id) {
-        tournamentRepository.deleteById(id);
+        Tournament tournament = tournamentRepository.findById(id).orElse(null);
+        if (tournament != null) {
+            for (Team team : tournament.getTeams()) {
+                team.getTournaments().remove(tournament);
+            }
+
+            tournamentRepository.delete(tournament);
+        }
     }
 
 

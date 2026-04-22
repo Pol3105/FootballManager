@@ -1,23 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>SIW Football - Inicio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIW Football Manager</title>
     <link th:href="@{/css/global.css}" rel="stylesheet" />
-    <link th:href="@{/css/index.css}" rel="stylesheet" />
 </head>
-<body>
-    <h1>⚽ SIW Football Manager</h1>
+<body class="page">
 
-    <a th:href="@{/admin/tournament/new}" style="display: inline-block; background: #3498db; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; margin-bottom: 20px;">+ Crear Nuevo Torneo (Admin)</a>
-    
-    <div th:each="t : ${tournaments}" class="card">
-        <h2 th:text="${t.name}">Nombre del Torneo</h2>
-        <p><strong>Inicio:</strong> <span th:text="${t.startDate}">01/01/2026</span></p>
-        <div>
-            <strong>Torneos:</strong>
-            <a th:href="@{/tournament/{id}(id=${t.id})}" th:text="${t.name}"></a>
+    <!-- Cabecera principal del sitio -->
+    <header class="site-header">
+        <h1 class="site-header__title">⚽ SIW Football Manager</h1>
+        <p class="site-header__subtitle">Gestión de torneos, equipos y partidos</p>
+    </header>
+
+    <main class="container">
+        <div class="section-header">
+            <h2>Torneos Activos</h2>
+            <a th:href="@{/admin/tournament/new}" class="btn btn--primary">
+                + Crear Nuevo Torneo
+            </a>
+            <a th:href="@{/admin/team/new}" class="btn btn--primary">+ Nuevo Equipo</a>
+            <a th:href="@{/teams}" class="btn btn--primary">📋 Ver Todos los Equipos</a>
         </div>
-    </div>
+
+        <!-- Grid de torneos -->
+        <div class="grid-tournaments">
+            <div th:each="t : ${tournaments}" class="tournament-card">
+                <span class="tournament-card__title" th:text="${t.name}">Nombre del Torneo</span>
+                <p class="tournament-card__meta">
+                    📅 Inicio: <strong th:text="${t.startDate}">01/01/2026</strong>
+                </p>
+                <a th:href="@{/tournament/{id}(id=${t.id})}" class="tournament-card__link">
+                    Ver detalles →
+                </a>
+            </div>
+
+            <!-- Estado vacío si no hay torneos -->
+            <div th:if="${#lists.isEmpty(tournaments)}" class="empty-state">
+                <p>No hay torneos registrados. ¡Crea el primero!</p>
+            </div>
+        </div>
+    </main>
+
 </body>
 </html>

@@ -15,7 +15,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((requests) -> requests
                 // 1. Decimos qué rutas son PÚBLICAS (Cualquiera puede entrar)
-                .requestMatchers("/", "/css/**", "/images/**","/tournament/**","/team/**").permitAll() 
+                .requestMatchers("/**", "/css/**", "/images/**","/tournament/**","/team/**").permitAll() 
                 
                 // 2. Decimos que CUALQUIER OTRA ruta requerirá estar logueado
                 .anyRequest().authenticated() 

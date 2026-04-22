@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Equipo</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+</head>
+<body class="page">
+    <div class="container">
+        <a th:href="@{/}" class="back-link">← Cancelar y Volver</a>
+        
+        <header class="section-header">
+            <h1>🛡️ Registrar Nuevo Equipo</h1>
+        </header>
+
+        <form th:action="${team.id == null} ? @{/admin/team/new} : @{/admin/team/edit/{id}(id=${team.id})}" 
+            th:object="${team}" method="post" class="form">
+            
+            <input type="hidden" th:field="*{id}" />
+
+            <header class="section-header">
+                <h1 th:text="${team.id == null} ? '🛡️ Registrar Nuevo Equipo' : '✏️ Editar Equipo'">Título</h1>
+            </header>
+
+            <div class="form__group">
+                <label class="form__label">Nombre del Club:</label>
+                <input type="text" th:field="*{name}" class="form__input" required />
+            </div>
+
+            <div class="form__group">
+                <label class="form__label">Año de Fundación:</label>
+                <input type="number" th:field="*{foundationYear}" class="form__input" required />
+            </div>
+
+            <div class="form__group">
+                <label class="form__label">Asignar a Torneos:</label>
+                <select th:field="*{tournaments}" class="form__input" multiple style="height: 120px;">
+                    <option th:each="t : ${tournaments}" 
+                            th:value="${t.id}" 
+                            th:text="${t.name}">Torneo</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn--primary mt-md" 
+                    th:text="${team.id == null} ? 'Guardar Equipo' : 'Actualizar Equipo'">Boton</button>
+        </form>
+    </div>
+</body>
+</html>

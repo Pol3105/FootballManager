@@ -1,11 +1,16 @@
 package it.uniroma3.siw.siw_football.controller;
 
+import it.uniroma3.siw.siw_football.service.TeamService;
 import it.uniroma3.siw.siw_football.service.TournamentService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import it.uniroma3.siw.siw_football.model.Team;
 import it.uniroma3.siw.siw_football.model.Tournament; 
 
 import org.springframework.stereotype.Controller;
@@ -18,6 +23,9 @@ public class TournamentController {
 
     @Autowired
     private TournamentService tournamentService;
+
+    @Autowired
+    private TeamService teamService;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -81,5 +89,30 @@ public class TournamentController {
     public String deleteTournament(@PathVariable("id") Long id) {
         tournamentService.deleteById(id);
         return "redirect:/";
+    }
+
+    // 1. Mostrar la página de gestión
+    @GetMapping("/admin/tournament/{id}/manage-teams")
+    public String manageTournamentTeams(@PathVariable("id") Long id, Model model) {
+        Tournament tournament = tournamentService.findById(id);
+        List<Team> allTeams = teamService.findAll();
+        
+        model.addAttribute("tournament", tournament);
+        model.addAttribute("allTeams", allTeams);
+        return "admin/manage-tournament-teams";
+    }
+
+    // 2. Acción de añadir
+    @GetMapping("/admin/tournament/{id}/add-team/{teamId}")
+    public String addTeam(@PathVariable("id") Long id, @PathVariable("teamId") Long teamId) {
+        tournamentService.addTeamToTournament(id, teamId);
+        return "redirect:/admin/tournament/" + id + "/manage-teams";
+    }
+
+    // 3. Acción de quitar
+    @GetMapping("/admin/tournament/{id}/remove-team/{teamId}")
+    public String removeTeam(@PathVariable("id") Long id, @PathVariable("teamId") Long teamId) {
+        tournamentService.removeTeamFromTournament(id, teamId);
+        return "redirect:/admin/tournament/" + id + "/manage-teams";
     }
 }

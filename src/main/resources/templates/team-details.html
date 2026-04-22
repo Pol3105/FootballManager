@@ -1,30 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${team.name} + ' - Detalles'">Detalles del Equipo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${team.name} + ' — SIW Football'">Detalles del Equipo</title>
     <link th:href="@{/css/global.css}" rel="stylesheet" />
-    <link th:href="@{/css/team.css}" rel="stylesheet" />
 </head>
-<body>
+<body class="page">
 
 <div class="container">
+
     <a href="javascript:history.back()" class="back-link">← Volver atrás</a>
 
-    <div class="header-section">
+    <div class="section-header">
         <h1 th:text="${team.name}">Nombre del Equipo</h1>
-        <p><strong>Año de Fundación:</strong> <span th:text="${team.foundationYear}">1900</span></p>
+        <p class="text-muted">
+            🏟️ Año de fundación: <strong th:text="${team.foundationYear}">1900</strong>
+        </p>
     </div>
-    
+
     <h3>Plantilla de Jugadores</h3>
-    
+
     <div th:if="${#lists.isEmpty(team.players)}" class="empty-state">
         <p>No hay jugadores registrados en este equipo.</p>
     </div>
 
     <div th:each="player : ${team.players}" class="player-card">
-        <span class="player-name" th:text="${player.name} + ' ' + ${player.surname}">Nombre Apellido</span>
-        <span class="player-position" th:text="${player.position}">Posición</span>
+        <span class="player-card__name"
+              th:text="${player.name} + ' ' + ${player.surname}">Nombre Apellido</span>
+        <span class="player-card__position"
+              th:text="${player.position}">Posición</span>
     </div>
 
 </div>

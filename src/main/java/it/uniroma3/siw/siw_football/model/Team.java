@@ -19,18 +19,21 @@ public class Team {
 
     private Integer foundationYear;
 
-    // Relación: Muchos equipos pertenecen a un Torneo
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Tournament tournament;
+    // Relación: Muchos equipos pertenecen a un Torneo, y viceversa
+    @ManyToMany
+    private List<Tournament> tournaments = new ArrayList<>();
 
     //Relacion : Un equipo esta formado por muchos jugadores
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<Player> players = new ArrayList<>();
 
     public Team() {}
 
     public List<Player> getPlayers() { return players; }
     public void setPlayers(List<Player> teams) { this.players = teams; }
+
+    public List<Tournament> getTournaments() { return tournaments; }
+    public void setTournaments(List<Tournament> tournaments) { this.tournaments = tournaments; }
 
     // Getters, Setters y Equals/HashCode basados en 'name'
     public Long getId() { return id; }
@@ -39,8 +42,6 @@ public class Team {
     public void setName(String name) { this.name = name; }
     public Integer getFoundationYear() { return foundationYear; }
     public void setFoundationYear(Integer foundationYear) { this.foundationYear = foundationYear; }
-    public Tournament getTournament() { return tournament; }
-    public void setTournament(Tournament tournament) { this.tournament = tournament; }
 
     @Override
     public boolean equals(Object o) {

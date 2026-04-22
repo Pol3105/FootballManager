@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Programar Partido</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+</head>
+<body class="page">
+    <div class="container">
+        <a th:href="@{/tournament/{id}(id=${tournament.id})}" class="back-link">← Volver al Torneo</a>
+        
+        <header class="section-header">
+            <h1 th:text="${match.id == null} ? '🏟️ Programar Nuevo Partido' : '✏️ Editar Resultado'">Gestión</h1>
+        </header>
+
+        <form th:action="@{/admin/match/save}" th:object="${match}" method="post" class="form card" style="padding: 2rem;">
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{tournament}" />
+
+            <div class="grid-tournaments" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="form__group">
+                    <label class="form__label">🛡️ Local:</label>
+                    <select th:field="*{homeTeam}" class="form__input" required>
+                        <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
+                    </select>
+                    <input type="number" th:field="*{homeScore}" class="form__input mt-md" 
+                           th:value="${match.homeScore != null ? match.homeScore : 0}" />
+                </div>
+
+                <div class="form__group">
+                    <label class="form__label">🛡️ Visitante:</label>
+                    <select th:field="*{awayTeam}" class="form__input" required>
+                        <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
+                    </select>
+                    <input type="number" th:field="*{awayScore}" class="form__input mt-md" 
+                           th:value="${match.awayScore != null ? match.awayScore : 0}" />
+                </div>
+            </div>
+
+            <div class="form__group mt-lg">
+                <label class="form__label">👨‍⚖️ Árbitro:</label>
+                <select th:field="*{referee}" class="form__input" required>
+                    <option th:each="r : ${referees}" th:value="${r.id}" th:text="${r.name} + ' ' + ${r.surname}"></option>
+                </select>
+            </div>
+
+            <div class="form__group mt-md">
+                <label class="form__label">📅 Fecha y Hora:</label>
+                <input type="datetime-local" th:field="*{matchDate}" class="form__input" required />
+            </div>
+
+            <button type="submit" class="btn btn--primary mt-lg" style="width: 100%;">Guardar Partido</button>
+        </form>
+    </div>
+</body>
+</html>

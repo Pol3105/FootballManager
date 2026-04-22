@@ -22,7 +22,7 @@ public class Tournament {
     private LocalDate startDate;
 
     // Relación: Un torneo tiene muchos equipos
-    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "tournaments", fetch = FetchType.LAZY)
     private List<Team> teams = new ArrayList<>();
 
     // Relación: Un torneo tiene muchos equipos

@@ -13,8 +13,8 @@ public class Match {
 
     private LocalDateTime matchDate;
 
-    private Integer homeScore;
-    private Integer awayScore;
+    private Integer homeScore = 0;
+    private Integer awayScore = 0;
 
     // Relación 1: Equipo Local
     @ManyToOne(fetch = FetchType.LAZY)
