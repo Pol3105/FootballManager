@@ -2,7 +2,11 @@ package it.uniroma3.siw.siw_football.model;
 
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Objects;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class Player {
@@ -17,7 +21,13 @@ public class Player {
     @Column(nullable = false)
     private String surname;
 
-    private String position; // Ej: Forward, Midfielder, Defender...
+    @Column(nullable = false)
+    private Double height;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate birthDate;
+
+    private String position;
 
     // Relación: Muchos jugadores pertenecen a un equipo
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,6 +50,12 @@ public class Player {
 
     public Team getTeam() { return team; }
     public void setTeam(Team team) { this.team = team; }
+
+    public Double getHeight() { return height; }
+    public void setHeight(Double height) { this.height = height; }
+
+    public LocalDate getBirthDate() { return birthDate; }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
 
     // --- Equals y HashCode (Basado en Nombre y Apellido para evitar duplicados) ---
     @Override

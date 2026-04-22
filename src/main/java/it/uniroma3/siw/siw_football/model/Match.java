@@ -16,6 +16,11 @@ public class Match {
     private Integer homeScore = 0;
     private Integer awayScore = 0;
 
+    private String location;
+
+    @Enumerated(EnumType.STRING)
+    private MatchStatus status; // Requisito: SCHEDULED, PLAYED
+
     // Relación 1: Equipo Local
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "home_team_id") // Forzamos el nombre de la columna en BD
@@ -60,5 +65,11 @@ public class Match {
 
     public Tournament getTournament() { return tournament; }
     public void setTournament(Tournament tournament) { this.tournament = tournament; }
+
+    public MatchStatus getStatus() { return status; }
+    public void setStatus(MatchStatus status) { this.status = status; }
+
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
 }

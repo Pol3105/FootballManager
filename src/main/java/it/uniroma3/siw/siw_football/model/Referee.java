@@ -16,6 +16,9 @@ public class Referee {
     @Column(nullable = false)
     private String surname;
 
+    @Column(nullable = false, unique = true)
+    private String refereeCode;
+
     public Referee() {}
 
     // --- Getters y Setters ---
@@ -27,6 +30,9 @@ public class Referee {
 
     public String getSurname() { return surname; }
     public void setSurname(String surname) { this.surname = surname; }
+
+    public String getRefereeCode() { return refereeCode; }
+    public void setRefereeCode(String refereeCode) { this.refereeCode = refereeCode; }
 
     @Override
     public boolean equals(Object o) {

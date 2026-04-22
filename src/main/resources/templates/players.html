@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Jugadores - SIW Football</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+</head>
+<body class="page">
+    <div class="container">
+        <header class="section-header">
+            <a th:href="@{/}" class="back-link">← Panel Principal</a>
+            <h1>🏃 Jugadores Registrados</h1>
+            <a th:href="@{/admin/player/new}" class="btn btn--primary">➕ Registrar Jugador</a>
+        </header>
+
+        <div class="grid-players">
+            <div th:each="player : ${players}" class="player-card">
+                <div class="player-info">
+                    <span class="player-card__name" th:text="${player.name} + ' ' + ${player.surname}">Nombre</span>
+                    <p class="text-muted" style="margin-bottom: 5px;">
+                        📍 <span th:text="${player.position}">Posición</span> | 
+                        🛡️ <span th:text="${player.team != null ? player.team.name : 'Agente Libre'}">Equipo</span>
+                    </p>
+                    <p class="text-muted" style="font-size: 0.8rem;">
+                        📅 Nacimiento: <span th:text="${player.birthDate != null ? #temporals.format(player.birthDate, 'dd/MM/yyyy') : '—'}">01/01/2000</span> | 
+                        📏 Altura: <span th:text="${player.height != null ? player.height + ' m' : '—'}">1.80 m</span>
+                    </p>
+                </div>
+                
+                <div class="action-group" style="margin-left: auto;">
+                    <a th:href="@{/admin/player/edit/{id}(id=${player.id})}" class="btn btn--warning" style="padding: 5px;">✏️</a>
+                    <button type="button" class="btn btn--danger" 
+                            th:data-id="${player.id}" 
+                            th:data-name="${player.name} + ' ' + ${player.surname}"
+                            onclick="confirmDeletePlayer(this)" 
+                            style="padding: 5px;">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function confirmDeletePlayer(btn) {
+        const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+        Swal.fire({
+            title: '¿Eliminar a ' + name + '?',
+            text: "Se borrará su ficha técnica del sistema.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e63946',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) window.location.href = '/admin/player/delete/' + id;
+        });
+    }
+    </script>
+</body>
+</html>

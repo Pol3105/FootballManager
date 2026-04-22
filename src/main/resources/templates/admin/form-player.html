@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${player.id == null} ? 'Nuevo Jugador' : 'Editar Jugador'">Jugador</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+</head>
+<body class="page">
+    <div class="container">
+        <a th:href="@{/players}" class="back-link">← Cancelar y Volver</a>
+        
+        <header class="section-header">
+            <h1 th:text="${player.id == null} ? '👤 Registrar Nuevo Jugador' : '✏️ Editar Jugador'">Gestión</h1>
+        </header>
+
+        <form th:action="@{/admin/player/save}" th:object="${player}" method="post" class="form card" style="padding: var(--space-xl);">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="grid-tournaments" style="grid-template-columns: 1fr 1fr; gap: var(--space-lg);">
+                <div class="form__group">
+                    <label class="form__label">Nombre:</label>
+                    <input type="text" th:field="*{name}" class="form__input" required />
+                </div>
+                <div class="form__group">
+                    <label class="form__label">Apellido:</label>
+                    <input type="text" th:field="*{surname}" class="form__input" required />
+                </div>
+            </div>
+
+            <div class="grid-tournaments" style="grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-top: var(--space-md);">
+                <div class="form__group">
+                    <label class="form__label">Fecha de Nacimiento:</label>
+                    <input type="date" th:field="*{birthDate}" class="form__input" required />
+                </div>
+                <div class="form__group">
+                    <label class="form__label">Altura (metros):</label>
+                    <input type="number" step="0.01" th:field="*{height}" class="form__input" placeholder="Ej: 1.85" required />
+                </div>
+            </div>
+
+            <div class="grid-tournaments" style="grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-top: var(--space-md);">
+                <div class="form__group">
+                    <label class="form__label">Posición:</label>
+                    <select th:field="*{position}" class="form__input" required>
+                        <option value="Goalkeeper">Goalkeeper (Portero)</option>
+                        <option value="Defender">Defender (Defensa)</option>
+                        <option value="Midfielder">Midfielder (Medio)</option>
+                        <option value="Forward">Forward (Delantero)</option>
+                    </select>
+                </div>
+                <div class="form__group">
+                    <label class="form__label">🛡️ Equipo:</label>
+                    <select th:field="*{team}" class="form__input">
+                        <option value="">Agente Libre (Sin equipo)</option>
+                        <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn--primary mt-lg" style="width: 100%;">
+                <span th:text="${player.id == null} ? 'Guardar Jugador' : 'Actualizar Ficha'">Boton</span>
+            </button>
+        </form>
+    </div>
+</body>
+</html>

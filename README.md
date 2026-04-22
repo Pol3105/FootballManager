@@ -85,6 +85,25 @@ Implemented the core Domain Model (User, Tournament, Team). Configured JPA @OneT
     * **Contextual Forms:** Developed a hybrid "Create/Update" form for matches that filters teams based on tournament enrollment and referees based on system availability.
     * **Interactive Confirmations:** Extended **SweetAlert2** integration to cover sensitive actions like team removal and match deletion, providing clear warnings about data consequences.
 
+### Phase 5: Data Completeness, Advanced Validation & Public Access
+
+* **Full Entity Synchronization:**
+    * [cite_start]Completed the implementation of all mandatory fields required by the project specifications [cite: 21-55].
+    * [cite_start]Added `description` to **Tournaments**, `city` to **Teams**, `birthDate` and `height` to **Players**, and `refereeCode` to **Referees** [cite: 22-55].
+    * [cite_start]Enhanced **Match** entity with `status` (Enum: SCHEDULED/PLAYED) and `location` [cite: 42-47].
+
+* **Public "Roster" Access & Navigation:**
+    * [cite_start]Implemented a dedicated view for Team Rosters (`/team/{id}/players`), allowing general users to view player lineups without entering administrative zones [cite: 63-68].
+    * [cite_start]**Admin-in-Context:** Integrated "Edit" and "Delete" actions directly within the roster view to allow administrators to manage players while browsing the team lineup[cite: 73, 76, 79].
+
+* **Advanced Validation & Data Integrity:**
+    * [cite_start]**Integrity Guard:** Refactored `RefereeService` with `@Transactional` logic to manage related matches during referee deletion, preventing SQL Foreign Key exceptions and "Internal Server Errors (500)"[cite: 96, 101, 137].
+    * **Form Feedback:** Implemented controller-level validation for unique constraints (e.g., Referee Code). [cite_start]Leveraged `BindingResult` to display inline error messages in Thymeleaf, ensuring a smooth UX instead of application crashes[cite: 140, 141].
+
+* **Schema Evolution & Data Seeding:**
+    * [cite_start]Upgraded `DataInitializer` to populate all new mandatory fields, ensuring the development environment accurately reflects the final required data model [cite: 21-55].
+    * [cite_start]Improved UI readability by implementing CSS "Position Badges" and unified navigation links across all detail views[cite: 139].
+
 ---
 
 ### 💡 Key Logic Highlight: Data Integrity

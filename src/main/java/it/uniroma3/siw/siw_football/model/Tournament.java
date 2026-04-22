@@ -18,6 +18,9 @@ public class Tournament {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false, unique = true)
+    private String description;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;
 
@@ -44,4 +47,6 @@ public class Tournament {
     public void setName(String name) { this.name = name; }
     public LocalDate getStartDate() { return startDate; }
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }

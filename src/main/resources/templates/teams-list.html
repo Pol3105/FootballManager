@@ -17,14 +17,23 @@
         <div class="grid-players"> <div th:each="team : ${teams}" class="player-card" style="border-left-color: var(--color-pitch-light);">
                 <div>
                     <span class="player-card__name" th:text="${team.name}">Nombre</span>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">
+                        📍 <span th:text="${team.city}">Ciudad</span>
+                    </div>
                     <div class="mt-xs">
                         <span th:each="t : ${team.tournaments}" 
-                              class="text-muted" 
-                              style="font-size: 0.8rem; margin-right: 5px;"
-                              th:text="'[' + ${t.name} + ']'"></span>
+                            class="text-muted" 
+                            style="font-size: 0.8rem; margin-right: 5px;"
+                            th:text="'[' + ${t.name} + ']'"></span>
                         <span th:if="${#lists.isEmpty(team.tournaments)}" class="text-muted" style="font-size: 0.8rem;">(Sin torneo asignado)</span>
                     </div>
                 </div>
+
+                <a th:href="@{/team/{id}/players(id=${team.id})}" 
+                    class="btn btn--outline" 
+                    style="border-color: #3498db; color: #3498db;">
+                    👤 Ver Plantilla
+                </a>
                 
                 <div class="action-group" style="margin-top: 0;">
                     <a th:href="@{/admin/team/edit/{id}(id=${team.id})}" class="btn btn--outline" style="padding: 4px 10px; font-size: 0.8rem;">⚙️ Gestionar</a>

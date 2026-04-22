@@ -4,6 +4,9 @@ import it.uniroma3.siw.siw_football.model.Player;
 import it.uniroma3.siw.siw_football.model.Team;
 import it.uniroma3.siw.siw_football.repository.PlayerRepository;
 import it.uniroma3.siw.siw_football.repository.TeamRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,14 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
+    public Player findById(Long id) {
+        return playerRepository.findById(id).orElse(null);
+    }
+
+    public void deleteById(Long id) {
+        playerRepository.deleteById(id);
+    }
+
     /**
      * Lógica de Fichaje: Asigna un jugador existente a un equipo.
      */
@@ -38,5 +49,9 @@ public class PlayerService {
             player.setTeam(team);
             team.getPlayers().add(player);
         }
+    }
+
+    public List<Player> findByTeamId(Long teamId) {
+        return playerRepository.findByTeamId(teamId);
     }
 }

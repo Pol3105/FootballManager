@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cuerpo Arbitral - SIW Football</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+</head>
+<body class="page">
+    <div class="container">
+        <a th:href="@{/}" class="back-link">← Panel Principal</a>
+        
+        <header class="section-header">
+            <h1>👨‍⚖️ Árbitros del Sistema</h1>
+            <a th:href="@{/admin/referee/new}" class="btn btn--primary">➕ Nuevo Árbitro</a>
+        </header>
+
+        <div class="grid-players">
+            <div th:each="referee : ${referees}" class="player-card">
+                <div class="player-info">
+                    <span class="player-card__name" th:text="${referee.name} + ' ' + ${referee.surname}">Nombre</span>
+                    <p class="text-muted" style="font-size: 0.8rem; margin-top: 4px;">
+                        🆔 Código: <code th:text="${referee.refereeCode}">REF-001</code>
+                    </p>
+                </div>
+                
+                <div class="action-group" style="margin-left: auto;">
+                    <a th:href="@{/admin/referee/edit/{id}(id=${referee.id})}" class="btn btn--warning" style="padding: 5px;">✏️</a>
+                    <button type="button" class="btn btn--danger" 
+                            th:data-id="${referee.id}"
+                            th:data-name="${referee.name} + ' ' + ${referee.surname}"
+                            onclick="confirmDeleteReferee(this)" 
+                            style="padding: 5px;">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function confirmDeleteReferee(btn) {
+        const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+        Swal.fire({
+            title: '¿Eliminar a ' + name + '?',
+            text: "Este árbitro dejará de estar disponible para pitar partidos.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e63946',
+            confirmButtonText: 'Sí, borrar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) window.location.href = '/admin/referee/delete/' + id;
+        });
+    }
+    </script>
+</body>
+</html>

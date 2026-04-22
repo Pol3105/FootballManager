@@ -14,35 +14,38 @@
         </header>
 
         <form th:action="${team.id == null} ? @{/admin/team/new} : @{/admin/team/edit/{id}(id=${team.id})}" 
-            th:object="${team}" method="post" class="form">
+            th:object="${team}" method="post" class="form card" style="padding: var(--space-xl);">
             
             <input type="hidden" th:field="*{id}" />
 
-            <header class="section-header">
-                <h1 th:text="${team.id == null} ? '🛡️ Registrar Nuevo Equipo' : '✏️ Editar Equipo'">Título</h1>
-            </header>
-
             <div class="form__group">
                 <label class="form__label">Nombre del Club:</label>
-                <input type="text" th:field="*{name}" class="form__input" required />
+                <input type="text" th:field="*{name}" class="form__input" placeholder="Ej: AS Roma" required />
+            </div>
+
+            <div class="form__group">
+                <label class="form__label">Ciudad:</label>
+                <input type="text" th:field="*{city}" class="form__input" placeholder="Ej: Roma" required />
             </div>
 
             <div class="form__group">
                 <label class="form__label">Año de Fundación:</label>
-                <input type="number" th:field="*{foundationYear}" class="form__input" required />
+                <input type="number" th:field="*{foundationYear}" class="form__input" placeholder="Ej: 1927" required />
             </div>
 
             <div class="form__group">
                 <label class="form__label">Asignar a Torneos:</label>
-                <select th:field="*{tournaments}" class="form__input" multiple style="height: 120px;">
+                <select th:field="*{tournaments}" class="form__input" multiple style="min-height: 100px;">
                     <option th:each="t : ${tournaments}" 
                             th:value="${t.id}" 
                             th:text="${t.name}">Torneo</option>
                 </select>
+                <small class="text-muted">Mantén presionado Ctrl (o Cmd) para seleccionar varios.</small>
             </div>
 
-            <button type="submit" class="btn btn--primary mt-md" 
-                    th:text="${team.id == null} ? 'Guardar Equipo' : 'Actualizar Equipo'">Boton</button>
+            <button type="submit" class="btn btn--primary mt-md" style="width: 100%;">
+                <span th:text="${team.id == null} ? '💾 Guardar Equipo' : '🔄 Actualizar Equipo'">Boton</span>
+            </button>
         </form>
     </div>
 </body>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Árbitro - SIW Football</title>
+    <link th:href="@{/css/global.css}" rel="stylesheet" />
+</head>
+<body class="page">
+    <div class="container">
+        <a th:href="@{/referees}" class="back-link">← Volver a la Lista</a>
+        
+        <header class="section-header">
+            <h1 th:text="${referee.id == null} ? '👨‍⚖️ Registrar Árbitro' : '✏️ Editar Árbitro'">Gestión</h1>
+        </header>
+
+        <form th:action="@{/admin/referee/save}" th:object="${referee}" method="post" class="form card" style="padding: 2rem;">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="grid-tournaments" style="grid-template-columns: 1fr 1fr; gap: var(--space-lg);">
+                <div class="form__group">
+                    <label class="form__label">Nombre:</label>
+                    <input type="text" th:field="*{name}" class="form__input" placeholder="Ej: Pierluigi" required />
+                </div>
+
+                <div class="form__group">
+                    <label class="form__label">Apellido:</label>
+                    <input type="text" th:field="*{surname}" class="form__input" placeholder="Ej: Collina" required />
+                </div>
+            </div>
+
+            <div class="form__group mt-md">
+                <label class="form__label">Código Arbitral Oficial:</label>
+                <input type="text" th:field="*{refereeCode}" 
+                    th:classappend="${#fields.hasErrors('refereeCode')} ? 'form__input--error' : ''"
+                    class="form__input" placeholder="Ej: ITA-12345" required />
+                
+                <p th:if="${#fields.hasErrors('refereeCode')}" 
+                th:errors="*{refereeCode}" 
+                style="color: #e63946; font-size: 0.8rem; margin-top: 5px;">Error de código</p>
+            </div>
+
+            <button type="submit" class="btn btn--primary mt-lg" style="width: 100%;">
+                <span th:text="${referee.id == null} ? '💾 Guardar Árbitro' : '🔄 Actualizar Datos'">Acción</span>
+            </button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,8 +1,12 @@
 package it.uniroma3.siw.siw_football.controller;
 
+import it.uniroma3.siw.siw_football.model.Player;
 import it.uniroma3.siw.siw_football.model.Team;
+import it.uniroma3.siw.siw_football.service.PlayerService;
 import it.uniroma3.siw.siw_football.service.TeamService;
 import it.uniroma3.siw.siw_football.service.TournamentService;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +25,9 @@ public class TeamController {
     @Autowired
     private TournamentService tournamentService;
 
+    @Autowired
+    private PlayerService playerService;
+
     @GetMapping("/teams")
     public String showAllTeams(Model model) {
         model.addAttribute("teams", teamService.findAll());
@@ -37,6 +44,16 @@ public class TeamController {
         }
         
         return "redirect:/"; // Si alguien pone un ID falso a mano, lo mandamos a la portada
+    }
+
+    @GetMapping("/team/{id}/players")
+    public String showTeamRoster(@PathVariable("id") Long id, Model model) {
+        Team team = teamService.findById(id);
+        List<Player> players = playerService.findByTeamId(id);
+        
+        model.addAttribute("team", team);
+        model.addAttribute("players", players);
+        return "team-details";
     }
 
     @GetMapping("/admin/team/new")

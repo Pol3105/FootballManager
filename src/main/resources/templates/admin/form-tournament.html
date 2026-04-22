@@ -23,7 +23,7 @@
                       : @{/admin/tournament/edit/{id}(id=${tournament.id})}"
           th:object="${tournament}"
           method="post"
-          class="form">
+          class="form card" style="padding: var(--space-xl);">
 
         <input type="hidden" th:field="*{id}" />
 
@@ -33,7 +33,7 @@
                    type="text"
                    id="name"
                    th:field="*{name}"
-                   placeholder="Ej: Mundial 2026"
+                   placeholder="Ej: Champions League 2026"
                    required />
         </div>
 
@@ -46,8 +46,18 @@
                    required />
         </div>
 
-        <div>
-            <button type="submit" class="btn btn--primary">
+        <div class="form__group">
+            <label class="form__label" for="description">Descripción del Torneo</label>
+            <textarea class="form__input"
+                      id="description"
+                      th:field="*{description}"
+                      rows="4"
+                      placeholder="Describe brevemente las reglas o el formato del torneo..."
+                      required></textarea>
+        </div>
+
+        <div style="margin-top: var(--space-lg);">
+            <button type="submit" class="btn btn--primary" style="width: 100%;">
                 💾 Guardar Torneo
             </button>
         </div>

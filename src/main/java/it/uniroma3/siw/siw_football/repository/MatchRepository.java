@@ -15,5 +15,8 @@ public interface MatchRepository extends CrudRepository<Match, Long> {
         List<Match> findByTournamentAndTeam(@Param("tournament") Tournament tournament, @Param("team") Team team);
 
         List<Match> findByHomeTeamOrAwayTeam(Team homeTeam, Team awayTeam);
+
+        List<Match> findByRefereeId(Long refereeId);
+
         List<Match> findByTournamentId(Long tournamentId);
 }

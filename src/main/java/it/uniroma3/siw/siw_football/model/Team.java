@@ -17,6 +17,9 @@ public class Team {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String city;
+
     private Integer foundationYear;
 
     // Relación: Muchos equipos pertenecen a un Torneo, y viceversa
@@ -43,6 +46,9 @@ public class Team {
     public Integer getFoundationYear() { return foundationYear; }
     public void setFoundationYear(Integer foundationYear) { this.foundationYear = foundationYear; }
 
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

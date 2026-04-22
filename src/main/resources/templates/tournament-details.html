@@ -59,15 +59,26 @@
         <div>
             <div class="match-card__teams">
                 <strong th:text="${match.homeTeam.name}">Local</strong>
-                <span class="match-card__score" 
-                    th:text="${match.homeScore ?: 0} + ' - ' + ${match.awayScore ?: 0}">
-                    0 - 0
-                </span>
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <span class="player-badge" 
+                        th:text="${match.status}" 
+                        th:style="${match.status == 'PLAYED' ? 'background-color: #d1fae5; color: #065f46;' : 'background-color: #dbeafe; color: #1e40af;'}">
+                        Estado
+                    </span>
+                    
+                    <span class="match-card__score" 
+                        th:text="${match.homeScore ?: 0} + ' - ' + ${match.awayScore ?: 0}">
+                        0 - 0
+                    </span>
+                </div>
+
                 <strong th:text="${match.awayTeam.name}">Visitante</strong>
             </div>
             <p class="match-card__meta">
                 📅 <span th:text="${#temporals.format(match.matchDate, 'dd/MM/yyyy HH:mm')}">Fecha</span>
                 &nbsp;|&nbsp;
+                📍 <span th:text="${match.location ?: 'Campo sin asignar'}">Lugar</span> &nbsp;|&nbsp;
                 👨‍⚖️ <span th:text="${match.referee.name} + ' ' + ${match.referee.surname}">Árbitro</span>
             </p>
         </div>
@@ -77,7 +88,8 @@
             class="btn btn--warning" style="padding: 5px 10px; font-size: 0.75rem;">✏️</a>
             
             <button type="button" class="btn btn--danger" 
-                th:onclick="'confirmDeleteMatch(' + ${match.id} + ')'"
+                th:data-id="${match.id}"
+                onclick="confirmDeleteMatch(this.getAttribute('data-id'))"
                 style="padding: 5px 10px; font-size: 0.75rem;">
                 🗑️
             </button>

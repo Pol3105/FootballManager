@@ -23,8 +23,7 @@
                     <select th:field="*{homeTeam}" class="form__input" required>
                         <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
                     </select>
-                    <input type="number" th:field="*{homeScore}" class="form__input mt-md" 
-                           th:value="${match.homeScore != null ? match.homeScore : 0}" />
+                    <input type="number" th:field="*{homeScore}" class="form__input mt-md" placeholder="Goles Local" />
                 </div>
 
                 <div class="form__group">
@@ -32,12 +31,26 @@
                     <select th:field="*{awayTeam}" class="form__input" required>
                         <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
                     </select>
-                    <input type="number" th:field="*{awayScore}" class="form__input mt-md" 
-                           th:value="${match.awayScore != null ? match.awayScore : 0}" />
+                    <input type="number" th:field="*{awayScore}" class="form__input mt-md" placeholder="Goles Visitante" />
                 </div>
             </div>
 
-            <div class="form__group mt-lg">
+            <div class="grid-tournaments" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+                <div class="form__group">
+                    <label class="form__label">📍 Lugar del encuentro:</label>
+                    <input type="text" th:field="*{location}" class="form__input" placeholder="Ej: Estadio Olímpico" required />
+                </div>
+
+                <div class="form__group">
+                    <label class="form__label">🚥 Estado del partido:</label>
+                    <select th:field="*{status}" class="form__input" required>
+                        <option value="SCHEDULED">Programado (SCHEDULED)</option>
+                        <option value="PLAYED">Jugado (PLAYED)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form__group mt-md">
                 <label class="form__label">👨‍⚖️ Árbitro:</label>
                 <select th:field="*{referee}" class="form__input" required>
                     <option th:each="r : ${referees}" th:value="${r.id}" th:text="${r.name} + ' ' + ${r.surname}"></option>
@@ -51,6 +64,7 @@
 
             <button type="submit" class="btn btn--primary mt-lg" style="width: 100%;">Guardar Partido</button>
         </form>
+        
     </div>
 </body>
 </html>

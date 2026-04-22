@@ -2,7 +2,6 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${team.name} + ' — SIW Football'">Detalles del Equipo</title>
     <link th:href="@{/css/global.css}" rel="stylesheet" />
 </head>
@@ -13,26 +12,70 @@
     <a href="javascript:history.back()" class="back-link">← Volver atrás</a>
 
     <div class="section-header">
-        <h1 th:text="${team.name}">Nombre del Equipo</h1>
+        <h1 th:text="'🛡️ ' + ${team.name}">Nombre del Equipo</h1>
         <p class="text-muted">
-            🏟️ Año de fundación: <strong th:text="${team.foundationYear}">1900</strong>
-        </p>
+        📅 Año de fundación: <strong th:text="${team.foundationYear}">1900</strong> | 
+        📍 Ciudad: <strong th:text="${team.city}">Ciudad</strong> </p>
     </div>
 
-    <h3>Plantilla de Jugadores</h3>
-
-    <div th:if="${#lists.isEmpty(team.players)}" class="empty-state">
-        <p>No hay jugadores registrados en este equipo.</p>
+    <div class="flex-between" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+        <h3>🏃 Plantilla de Jugadores</h3>
+        <a th:href="@{/admin/player/new}" class="btn btn--primary" style="font-size: 0.8rem;">+ Fichar Jugador</a>
     </div>
 
-    <div th:each="player : ${team.players}" class="player-card">
-        <span class="player-card__name"
-              th:text="${player.name} + ' ' + ${player.surname}">Nombre Apellido</span>
-        <span class="player-card__position"
-              th:text="${player.position}">Posición</span>
+    <div th:if="${#lists.isEmpty(team.players)}" class="card" style="text-align: center; padding: var(--space-xl);">
+        <p class="text-muted">No hay jugadores registrados en este equipo.</p>
+    </div>
+
+    <div class="grid-players">
+        <div th:each="player : ${team.players}" class="player-card">
+            <div class="player-info">
+                <span class="player-card__name" th:text="${player.name} + ' ' + ${player.surname}">Nombre</span>
+                <span class="player-card__position" th:text="${player.position}" 
+                      style="display: block; font-size: 0.75rem; text-transform: uppercase;">Posición</span>
+            </div>
+            
+            <div class="action-group" style="margin-left: auto; display: flex; gap: 5px;">
+                <a th:href="@{/admin/player/edit/{id}(id=${player.id})}" 
+                   class="btn btn--warning" 
+                   style="padding: 5px 10px; font-size: 0.75rem;" 
+                   title="Editar Ficha">✏️</a>
+                   
+                <button type="button" 
+                        class="btn btn--danger" 
+                        th:data-id="${player.id}"
+                        th:data-name="${player.name} + ' ' + ${player.surname}"
+                        onclick="confirmDeletePlayer(this)"
+                        style="padding: 5px 10px; font-size: 0.75rem;" 
+                        title="Eliminar Jugador">🗑️</button>
+            </div>
+        </div>
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmDeletePlayer(btn) {
+    const id = btn.getAttribute('data-id');
+    const name = btn.getAttribute('data-name');
+
+    Swal.fire({
+        title: '¿Dar de baja a ' + name + '?',
+        text: "Esta acción eliminará al jugador del sistema permanentemente.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e63946',
+        cancelButtonColor: '#2ecc71',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '/admin/player/delete/' + id;
+        }
+    });
+}
+</script>
 
 </body>
 </html>
