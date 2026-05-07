@@ -1,57 +1,81 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Cuerpo Arbitral - SIW Football</title>
-    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Árbitros — SIW Football</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
 </head>
-<body class="page">
-    <div class="container">
-        <a th:href="@{/}" class="back-link">← Panel Principal</a>
-        
-        <header class="section-header">
-            <h1>👨‍⚖️ Árbitros del Sistema</h1>
-            <a th:href="@{/admin/referee/new}" class="btn btn--primary">➕ Nuevo Árbitro</a>
-        </header>
+<body>
 
-        <div class="grid-players">
-            <div th:each="referee : ${referees}" class="player-card">
-                <div class="player-info">
-                    <span class="player-card__name" th:text="${referee.name} + ' ' + ${referee.surname}">Nombre</span>
-                    <p class="text-muted" style="font-size: 0.8rem; margin-top: 4px;">
-                        🆔 Código: <code th:text="${referee.refereeCode}">REF-001</code>
-                    </p>
-                </div>
-                
-                <div class="action-group" style="margin-left: auto;">
-                    <a th:href="@{/admin/referee/edit/{id}(id=${referee.id})}" class="btn btn--warning" style="padding: 5px;">✏️</a>
-                    <button type="button" class="btn btn--danger" 
-                            th:data-id="${referee.id}"
-                            th:data-name="${referee.name} + ' ' + ${referee.surname}"
-                            onclick="confirmDeleteReferee(this)" 
-                            style="padding: 5px;">🗑️</button>
-                </div>
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+    <div class="navbar__right">
+        <div sec:authorize="isAuthenticated()" class="navbar__user">
+            <strong sec:authentication="name"></strong>
+        </div>
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
+        </form>
+        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn--outline-light">🔐 Iniciar Sesión</a>
+    </div>
+</nav>
+
+<main class="main-content">
+<div class="container">
+
+    <a th:href="@{/}" class="back-link">← Panel Principal</a>
+
+    <div class="section-header">
+        <h1>👨‍⚖️ Cuerpo Arbitral</h1>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/referee/new}"
+           class="btn btn--primary btn--sm" style="margin-left: auto;">➕ Nuevo Árbitro</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(referees)}" class="empty-state">
+        No hay árbitros registrados aún.
+    </div>
+
+    <div class="grid-players">
+        <div th:each="referee : ${referees}" class="player-card"
+             style="border-left-color: var(--color-info);">
+            <div class="player-info">
+                <span class="player-card__name" th:text="${referee.name} + ' ' + ${referee.surname}">Nombre</span>
+                <p class="text-muted" style="margin-bottom: 0; font-size: 0.8rem;">
+                    🆔 Código: <code th:text="${referee.refereeCode}">REF-001</code>
+                </p>
+            </div>
+
+            <div sec:authorize="hasRole('ADMIN')" class="action-group" style="margin-top: 0; margin-left: auto;">
+                <a th:href="@{/admin/referee/edit/{id}(id=${referee.id})}" class="btn btn--warning btn--sm">✏️</a>
+                <button type="button" class="btn btn--danger btn--sm"
+                        th:data-id="${referee.id}"
+                        th:data-name="${referee.name} + ' ' + ${referee.surname}"
+                        onclick="confirmDeleteReferee(this)">🗑️</button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-    function confirmDeleteReferee(btn) {
-        const id = btn.getAttribute('data-id');
-        const name = btn.getAttribute('data-name');
-        Swal.fire({
-            title: '¿Eliminar a ' + name + '?',
-            text: "Este árbitro dejará de estar disponible para pitar partidos.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#e63946',
-            confirmButtonText: 'Sí, borrar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) window.location.href = '/admin/referee/delete/' + id;
-        });
-    }
-    </script>
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmDeleteReferee(btn) {
+    const id = btn.getAttribute('data-id');
+    const name = btn.getAttribute('data-name');
+    Swal.fire({
+        title: '¿Eliminar a ' + name + '?',
+        text: 'Dejará de estar disponible para pitar partidos.',
+        icon: 'warning', showCancelButton: true,
+        confirmButtonColor: '#e63946', confirmButtonText: 'Sí, borrar', cancelButtonText: 'Cancelar'
+    }).then(r => { if (r.isConfirmed) window.location.href = '/admin/referee/delete/' + id; });
+}
+</script>
 </body>
 </html>

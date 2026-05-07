@@ -1,48 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Árbitro - SIW Football</title>
-    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Árbitro — SIW Football</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
 </head>
-<body class="page">
-    <div class="container">
-        <a th:href="@{/referees}" class="back-link">← Volver a la Lista</a>
-        
-        <header class="section-header">
-            <h1 th:text="${referee.id == null} ? '👨‍⚖️ Registrar Árbitro' : '✏️ Editar Árbitro'">Gestión</h1>
-        </header>
+<body>
 
-        <form th:action="@{/admin/referee/save}" th:object="${referee}" method="post" class="form card" style="padding: 2rem;">
-            <input type="hidden" th:field="*{id}" />
-
-            <div class="grid-tournaments" style="grid-template-columns: 1fr 1fr; gap: var(--space-lg);">
-                <div class="form__group">
-                    <label class="form__label">Nombre:</label>
-                    <input type="text" th:field="*{name}" class="form__input" placeholder="Ej: Pierluigi" required />
-                </div>
-
-                <div class="form__group">
-                    <label class="form__label">Apellido:</label>
-                    <input type="text" th:field="*{surname}" class="form__input" placeholder="Ej: Collina" required />
-                </div>
-            </div>
-
-            <div class="form__group mt-md">
-                <label class="form__label">Código Arbitral Oficial:</label>
-                <input type="text" th:field="*{refereeCode}" 
-                    th:classappend="${#fields.hasErrors('refereeCode')} ? 'form__input--error' : ''"
-                    class="form__input" placeholder="Ej: ITA-12345" required />
-                
-                <p th:if="${#fields.hasErrors('refereeCode')}" 
-                th:errors="*{refereeCode}" 
-                style="color: #e63946; font-size: 0.8rem; margin-top: 5px;">Error de código</p>
-            </div>
-
-            <button type="submit" class="btn btn--primary mt-lg" style="width: 100%;">
-                <span th:text="${referee.id == null} ? '💾 Guardar Árbitro' : '🔄 Actualizar Datos'">Acción</span>
-            </button>
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+    <div class="navbar__right">
+        <div class="navbar__user">
+            <strong sec:authentication="name"></strong>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
         </form>
     </div>
+</nav>
+
+<main class="main-content">
+<div class="container">
+
+    <a th:href="@{/referees}" class="back-link">← Volver a la Lista</a>
+
+    <div class="section-header">
+        <h1 th:text="${referee.id == null} ? '👨‍⚖️ Registrar Árbitro' : '✏️ Editar Árbitro'">Árbitro</h1>
+    </div>
+
+    <form th:action="@{/admin/referee/save}" th:object="${referee}" method="post" class="form card">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+            <div class="form__group">
+                <label class="form__label">Nombre</label>
+                <input type="text" th:field="*{name}" class="form__input"
+                       placeholder="Ej: Pierluigi" required/>
+            </div>
+            <div class="form__group">
+                <label class="form__label">Apellido</label>
+                <input type="text" th:field="*{surname}" class="form__input"
+                       placeholder="Ej: Collina" required/>
+            </div>
+        </div>
+
+        <div class="form__group">
+            <label class="form__label">Código Arbitral Oficial</label>
+            <input type="text" th:field="*{refereeCode}"
+                   th:classappend="${#fields.hasErrors('refereeCode')} ? ' form__input--error' : ''"
+                   class="form__input" placeholder="Ej: ITA-12345" required/>
+            <p th:if="${#fields.hasErrors('refereeCode')}"
+               th:errors="*{refereeCode}"
+               style="color: var(--color-danger); font-size: 0.8rem; margin-top: 4px;">Error</p>
+        </div>
+
+        <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">
+            <span th:text="${referee.id == null} ? '💾 Guardar Árbitro' : '🔄 Actualizar Datos'">Guardar</span>
+        </button>
+    </form>
+
+</div>
+</main>
 </body>
 </html>

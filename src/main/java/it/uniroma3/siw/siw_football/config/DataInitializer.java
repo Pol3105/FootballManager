@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import it.uniroma3.siw.siw_football.model.*;
@@ -24,12 +25,18 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired private MatchRepository matchRepository;
     @Autowired private RefereeService refereeService;
     @Autowired private RefereeRepository refereeRepository;
+    @Autowired private UserService userService;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
-        
+
+        // --- FASE 0: USUARIOS (con contraseñas BCrypt) ---
+        createUsers();
+
         // --- FASE 1: TORNEOS Y EQUIPOS (Con Descripción y Ciudad) ---
         if (tournamentRepository.count() == 0) {
+            
             System.out.println("⚽ INICIANDO INYECCIÓN DE DATOS (REQUISITOS PDF)...");
 
             // 1. Torneos [cite: 22-26]
@@ -147,5 +154,26 @@ public class DataInitializer implements CommandLineRunner {
         m.setStatus(status);   // [cite: 47]
         m.setLocation(loc);     // [cite: 44]
         matchService.saveMatch(m);
+    }
+
+    private void createUsers() {
+        // 1. Crear Administrador (Si no existe)
+        if (userService.findByUsername("admin") == null) {
+            User admin = new User();
+            admin.setUsername("admin");
+            // Nunca guardamos "admin" tal cual, guardamos el hash
+            admin.setPassword(passwordEncoder.encode("admin")); 
+            admin.setRole("ADMIN");
+            userService.saveUser(admin);
+        }
+
+        // 2. Crear Usuario Normal (Si no existe)
+        if (userService.findByUsername("pablo") == null) {
+            User user = new User();
+            user.setUsername("pablo");
+            user.setPassword(passwordEncoder.encode("1234"));
+            user.setRole("USER");
+            userService.saveUser(user);
+        }
     }
 }

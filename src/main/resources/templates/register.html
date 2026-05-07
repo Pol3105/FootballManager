@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro — SIW Football</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/auth.css}" rel="stylesheet"/>
+</head>
+<body class="auth-page">
+
+    <div class="auth-card">
+        <div class="auth-logo">
+            <span class="auth-logo__icon">⚽</span>
+            <span class="auth-logo__title">SIW Football</span>
+            <p class="auth-logo__subtitle">Crea tu cuenta de aficionado</p>
+        </div>
+
+        <h2>Crear Cuenta</h2>
+
+        <form th:action="@{/register}" th:object="${user}" method="POST" class="form">
+            <div class="form__group">
+                <label class="form__label" for="username">Nombre de usuario</label>
+                <input type="text" id="username" th:field="*{username}" class="form__input"
+                       placeholder="Ej: pablo_siw" required autofocus/>
+            </div>
+
+            <div class="form__group">
+                <label class="form__label" for="password">Contraseña</label>
+                <input type="password" id="password" th:field="*{password}"
+                       th:classappend="${#fields.hasErrors('password')} ? ' form__input--error' : ''"
+                       class="form__input" placeholder="Mínimo 6 caracteres" required/>
+                <p th:if="${#fields.hasErrors('password')}"
+                   th:errors="*{password}"
+                   style="color: var(--color-danger); font-size: 0.8rem; margin-top: 4px;">Error</p>
+            </div>
+
+            <button type="submit" class="btn btn--primary auth-submit">
+                ✅ Crear Cuenta
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a></p>
+        </div>
+        <a th:href="@{/}" class="auth-back">← Volver a la web pública</a>
+    </div>
+
+</body>
+</html>

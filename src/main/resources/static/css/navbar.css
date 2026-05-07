@@ -1,0 +1,106 @@
+/* ── Sticky Navbar ─────────────────────────────────────── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--navbar-h);
+  background: linear-gradient(90deg, var(--color-night) 0%, var(--color-slate) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl);
+  box-shadow: 0 2px 16px rgba(13,27,42,0.4);
+  gap: var(--space-md);
+}
+
+/* ── Brand / Logo ─────────────────────────────────────── */
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-white);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--transition);
+}
+
+.navbar__brand:hover { color: var(--color-pitch-light); }
+
+.navbar__brand-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(46,204,113,0.5));
+}
+
+/* ── Right cluster ────────────────────────────────────── */
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.navbar__user {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.navbar__user::before { content: '👤'; }
+
+.navbar__user strong {
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+/* ── Navbar buttons ───────────────────────────────────── */
+.navbar .btn--danger {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+}
+
+.btn--outline-light {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.45);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.btn--outline-light:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.75);
+  color: var(--color-white);
+  transform: none;
+  filter: none;
+  box-shadow: none;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 600px) {
+  .navbar { padding: 0 var(--space-md); }
+  .navbar__brand-text { display: none; }
+  .navbar__user { display: none; }
+}
+
+@media (max-width: 480px) {
+  .navbar .btn--danger,
+  .btn--outline-light { padding: 5px 10px; font-size: 0.75rem; }
+}

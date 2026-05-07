@@ -1,54 +1,70 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${tournament.name} + ' — SIW Football'">Detalles del Torneo</title>
-    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <title th:text="${tournament.name} + ' — SIW Football'">Torneo</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
 </head>
-<body class="page">
+<body>
 
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+    <div class="navbar__right">
+        <div sec:authorize="isAuthenticated()" class="navbar__user">
+            <strong sec:authentication="name"></strong>
+        </div>
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
+        </form>
+        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn--outline-light">🔐 Iniciar Sesión</a>
+    </div>
+</nav>
+
+<main class="main-content">
 <div class="container">
 
     <a th:href="@{/}" class="back-link">← Volver a Inicio</a>
 
-    <!-- Cabecera del torneo -->
+    <!-- Tournament header -->
     <div class="section-header">
-        <h1 th:text="${tournament.name}">Nombre del Torneo</h1>
-        <p class="text-muted">
-            📅 Fecha de inicio: <strong th:text="${tournament.startDate}">—</strong>
-        </p>
-        <!-- Acciones admin -->
-        <div class="action-group">
-            <a th:href="@{/admin/tournament/edit/{id}(id=${tournament.id})}"
-               class="btn btn--warning">
-                ✏️ Modificar
-            </a>
-            <a th:href="@{/admin/tournament/{id}/manage-teams(id=${tournament.id})}" class="btn btn--outline">⚽ Gestionar Equipos</a>
-            <button type="button" class="btn btn--danger"
-                    th:onclick="'confirmDelete(' + ${tournament.id} + ')'">
-                🗑️ Borrar Torneo
-            </button>
+        <div style="flex: 1;">
+            <h1 th:text="${tournament.name}">Nombre del Torneo</h1>
+            <p class="text-muted" style="margin-bottom: 0;">
+                📅 Fecha de inicio: <strong th:text="${tournament.startDate}">—</strong>
+            </p>
+        </div>
+        <div sec:authorize="hasRole('ADMIN')" class="action-group" style="margin-top: 0;">
+            <a th:href="@{/admin/tournament/edit/{id}(id=${tournament.id})}" class="btn btn--warning btn--sm">✏️ Editar</a>
+            <a th:href="@{/admin/tournament/{id}/manage-teams(id=${tournament.id})}" class="btn btn--outline btn--sm">⚽ Equipos</a>
+            <button type="button" class="btn btn--danger btn--sm"
+                    th:onclick="'confirmDelete(' + ${tournament.id} + ')'">🗑️ Borrar</button>
         </div>
     </div>
 
-    <!-- Equipos inscritos -->
+    <!-- Teams -->
     <h3>Equipos Inscritos</h3>
     <div class="grid-teams">
         <a th:each="team : ${tournament.teams}"
            th:href="@{/team/{id}(id=${team.id})}"
            class="team-badge"
            th:text="${team.name}">Equipo</a>
-        <div th:if="${#lists.isEmpty(tournament.teams)}" class="empty-state">
-            No hay equipos inscritos.
+        <div th:if="${#lists.isEmpty(tournament.teams)}" class="empty-state" style="padding: var(--space-md) 0;">
+            No hay equipos inscritos aún.
         </div>
     </div>
 
-    <!-- Calendario de partidos -->
-    <div class="section-header">
-        <h3>Calendario de Encuentros</h3>
-        <a th:href="@{/admin/tournament/{id}/match/new(id=${tournament.id})}" 
-        class="btn btn--primary" style="font-size: 0.8rem;">+ Programar Partido</a>
+    <!-- Matches -->
+    <div class="section-header" style="margin-top: var(--space-xl);">
+        <h3 style="margin-bottom: 0;">Calendario de Encuentros</h3>
+        <a sec:authorize="hasRole('ADMIN')"
+           th:href="@{/admin/tournament/{id}/match/new(id=${tournament.id})}"
+           class="btn btn--primary btn--sm" style="margin-left: auto;">+ Programar Partido</a>
     </div>
 
     <div th:if="${#lists.isEmpty(tournament.matches)}" class="empty-state">
@@ -56,85 +72,59 @@
     </div>
 
     <div th:each="match : ${tournament.matches}" class="match-card">
-        <div>
+        <div style="flex: 1;">
             <div class="match-card__teams">
                 <strong th:text="${match.homeTeam.name}">Local</strong>
-                
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <span class="player-badge" 
-                        th:text="${match.status}" 
-                        th:style="${match.status == 'PLAYED' ? 'background-color: #d1fae5; color: #065f46;' : 'background-color: #dbeafe; color: #1e40af;'}">
-                        Estado
+
+                <div style="display:flex;flex-direction:column;align-items:center;min-width:90px;gap:4px;">
+                    <span class="player-badge"
+                          th:text="${match.status}"
+                          th:style="${match.status.name() == 'PLAYED'} ?
+                            'background:#d1fae5;color:#065f46;font-size:0.6rem;padding:2px 8px;border-radius:999px;font-weight:700;' :
+                            'background:#dbeafe;color:#1e40af;font-size:0.6rem;padding:2px 8px;border-radius:999px;font-weight:700;'">
                     </span>
-                    
-                    <span class="match-card__score" 
-                        th:text="${match.homeScore ?: 0} + ' - ' + ${match.awayScore ?: 0}">
-                        0 - 0
-                    </span>
+                    <span class="match-card__score"
+                          th:text="${match.homeScore ?: 0} + ' - ' + ${match.awayScore ?: 0}">0 - 0</span>
                 </div>
 
                 <strong th:text="${match.awayTeam.name}">Visitante</strong>
             </div>
             <p class="match-card__meta">
                 📅 <span th:text="${#temporals.format(match.matchDate, 'dd/MM/yyyy HH:mm')}">Fecha</span>
-                &nbsp;|&nbsp;
-                📍 <span th:text="${match.location ?: 'Campo sin asignar'}">Lugar</span> &nbsp;|&nbsp;
-                👨‍⚖️ <span th:text="${match.referee.name} + ' ' + ${match.referee.surname}">Árbitro</span>
+                &nbsp;·&nbsp; 📍 <span th:text="${match.location}">Estadio</span>
             </p>
         </div>
 
-        <div class="action-group" style="margin-top: 0; margin-left: auto; flex-direction: row;">
-            <a th:href="@{/admin/match/edit/{id}(id=${match.id})}" 
-            class="btn btn--warning" style="padding: 5px 10px; font-size: 0.75rem;">✏️</a>
-            
-            <button type="button" class="btn btn--danger" 
-                th:data-id="${match.id}"
-                onclick="confirmDeleteMatch(this.getAttribute('data-id'))"
-                style="padding: 5px 10px; font-size: 0.75rem;">
-                🗑️
-            </button>
+        <div class="action-group" style="margin-top: 0; flex-shrink: 0;">
+            <a th:href="@{/match/{id}(id=${match.id})}" class="btn btn--outline btn--sm">👁️ Ver Acta</a>
+            <div sec:authorize="hasRole('ADMIN')" style="display:contents;">
+                <a th:href="@{/admin/match/edit/{id}(id=${match.id})}" class="btn btn--warning btn--sm">✏️</a>
+                <button type="button" class="btn btn--danger btn--sm"
+                        th:data-id="${match.id}"
+                        onclick="confirmDeleteMatch(this.getAttribute('data-id'))">🗑️</button>
+            </div>
         </div>
     </div>
 
 </div>
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function confirmDelete(id) {
     Swal.fire({
-        title: '¿Estás seguro?',
-        text: '¡No podrás revertir esto!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#2ecc71',
-        cancelButtonColor: '#e63946',
-        confirmButtonText: 'Sí, bórralo',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = '/admin/tournament/delete/' + id;
-        }
-    });
+        title: '¿Borrar torneo?', text: '¡No podrás revertir esta acción!', icon: 'warning',
+        showCancelButton: true, confirmButtonColor: '#2ecc71', cancelButtonColor: '#e63946',
+        confirmButtonText: 'Sí, bórralo', cancelButtonText: 'Cancelar'
+    }).then(r => { if (r.isConfirmed) window.location.href = '/admin/tournament/delete/' + id; });
 }
-
 function confirmDeleteMatch(id) {
     Swal.fire({
-        title: '¿Eliminar partido?',
-        text: '¡Se perderán los goles y el acta del encuentro!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#2ecc71', // Verde como pedías
-        cancelButtonColor: '#e63946', // Rojo
-        confirmButtonText: 'Sí, bórralo',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // ¡OJO! Asegúrate de que esta ruta coincide con tu controlador
-            window.location.href = '/admin/match/delete/' + id;
-        }
-    });
+        title: '¿Eliminar partido?', text: 'Se perderán los goles y el acta.', icon: 'warning',
+        showCancelButton: true, confirmButtonColor: '#2ecc71', cancelButtonColor: '#e63946',
+        confirmButtonText: 'Sí, bórralo', cancelButtonText: 'Cancelar'
+    }).then(r => { if (r.isConfirmed) window.location.href = '/admin/match/delete/' + id; });
 }
 </script>
-
 </body>
 </html>

@@ -1,74 +1,49 @@
 /* =============================================================================
    SIW FOOTBALL MANAGER — Global Stylesheet
-   Arquitectura: Variables → Reset → Tipografía → Layout → Componentes → Utilidades
+   Requires: variables.css loaded first (Google Fonts + :root tokens)
    ============================================================================= */
 
-/* -----------------------------------------------------------------------------
-   1. VARIABLES & DESIGN TOKENS
-   ----------------------------------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap');
+/* Fallback font import if variables.css not loaded */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap');
 
+/* Fallback :root — same values as variables.css */
 :root {
-  /* Paleta principal */
-  --color-pitch:        #0d4f2e;   /* verde campo oscuro */
-  --color-pitch-mid:    #1a6e40;   /* verde medio */
-  --color-pitch-light:  #2ecc71;   /* acento verde brillante */
-  --color-night:        #0d1b2a;   /* casi negro azulado */
-  --color-slate:        #1c2f45;   /* azul pizarra */
-  --color-mist:         #ecf5f0;   /* fondo muy claro */
-
-  /* Neutrales */
+  --color-pitch:        #0d4f2e;
+  --color-pitch-mid:    #1a6e40;
+  --color-pitch-light:  #2ecc71;
+  --color-night:        #0d1b2a;
+  --color-slate:        #1c2f45;
+  --color-mist:         #f0f4f2;
   --color-white:        #ffffff;
-  --color-gray-100:     #f4f6f5;
+  --color-gray-50:      #f8fafb;
+  --color-gray-100:     #f1f5f3;
   --color-gray-200:     #e2e8e5;
+  --color-gray-300:     #cbd5d0;
   --color-gray-400:     #8fa8a0;
   --color-gray-600:     #4d6359;
   --color-gray-800:     #253530;
-
-  /* Semánticos */
   --color-danger:       #e63946;
   --color-warning:      #f4a833;
   --color-info:         #2980b9;
-
-  /* Tipografía */
+  --color-success:      #27ae60;
   --font-display:       'Barlow Condensed', sans-serif;
-  --font-body:          'Barlow', sans-serif;
-
-  /* Espaciado */
-  --space-xs:   4px;
-  --space-sm:   8px;
-  --space-md:   16px;
-  --space-lg:   24px;
-  --space-xl:   40px;
-  --space-2xl:  64px;
-
-  /* Bordes */
-  --radius-sm:  4px;
-  --radius-md:  8px;
-  --radius-lg:  16px;
-  --radius-pill: 999px;
-
-  /* Sombras */
-  --shadow-card:  0 2px 12px rgba(13, 27, 42, 0.08);
-  --shadow-hover: 0 8px 28px rgba(13, 27, 42, 0.15);
-  --shadow-deep:  0 16px 40px rgba(13, 27, 42, 0.22);
-
-  /* Transiciones */
+  --font-body:          'Inter', sans-serif;
+  --space-xs:  4px;  --space-sm:  8px;  --space-md: 16px;
+  --space-lg: 24px;  --space-xl: 40px;  --space-2xl: 64px;
+  --radius-sm: 4px;  --radius-md: 8px;  --radius-lg: 16px;
+  --radius-xl: 24px; --radius-pill: 999px;
+  --shadow-xs:    0 1px 3px rgba(13,27,42,0.06);
+  --shadow-card:  0 2px 12px rgba(13,27,42,0.08);
+  --shadow-hover: 0 8px 28px rgba(13,27,42,0.15);
+  --shadow-deep:  0 16px 40px rgba(13,27,42,0.22);
   --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Layout */
-  --max-width: 960px;
+  --max-width: 1020px;
+  --navbar-h:  62px;
 }
 
 
-/* -----------------------------------------------------------------------------
-   2. RESET & BASE
-   ----------------------------------------------------------------------------- */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* ── 1. Reset & Base ────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
 
@@ -79,7 +54,6 @@ body {
   background-color: var(--color-mist);
   color: var(--color-gray-800);
   min-height: 100vh;
-  /* textura sutil de campo */
   background-image:
     radial-gradient(ellipse at 20% 0%, rgba(26,110,64,0.06) 0%, transparent 60%),
     radial-gradient(ellipse at 80% 100%, rgba(13,79,46,0.05) 0%, transparent 60%);
@@ -95,9 +69,7 @@ a:hover { color: var(--color-pitch); }
 img, svg { display: block; max-width: 100%; }
 
 
-/* -----------------------------------------------------------------------------
-   3. TIPOGRAFÍA
-   ----------------------------------------------------------------------------- */
+/* ── 2. Typography ──────────────────────────────────────── */
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   letter-spacing: 0.02em;
@@ -110,20 +82,25 @@ h2 { font-size: clamp(1.4rem, 3.5vw, 1.9rem); font-weight: 700; }
 h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: var(--space-md); color: var(--color-slate); }
 
 p { margin-bottom: var(--space-sm); }
-
 strong { font-weight: 600; }
-
-
-/* -----------------------------------------------------------------------------
-   4. LAYOUT / ESTRUCTURA
-   ----------------------------------------------------------------------------- */
-
-/* Wrapper principal de página */
-.page {
-  padding: var(--space-md);
+code {
+  font-family: 'Courier New', monospace;
+  background: var(--color-gray-100);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85em;
+  color: var(--color-pitch);
 }
 
-/* Contenedor centrado */
+
+/* ── 3. Layout ──────────────────────────────────────────── */
+.main-content {
+  padding: var(--space-xl) var(--space-md);
+}
+
+/* Legacy body.page support */
+.page { padding: var(--space-md); }
+
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
@@ -133,18 +110,34 @@ strong { font-weight: 600; }
   box-shadow: var(--shadow-card);
 }
 
-/* Cabecera de sección con línea inferior */
 .section-header {
   border-bottom: 3px solid var(--color-pitch-light);
   padding-bottom: var(--space-md);
   margin-bottom: var(--space-xl);
   display: flex;
-  align-items: flex-start;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-sm);
 }
 
+.section-header h1,
+.section-header h2,
+.section-header h3 { margin-bottom: 0; flex: 1 1 auto; }
+
 /* Grids */
+.grid-tournaments {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 600px) {
+  .grid-tournaments { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .grid-tournaments { grid-template-columns: repeat(3, 1fr); }
+}
+
 .grid-teams {
   display: flex;
   flex-wrap: wrap;
@@ -152,26 +145,23 @@ strong { font-weight: 600; }
   margin-bottom: var(--space-xl);
 }
 
-.grid-tournaments {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-lg);
-}
-
-@media (min-width: 640px) {
-  .grid-tournaments { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (min-width: 900px) {
-  .grid-tournaments { grid-template-columns: repeat(3, 1fr); }
+.grid-players {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
 
 
-/* -----------------------------------------------------------------------------
-   5. COMPONENTES
-   ----------------------------------------------------------------------------- */
+/* ── 4. Card component ──────────────────────────────────── */
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-xl);
+}
 
-/* ---- 5.1 Site Header (index) ---- */
+
+/* ── 5. Site Header (index hero) ────────────────────────── */
 .site-header {
   background: linear-gradient(135deg, var(--color-night) 0%, var(--color-pitch) 100%);
   color: var(--color-white);
@@ -188,10 +178,8 @@ strong { font-weight: 600; }
   inset: 0;
   background-image: repeating-linear-gradient(
     90deg,
-    rgba(255,255,255,0.025) 0px,
-    rgba(255,255,255,0.025) 1px,
-    transparent 1px,
-    transparent 60px
+    rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px,
+    transparent 1px, transparent 60px
   );
   pointer-events: none;
 }
@@ -212,7 +200,7 @@ strong { font-weight: 600; }
 }
 
 
-/* ---- 5.2 Tarjeta de Torneo (index) ---- */
+/* ── 6. Tournament card ─────────────────────────────────── */
 .tournament-card {
   background: var(--color-white);
   border-radius: var(--radius-md);
@@ -237,10 +225,7 @@ strong { font-weight: 600; }
   color: var(--color-night);
 }
 
-.tournament-card__meta {
-  font-size: 0.875rem;
-  color: var(--color-gray-600);
-}
+.tournament-card__meta { font-size: 0.875rem; color: var(--color-gray-600); }
 
 .tournament-card__link {
   display: inline-block;
@@ -249,12 +234,13 @@ strong { font-weight: 600; }
   font-weight: 600;
   color: var(--color-pitch-mid);
   font-size: 0.9rem;
+  transition: color var(--transition);
 }
 
 .tournament-card__link:hover { color: var(--color-pitch); }
 
 
-/* ---- 5.3 Insignia de Equipo ---- */
+/* ── 7. Team badge ──────────────────────────────────────── */
 .team-badge {
   background-color: rgba(26,110,64,0.08);
   color: var(--color-pitch);
@@ -274,7 +260,7 @@ strong { font-weight: 600; }
 }
 
 
-/* ---- 5.4 Tarjeta de Partido ---- */
+/* ── 8. Match card ──────────────────────────────────────── */
 .match-card {
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
@@ -311,54 +297,99 @@ strong { font-weight: 600; }
   font-family: var(--font-display);
 }
 
-.match-card__meta {
-  font-size: 0.8rem;
-  color: var(--color-gray-400);
-  margin-top: var(--space-xs);
-}
+.match-card__meta { font-size: 0.8rem; color: var(--color-gray-400); margin-top: var(--space-xs); }
 
 
-/* ---- 5.5 Tarjeta de Jugador ---- */
+/* ── 9. Player card ─────────────────────────────────────── */
 .player-card {
-  background: var(--color-gray-100);
+  background: var(--color-gray-50);
   border-left: 4px solid var(--color-warning);
   padding: var(--space-sm) var(--space-lg);
-  margin-bottom: var(--space-sm);
   border-radius: var(--radius-sm);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background-color var(--transition);
+  gap: var(--space-md);
+  transition: background-color var(--transition), box-shadow var(--transition);
 }
 
-.player-card:hover { background-color: var(--color-gray-200); }
+.player-card:hover {
+  background-color: var(--color-gray-100);
+  box-shadow: var(--shadow-xs);
+}
+
+.player-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
 
 .player-card__name {
   font-weight: 600;
   font-family: var(--font-display);
   font-size: 1.05rem;
+  color: var(--color-night);
 }
 
 .player-card__position {
+  display: inline-block;
   background: var(--color-slate);
   color: var(--color-white);
   padding: 2px var(--space-sm);
   border-radius: var(--radius-pill);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
+/* Legacy alias */
+.player-badge { display: inline-block; padding: 3px 10px; border-radius: var(--radius-pill); }
 
-/* ---- 5.6 Formulario ---- */
+
+/* ── 10. Table (striped) ─────────────────────────────────── */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+  font-size: 0.9rem;
+}
+
+.table th {
+  background: var(--color-slate);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: var(--space-md);
+  text-align: left;
+}
+
+.table td {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-gray-100);
+  color: var(--color-gray-800);
+}
+
+.table tbody tr:nth-child(even) td { background: var(--color-gray-50); }
+.table tbody tr:last-child td { border-bottom: none; }
+.table tbody tr:hover td { background: rgba(26,110,64,0.05); }
+
+
+/* ── 11. Forms ───────────────────────────────────────────── */
 .form { display: flex; flex-direction: column; gap: var(--space-lg); }
-
 .form__group { display: flex; flex-direction: column; gap: var(--space-xs); }
 
 .form__label {
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   color: var(--color-gray-600);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -379,14 +410,19 @@ strong { font-weight: 600; }
 .form__input:focus {
   outline: none;
   border-color: var(--color-pitch-light);
-  box-shadow: 0 0 0 3px rgba(46,204,113,0.15);
+  box-shadow: 0 0 0 3px rgba(46,204,113,0.18);
 }
 
+.form__input:hover:not(:focus) { border-color: var(--color-gray-300); }
 
-/* ---- 5.7 Botones ---- */
+.form__input--error { border-color: var(--color-danger) !important; }
+
+
+/* ── 12. Buttons ─────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-xs);
   padding: var(--space-sm) var(--space-lg);
   border: none;
@@ -398,6 +434,7 @@ strong { font-weight: 600; }
   cursor: pointer;
   text-decoration: none;
   transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+  white-space: nowrap;
 }
 
 .btn:hover {
@@ -413,15 +450,8 @@ strong { font-weight: 600; }
   color: var(--color-white);
 }
 
-.btn--warning {
-  background: var(--color-warning);
-  color: var(--color-white);
-}
-
-.btn--danger {
-  background: var(--color-danger);
-  color: var(--color-white);
-}
+.btn--warning { background: var(--color-warning); color: var(--color-white); }
+.btn--danger  { background: var(--color-danger);  color: var(--color-white); }
 
 .btn--outline {
   background: transparent;
@@ -434,16 +464,21 @@ strong { font-weight: 600; }
   color: var(--color-white);
 }
 
-/* Grupo de acciones */
+.btn--sm {
+  padding: 5px 12px;
+  font-size: 0.8rem;
+}
+
 .action-group {
   display: flex;
   gap: var(--space-sm);
   flex-wrap: wrap;
   margin-top: var(--space-md);
+  align-items: center;
 }
 
 
-/* ---- 5.8 Back Link ---- */
+/* ── 13. Back link ───────────────────────────────────────── */
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -454,14 +489,13 @@ strong { font-weight: 600; }
   font-size: 0.875rem;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  transition: color var(--transition);
 }
 
 .back-link:hover { color: var(--color-pitch); }
 
 
-/* -----------------------------------------------------------------------------
-   6. UTILIDADES
-   ----------------------------------------------------------------------------- */
+/* ── 14. Utilities ───────────────────────────────────────── */
 .empty-state {
   color: var(--color-gray-400);
   font-style: italic;
@@ -471,31 +505,24 @@ strong { font-weight: 600; }
 
 .text-muted  { color: var(--color-gray-400); font-size: 0.875rem; }
 .text-center { text-align: center; }
-.mt-md       { margin-top: var(--space-md); }
-.mt-lg       { margin-top: var(--space-lg); }
-.mb-lg       { margin-bottom: var(--space-lg); }
+.mt-xs  { margin-top: var(--space-xs); }
+.mt-sm  { margin-top: var(--space-sm); }
+.mt-md  { margin-top: var(--space-md); }
+.mt-lg  { margin-top: var(--space-lg); }
+.mb-lg  { margin-bottom: var(--space-lg); }
+.mb-md  { margin-bottom: var(--space-md); }
 
 
-/* -----------------------------------------------------------------------------
-   7. MEDIA QUERIES
-   ----------------------------------------------------------------------------- */
+/* ── 15. Media Queries ───────────────────────────────────── */
 @media (max-width: 768px) {
+  .main-content { padding: var(--space-lg) var(--space-sm); }
   .container { padding: var(--space-lg); }
-
-  .match-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-sm);
-  }
-
-  .match-card__teams { font-size: 0.95rem; }
-
+  .match-card { flex-direction: column; align-items: flex-start; gap: var(--space-sm); }
   .action-group { flex-direction: column; }
   .action-group .btn { width: 100%; justify-content: center; }
 }
 
 @media (max-width: 480px) {
-  body { padding: var(--space-sm); }
   .container { padding: var(--space-md); border-radius: var(--radius-md); }
   h1 { font-size: 1.8rem; }
 }

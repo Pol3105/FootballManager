@@ -1,66 +1,90 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Equipos</title>
-    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipos — SIW Football</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
 </head>
-<body class="page">
-    <div class="container">
-        <a th:href="@{/}" class="back-link">← Panel Principal</a>
-        
-        <header class="section-header">
-            <h1>🛡️ Todos los Equipos</h1>
-            <a th:href="@{/admin/team/new}" class="btn btn--primary">+ Registrar Nuevo</a>
-        </header>
+<body>
 
-        <div class="grid-players"> <div th:each="team : ${teams}" class="player-card" style="border-left-color: var(--color-pitch-light);">
-                <div>
-                    <span class="player-card__name" th:text="${team.name}">Nombre</span>
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">
-                        📍 <span th:text="${team.city}">Ciudad</span>
-                    </div>
-                    <div class="mt-xs">
-                        <span th:each="t : ${team.tournaments}" 
-                            class="text-muted" 
-                            style="font-size: 0.8rem; margin-right: 5px;"
-                            th:text="'[' + ${t.name} + ']'"></span>
-                        <span th:if="${#lists.isEmpty(team.tournaments)}" class="text-muted" style="font-size: 0.8rem;">(Sin torneo asignado)</span>
-                    </div>
-                </div>
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+    <div class="navbar__right">
+        <div sec:authorize="isAuthenticated()" class="navbar__user">
+            <strong sec:authentication="name"></strong>
+        </div>
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
+        </form>
+        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn--outline-light">🔐 Iniciar Sesión</a>
+    </div>
+</nav>
 
-                <a th:href="@{/team/{id}/players(id=${team.id})}" 
-                    class="btn btn--outline" 
-                    style="border-color: #3498db; color: #3498db;">
-                    👤 Ver Plantilla
+<main class="main-content">
+<div class="container">
+
+    <a th:href="@{/}" class="back-link">← Panel Principal</a>
+
+    <div class="section-header">
+        <h1>🛡️ Todos los Equipos</h1>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/team/new}"
+           class="btn btn--primary btn--sm" style="margin-left: auto;">+ Nuevo Equipo</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(teams)}" class="empty-state">
+        No hay equipos registrados aún.
+    </div>
+
+    <div class="grid-players">
+        <div th:each="team : ${teams}" class="player-card" style="border-left-color: var(--color-pitch-light);">
+            <div class="player-info">
+                <span class="player-card__name" th:text="${team.name}">Nombre</span>
+                <p class="text-muted" style="margin-bottom: 2px; font-size: 0.8rem;">
+                    📍 <span th:text="${team.city}">Ciudad</span>
+                    &nbsp;·&nbsp;
+                    📅 Fund. <span th:text="${team.foundationYear}">—</span>
+                </p>
+                <p class="text-muted" style="margin-bottom: 0; font-size: 0.78rem;">
+                    <span th:each="t : ${team.tournaments}"
+                          th:text="'[' + ${t.name} + '] '"
+                          style="margin-right: 4px;"></span>
+                    <span th:if="${#lists.isEmpty(team.tournaments)}" class="text-muted">Sin torneo asignado</span>
+                </p>
+            </div>
+
+            <div style="display:flex; gap: var(--space-sm); align-items:center; flex-shrink: 0;">
+                <a th:href="@{/team/{id}/players(id=${team.id})}"
+                   class="btn btn--outline btn--sm"
+                   style="border-color: var(--color-info); color: var(--color-info);">
+                    👤 Plantilla
                 </a>
-                
-                <div class="action-group" style="margin-top: 0;">
-                    <a th:href="@{/admin/team/edit/{id}(id=${team.id})}" class="btn btn--outline" style="padding: 4px 10px; font-size: 0.8rem;">⚙️ Gestionar</a>
-                    <button type="button" class="btn btn--danger" 
-                        th:onclick="'confirmDeleteTeam(' + ${team.id} + ')'"
-                        style="padding: 5px 10px; font-size: 0.8rem;">🗑️ Borrar</button>
+                <div sec:authorize="hasRole('ADMIN')" style="display:contents;">
+                    <a th:href="@{/admin/team/edit/{id}(id=${team.id})}" class="btn btn--warning btn--sm">⚙️</a>
+                    <button type="button" class="btn btn--danger btn--sm"
+                            th:onclick="'confirmDeleteTeam(' + ${team.id} + ')'">🗑️</button>
                 </div>
             </div>
         </div>
     </div>
-</body>
+
+</div>
+</main>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function confirmDeleteTeam(id) {
     Swal.fire({
-        title: '¿Borrar equipo?',
-        text: "Se eliminará de todos los torneos donde participe.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#e63946',
-        confirmButtonText: 'Sí, borrar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = "/admin/team/delete/" + id;
-        }
-    })
+        title: '¿Borrar equipo?', text: 'Se eliminará de todos los torneos donde participe.',
+        icon: 'warning', showCancelButton: true,
+        confirmButtonColor: '#e63946', confirmButtonText: 'Sí, borrar', cancelButtonText: 'Cancelar'
+    }).then(r => { if (r.isConfirmed) window.location.href = '/admin/team/delete/' + id; });
 }
 </script>
+</body>
 </html>

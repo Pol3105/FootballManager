@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import it.uniroma3.siw.siw_football.model.Player;
+import it.uniroma3.siw.siw_football.model.Team;
 import it.uniroma3.siw.siw_football.service.PlayerService;
 import it.uniroma3.siw.siw_football.service.TeamService;
 
@@ -18,9 +20,14 @@ public class PlayerController {
     @Autowired private TeamService teamService;
 
     @GetMapping("/admin/player/new")
-    public String showNewPlayerForm(Model model) {
-        model.addAttribute("player", new Player());
-        model.addAttribute("teams", teamService.findAll()); // Lista de equipos para el select
+    public String showNewPlayerForm(@RequestParam(required = false) Long teamId, Model model) {
+        Player player = new Player();
+        if (teamId != null) {
+            Team team = teamService.findById(teamId);
+            if (team != null) player.setTeam(team);
+        }
+        model.addAttribute("player", player);
+        model.addAttribute("teams", teamService.findAll());
         return "admin/form-player";
     }
 

@@ -1,69 +1,66 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${tournament.id == null} ? 'Nuevo Torneo' : 'Editar Torneo'">Torneo</title>
-    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <title th:text="${tournament.id == null} ? 'Nuevo Torneo' : 'Editar Torneo'">Torneo — SIW Football</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
 </head>
-<body class="page">
+<body>
 
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+    <div class="navbar__right">
+        <div class="navbar__user">
+            <strong sec:authentication="name"></strong>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
+        </form>
+    </div>
+</nav>
+
+<main class="main-content">
 <div class="container">
 
     <a th:href="@{/}" class="back-link">← Cancelar y Volver</a>
 
     <div class="section-header">
-        <h1 th:text="${tournament.id == null} ? '🏆 Crear Nuevo Torneo' : '✏️ Editar Torneo'">
-            Acción
-        </h1>
+        <h1 th:text="${tournament.id == null} ? '🏆 Crear Nuevo Torneo' : '✏️ Editar Torneo'">Torneo</h1>
     </div>
 
-    <form th:action="${tournament.id == null}
-                      ? @{/admin/tournament/new}
-                      : @{/admin/tournament/edit/{id}(id=${tournament.id})}"
-          th:object="${tournament}"
-          method="post"
-          class="form card" style="padding: var(--space-xl);">
-
-        <input type="hidden" th:field="*{id}" />
+    <form th:action="${tournament.id == null} ? @{/admin/tournament/new} : @{/admin/tournament/edit/{id}(id=${tournament.id})}"
+          th:object="${tournament}" method="post" class="form card">
+        <input type="hidden" th:field="*{id}"/>
 
         <div class="form__group">
             <label class="form__label" for="name">Nombre del Torneo</label>
-            <input class="form__input"
-                   type="text"
-                   id="name"
-                   th:field="*{name}"
-                   placeholder="Ej: Champions League 2026"
-                   required />
+            <input type="text" id="name" th:field="*{name}" class="form__input"
+                   placeholder="Ej: Champions League 2026" required/>
         </div>
 
         <div class="form__group">
             <label class="form__label" for="startDate">Fecha de Inicio</label>
-            <input class="form__input"
-                   type="date"
-                   id="startDate"
-                   th:field="*{startDate}"
-                   required />
+            <input type="date" id="startDate" th:field="*{startDate}" class="form__input" required/>
         </div>
 
         <div class="form__group">
-            <label class="form__label" for="description">Descripción del Torneo</label>
-            <textarea class="form__input"
-                      id="description"
-                      th:field="*{description}"
-                      rows="4"
-                      placeholder="Describe brevemente las reglas o el formato del torneo..."
-                      required></textarea>
+            <label class="form__label" for="description">Descripción</label>
+            <textarea id="description" th:field="*{description}" class="form__input" rows="4"
+                      placeholder="Describe brevemente el formato y las reglas del torneo..." required></textarea>
         </div>
 
-        <div style="margin-top: var(--space-lg);">
-            <button type="submit" class="btn btn--primary" style="width: 100%;">
-                💾 Guardar Torneo
-            </button>
-        </div>
-
+        <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">
+            💾 Guardar Torneo
+        </button>
     </form>
-</div>
 
+</div>
+</main>
 </body>
 </html>

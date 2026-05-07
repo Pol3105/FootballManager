@@ -5,6 +5,7 @@ import it.uniroma3.siw.siw_football.model.Team;
 import it.uniroma3.siw.siw_football.model.Tournament;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -19,4 +20,11 @@ public interface MatchRepository extends CrudRepository<Match, Long> {
         List<Match> findByRefereeId(Long refereeId);
 
         List<Match> findByTournamentId(Long tournamentId);
+
+        @Query("SELECT m FROM Match m " +
+           "LEFT JOIN FETCH m.comments c " +
+           "LEFT JOIN FETCH m.homeTeam " +
+           "LEFT JOIN FETCH m.awayTeam " +
+           "WHERE m.id = :id")
+        Optional<Match> findByIdWithComments(@Param("id") Long id);
 }

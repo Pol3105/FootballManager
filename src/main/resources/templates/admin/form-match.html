@@ -1,70 +1,98 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Programar Partido</title>
-    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Partido — SIW Football</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
 </head>
-<body class="page">
-    <div class="container">
-        <a th:href="@{/tournament/{id}(id=${tournament.id})}" class="back-link">← Volver al Torneo</a>
-        
-        <header class="section-header">
-            <h1 th:text="${match.id == null} ? '🏟️ Programar Nuevo Partido' : '✏️ Editar Resultado'">Gestión</h1>
-        </header>
+<body>
 
-        <form th:action="@{/admin/match/save}" th:object="${match}" method="post" class="form card" style="padding: 2rem;">
-            <input type="hidden" th:field="*{id}" />
-            <input type="hidden" th:field="*{tournament}" />
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+    <div class="navbar__right">
+        <div class="navbar__user">
+            <strong sec:authentication="name"></strong>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
+        </form>
+    </div>
+</nav>
 
-            <div class="grid-tournaments" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
-                <div class="form__group">
-                    <label class="form__label">🛡️ Local:</label>
-                    <select th:field="*{homeTeam}" class="form__input" required>
-                        <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
-                    </select>
-                    <input type="number" th:field="*{homeScore}" class="form__input mt-md" placeholder="Goles Local" />
-                </div>
+<main class="main-content">
+<div class="container">
 
-                <div class="form__group">
-                    <label class="form__label">🛡️ Visitante:</label>
-                    <select th:field="*{awayTeam}" class="form__input" required>
-                        <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
-                    </select>
-                    <input type="number" th:field="*{awayScore}" class="form__input mt-md" placeholder="Goles Visitante" />
-                </div>
+    <a th:href="@{/tournament/{id}(id=${tournament.id})}" class="back-link">← Volver al Torneo</a>
+
+    <div class="section-header">
+        <h1 th:text="${match.id == null} ? '🏟️ Programar Nuevo Partido' : '✏️ Editar Resultado'">Gestión</h1>
+    </div>
+
+    <form th:action="@{/admin/match/save}" th:object="${match}" method="post" class="form card">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{tournament}"/>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+            <div class="form__group">
+                <label class="form__label">🛡️ Equipo Local</label>
+                <select th:field="*{homeTeam}" class="form__input" required>
+                    <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
+                </select>
+                <input type="number" th:field="*{homeScore}" class="form__input mt-sm"
+                       placeholder="Goles Local" min="0"/>
             </div>
 
-            <div class="grid-tournaments" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
-                <div class="form__group">
-                    <label class="form__label">📍 Lugar del encuentro:</label>
-                    <input type="text" th:field="*{location}" class="form__input" placeholder="Ej: Estadio Olímpico" required />
-                </div>
+            <div class="form__group">
+                <label class="form__label">🛡️ Equipo Visitante</label>
+                <select th:field="*{awayTeam}" class="form__input" required>
+                    <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
+                </select>
+                <input type="number" th:field="*{awayScore}" class="form__input mt-sm"
+                       placeholder="Goles Visitante" min="0"/>
+            </div>
+        </div>
 
-                <div class="form__group">
-                    <label class="form__label">🚥 Estado del partido:</label>
-                    <select th:field="*{status}" class="form__input" required>
-                        <option value="SCHEDULED">Programado (SCHEDULED)</option>
-                        <option value="PLAYED">Jugado (PLAYED)</option>
-                    </select>
-                </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+            <div class="form__group">
+                <label class="form__label">📍 Lugar del Encuentro</label>
+                <input type="text" th:field="*{location}" class="form__input"
+                       placeholder="Ej: Estadio Olímpico" required/>
             </div>
 
-            <div class="form__group mt-md">
-                <label class="form__label">👨‍⚖️ Árbitro:</label>
-                <select th:field="*{referee}" class="form__input" required>
-                    <option th:each="r : ${referees}" th:value="${r.id}" th:text="${r.name} + ' ' + ${r.surname}"></option>
+            <div class="form__group">
+                <label class="form__label">🚥 Estado del Partido</label>
+                <select th:field="*{status}" class="form__input" required>
+                    <option value="SCHEDULED">Programado (SCHEDULED)</option>
+                    <option value="PLAYED">Jugado (PLAYED)</option>
                 </select>
             </div>
+        </div>
 
-            <div class="form__group mt-md">
-                <label class="form__label">📅 Fecha y Hora:</label>
-                <input type="datetime-local" th:field="*{matchDate}" class="form__input" required />
-            </div>
+        <div class="form__group">
+            <label class="form__label">👨‍⚖️ Árbitro</label>
+            <select th:field="*{referee}" class="form__input" required>
+                <option th:each="r : ${referees}" th:value="${r.id}"
+                        th:text="${r.name} + ' ' + ${r.surname}"></option>
+            </select>
+        </div>
 
-            <button type="submit" class="btn btn--primary mt-lg" style="width: 100%;">Guardar Partido</button>
-        </form>
-        
-    </div>
+        <div class="form__group">
+            <label class="form__label">📅 Fecha y Hora</label>
+            <input type="datetime-local" th:field="*{matchDate}" class="form__input" required/>
+        </div>
+
+        <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">
+            💾 Guardar Partido
+        </button>
+    </form>
+
+</div>
+</main>
 </body>
 </html>

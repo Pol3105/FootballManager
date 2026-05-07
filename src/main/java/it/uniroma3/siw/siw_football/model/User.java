@@ -1,6 +1,7 @@
 package it.uniroma3.siw.siw_football.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +16,7 @@ public class User {
     private String username;
 
     @Column(nullable = false)
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
     @Column(nullable = false)

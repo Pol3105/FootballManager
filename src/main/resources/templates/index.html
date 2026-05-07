@@ -1,48 +1,73 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIW Football Manager</title>
-    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
 </head>
-<body class="page">
+<body>
 
-    <!-- Cabecera principal del sitio -->
-    <header class="site-header">
-        <h1 class="site-header__title">⚽ SIW Football Manager</h1>
-        <p class="site-header__subtitle">Gestión de torneos, equipos y partidos</p>
-    </header>
-
-    <main class="container">
-        <div class="section-header">
-            <h2>Torneos Activos</h2>
-            <a th:href="@{/admin/tournament/new}" class="btn btn--primary">
-                + Crear Nuevo Torneo
-            </a>
-            <a th:href="@{/players}" class="btn btn--primary" style="background-color: #3498db;">🏃 Ver Todos los Jugadores</a>
-            <a th:href="@{/referees}" class="btn btn--primary" style="background-color: #9b59b6;">👨‍⚖️ Lista de Árbitros</a>
-            <a th:href="@{/teams}" class="btn btn--primary">📋 Ver Todos los Equipos</a>
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+    <div class="navbar__right">
+        <div sec:authorize="isAuthenticated()" class="navbar__user">
+            <strong sec:authentication="name"></strong>
         </div>
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
+        </form>
+        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn--outline-light">🔐 Iniciar Sesión</a>
+    </div>
+</nav>
 
-        <!-- Grid de torneos -->
-        <div class="grid-tournaments">
-            <div th:each="t : ${tournaments}" class="tournament-card">
-                <span class="tournament-card__title" th:text="${t.name}">Nombre del Torneo</span>
-                <p class="tournament-card__meta">
-                    📅 Inicio: <strong th:text="${t.startDate}">01/01/2026</strong>
-                </p>
-                <a th:href="@{/tournament/{id}(id=${t.id})}" class="tournament-card__link">
-                    Ver detalles →
-                </a>
+<main class="main-content">
+    <div class="container" style="padding: 0; overflow: hidden;">
+
+        <!-- Hero header -->
+        <header class="site-header">
+            <h1 class="site-header__title">⚽ SIW Football Manager</h1>
+            <p class="site-header__subtitle">Plataforma oficial de gestión de torneos</p>
+        </header>
+
+        <div style="padding: var(--space-xl);">
+            <!-- Section header with actions -->
+            <div class="section-header">
+                <h2 style="margin-bottom: 0;">Torneos Activos</h2>
+                <div style="display:flex; gap: var(--space-sm); flex-wrap: wrap; margin-left: auto;">
+                    <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/tournament/new}" class="btn btn--primary btn--sm">
+                        + Nuevo Torneo
+                    </a>
+                    <a th:href="@{/players}" class="btn btn--sm" style="background:#2980b9;color:#fff;">🏃 Jugadores</a>
+                    <a th:href="@{/referees}" class="btn btn--sm" style="background:#8e44ad;color:#fff;">👨‍⚖️ Árbitros</a>
+                    <a th:href="@{/teams}" class="btn btn--sm btn--outline">📋 Equipos</a>
+                </div>
             </div>
 
-            <!-- Estado vacío si no hay torneos -->
-            <div th:if="${#lists.isEmpty(tournaments)}" class="empty-state">
-                <p>No hay torneos registrados. ¡Crea el primero!</p>
+            <!-- Tournament grid -->
+            <div class="grid-tournaments">
+                <div th:each="t : ${tournaments}" class="tournament-card">
+                    <span class="tournament-card__title" th:text="${t.name}">Nombre del Torneo</span>
+                    <p class="tournament-card__meta">
+                        📅 Inicio: <strong th:text="${t.startDate}">01/01/2026</strong>
+                    </p>
+                    <a th:href="@{/tournament/{id}(id=${t.id})}" class="tournament-card__link">
+                        Ver detalles →
+                    </a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(tournaments)}" class="empty-state" style="grid-column: 1 / -1;">
+                    <p>No hay torneos registrados. ¡Crea el primero!</p>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
 </body>
 </html>

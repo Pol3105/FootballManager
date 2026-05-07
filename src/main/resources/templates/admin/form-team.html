@@ -1,52 +1,75 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Nuevo Equipo</title>
-    <link th:href="@{/css/global.css}" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Equipo — SIW Football</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
 </head>
-<body class="page">
-    <div class="container">
-        <a th:href="@{/}" class="back-link">← Cancelar y Volver</a>
-        
-        <header class="section-header">
-            <h1>🛡️ Registrar Nuevo Equipo</h1>
-        </header>
+<body>
 
-        <form th:action="${team.id == null} ? @{/admin/team/new} : @{/admin/team/edit/{id}(id=${team.id})}" 
-            th:object="${team}" method="post" class="form card" style="padding: var(--space-xl);">
-            
-            <input type="hidden" th:field="*{id}" />
-
-            <div class="form__group">
-                <label class="form__label">Nombre del Club:</label>
-                <input type="text" th:field="*{name}" class="form__input" placeholder="Ej: AS Roma" required />
-            </div>
-
-            <div class="form__group">
-                <label class="form__label">Ciudad:</label>
-                <input type="text" th:field="*{city}" class="form__input" placeholder="Ej: Roma" required />
-            </div>
-
-            <div class="form__group">
-                <label class="form__label">Año de Fundación:</label>
-                <input type="number" th:field="*{foundationYear}" class="form__input" placeholder="Ej: 1927" required />
-            </div>
-
-            <div class="form__group">
-                <label class="form__label">Asignar a Torneos:</label>
-                <select th:field="*{tournaments}" class="form__input" multiple style="min-height: 100px;">
-                    <option th:each="t : ${tournaments}" 
-                            th:value="${t.id}" 
-                            th:text="${t.name}">Torneo</option>
-                </select>
-                <small class="text-muted">Mantén presionado Ctrl (o Cmd) para seleccionar varios.</small>
-            </div>
-
-            <button type="submit" class="btn btn--primary mt-md" style="width: 100%;">
-                <span th:text="${team.id == null} ? '💾 Guardar Equipo' : '🔄 Actualizar Equipo'">Boton</span>
-            </button>
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+    <div class="navbar__right">
+        <div class="navbar__user">
+            <strong sec:authentication="name"></strong>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
         </form>
     </div>
+</nav>
+
+<main class="main-content">
+<div class="container">
+
+    <a th:href="@{/teams}" class="back-link">← Cancelar y Volver</a>
+
+    <div class="section-header">
+        <h1 th:text="${team.id == null} ? '🛡️ Registrar Nuevo Equipo' : '✏️ Editar Equipo'">Equipo</h1>
+    </div>
+
+    <form th:action="${team.id == null} ? @{/admin/team/new} : @{/admin/team/edit/{id}(id=${team.id})}"
+          th:object="${team}" method="post" class="form card">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="form__group">
+            <label class="form__label">Nombre del Club</label>
+            <input type="text" th:field="*{name}" class="form__input"
+                   placeholder="Ej: AS Roma" required/>
+        </div>
+
+        <div class="form__group">
+            <label class="form__label">Ciudad</label>
+            <input type="text" th:field="*{city}" class="form__input"
+                   placeholder="Ej: Roma" required/>
+        </div>
+
+        <div class="form__group">
+            <label class="form__label">Año de Fundación</label>
+            <input type="number" th:field="*{foundationYear}" class="form__input"
+                   placeholder="Ej: 1927" required/>
+        </div>
+
+        <div class="form__group">
+            <label class="form__label">Asignar a Torneos</label>
+            <select th:field="*{tournaments}" class="form__input" multiple style="min-height:110px;">
+                <option th:each="t : ${tournaments}" th:value="${t.id}" th:text="${t.name}"></option>
+            </select>
+            <small class="text-muted">Mantén Ctrl (o Cmd) para seleccionar varios.</small>
+        </div>
+
+        <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">
+            <span th:text="${team.id == null} ? '💾 Guardar Equipo' : '🔄 Actualizar Equipo'">Guardar</span>
+        </button>
+    </form>
+
+</div>
+</main>
 </body>
 </html>

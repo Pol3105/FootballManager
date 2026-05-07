@@ -27,5 +27,11 @@ public class MatchService {
         return matchRepository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true) // Sección 7: Operación de solo lectura
+    public Match findByIdWithComments(Long id) {
+        // El servicio coordina al repositorio[cite: 1]
+        return matchRepository.findByIdWithComments(id).orElse(null);
+    }
+
    
 }

@@ -2,6 +2,9 @@ package it.uniroma3.siw.siw_football.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "matches")
@@ -39,6 +42,10 @@ public class Match {
     @ManyToOne(fetch = FetchType.LAZY)
     private Tournament tournament;
 
+    // Relación 4: Comentarios del partido
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
+
     public Match() {}
 
     // --- Getters y Setters ---
@@ -72,4 +79,10 @@ public class Match {
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }

@@ -106,6 +106,20 @@ Implemented the core Domain Model (User, Tournament, Team). Configured JPA @OneT
 
 ---
 
+### Phase 6: User Interaction (Comments) & Performance Optimization
+
+* **Interactive Match Engine:**
+    * **Dedicated Match View:** Developed a comprehensive `match-details.html` view to isolate match-specific data (Referees, Stadium, Status) from the general tournament calendar[cite: 7].
+    * **State-Driven UI:** Implemented dynamic styling for match statuses (`SCHEDULED` vs `PLAYED`), providing clear visual feedback on the competition progress[cite: 7, 8].
+
+* **Comment System (Registered User Use-Case):**
+    * **Persistence Mapping:** Created the `Comment` entity with `@ManyToOne` relationships to both `User` and `Match`, using `FetchType.LAZY` to ensure optimal data loading[cite: 4, 6].
+    * **Service-Layer Integration:** Developed `CommentService` with `@Transactional` management to handle the creation and association of user feedback on specific matches[cite: 6].
+
+* **Navigation & UX Refactoring:**
+    * **Information Hierarchy:** Simplified the `tournament-details` view to improve "scannability," delegating technical details to the newly created match-specific layer[cite: 1, 8].
+    * **Decoupled Actions:** Separated administrative actions (Edit/Delete) from public navigation (View Details) to prepare the interface for role-based access control[cite: 7, 8].
+
 ### 💡 Key Logic Highlight: Data Integrity
 
 To ensure the database remains clean, we implemented a custom removal flow:
