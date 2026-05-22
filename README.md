@@ -125,3 +125,4 @@ Implemented the core Domain Model (User, Tournament, Team). Configured JPA @OneT
 To ensure the database remains clean, we implemented a custom removal flow:
 1. When a team is removed from a tournament, we query the `MatchRepository` for any existing encounters involving that team in that specific competition.
 2. These matches are deleted **before** breaking the Many-to-Many link, maintaining perfect referential integrity.
+
