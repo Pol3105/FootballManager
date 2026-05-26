@@ -7,11 +7,14 @@ import it.uniroma3.siw.siw_football.model.Tournament;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface MatchRepository extends CrudRepository<Match, Long> {
+public interface MatchRepository extends JpaRepository<Match, Long> {
+
         @Query("SELECT m FROM Match m WHERE m.tournament = :tournament AND (m.homeTeam = :team OR m.awayTeam = :team)")
         List<Match> findByTournamentAndTeam(@Param("tournament") Tournament tournament, @Param("team") Team team);
 
@@ -21,10 +24,12 @@ public interface MatchRepository extends CrudRepository<Match, Long> {
 
         List<Match> findByTournamentId(Long tournamentId);
 
+        Page<Match> findByTournamentIdOrderByMatchDateDesc(Long tournamentId, Pageable pageable);
+
         @Query("SELECT m FROM Match m " +
-           "LEFT JOIN FETCH m.comments c " +
-           "LEFT JOIN FETCH m.homeTeam " +
-           "LEFT JOIN FETCH m.awayTeam " +
-           "WHERE m.id = :id")
+               "LEFT JOIN FETCH m.comments c " +
+               "LEFT JOIN FETCH m.homeTeam " +
+               "LEFT JOIN FETCH m.awayTeam " +
+               "WHERE m.id = :id")
         Optional<Match> findByIdWithComments(@Param("id") Long id);
 }

@@ -32,6 +32,7 @@ public class RefereeService {
         return refereeRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         List<Match> matchesWithThisReferee = matchRepository.findByRefereeId(id);
         matchRepository.deleteAll(matchesWithThisReferee);

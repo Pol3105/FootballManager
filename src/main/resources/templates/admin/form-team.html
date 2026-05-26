@@ -16,9 +16,7 @@
         <span class="navbar__brand-text">SIW Football</span>
     </a>
     <div class="navbar__right">
-        <div class="navbar__user">
-            <strong sec:authentication="name"></strong>
-        </div>
+        <div class="navbar__user"><strong sec:authentication="name"></strong></div>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
         </form>
@@ -40,20 +38,29 @@
 
         <div class="form__group">
             <label class="form__label">Nombre del Club</label>
-            <input type="text" th:field="*{name}" class="form__input"
-                   placeholder="Ej: AS Roma" required/>
+            <input type="text" th:field="*{name}"
+                   th:classappend="${#fields.hasErrors('name')} ? ' form__input--error' : ''"
+                   class="form__input" placeholder="Ej: AS Roma"/>
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+               style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
         </div>
 
         <div class="form__group">
             <label class="form__label">Ciudad</label>
-            <input type="text" th:field="*{city}" class="form__input"
-                   placeholder="Ej: Roma" required/>
+            <input type="text" th:field="*{city}"
+                   th:classappend="${#fields.hasErrors('city')} ? ' form__input--error' : ''"
+                   class="form__input" placeholder="Ej: Roma"/>
+            <p th:if="${#fields.hasErrors('city')}" th:errors="*{city}"
+               style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
         </div>
 
         <div class="form__group">
             <label class="form__label">Año de Fundación</label>
-            <input type="number" th:field="*{foundationYear}" class="form__input"
-                   placeholder="Ej: 1927" required/>
+            <input type="number" th:field="*{foundationYear}"
+                   th:classappend="${#fields.hasErrors('foundationYear')} ? ' form__input--error' : ''"
+                   class="form__input" placeholder="Ej: 1927"/>
+            <p th:if="${#fields.hasErrors('foundationYear')}" th:errors="*{foundationYear}"
+               style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
         </div>
 
         <div class="form__group">

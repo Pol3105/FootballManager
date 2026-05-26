@@ -25,14 +25,22 @@ public class PlayerService {
         return playerRepository.save(player);
     }
 
-    public Iterable<Player> findAll() {
+    public List<Player> findAll() {
         return playerRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Player> search(String q, String position) {
+        String qParam = (q != null && !q.isBlank()) ? q.trim() : "";
+        String posParam = (position != null && !position.isBlank()) ? position : "";
+        return playerRepository.search(qParam, posParam);
     }
 
     public Player findById(Long id) {
         return playerRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         playerRepository.deleteById(id);
     }

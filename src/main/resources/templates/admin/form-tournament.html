@@ -16,9 +16,7 @@
         <span class="navbar__brand-text">SIW Football</span>
     </a>
     <div class="navbar__right">
-        <div class="navbar__user">
-            <strong sec:authentication="name"></strong>
-        </div>
+        <div class="navbar__user"><strong sec:authentication="name"></strong></div>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
         </form>
@@ -40,19 +38,30 @@
 
         <div class="form__group">
             <label class="form__label" for="name">Nombre del Torneo</label>
-            <input type="text" id="name" th:field="*{name}" class="form__input"
-                   placeholder="Ej: Champions League 2026" required/>
+            <input type="text" id="name" th:field="*{name}"
+                   th:classappend="${#fields.hasErrors('name')} ? ' form__input--error' : ''"
+                   class="form__input" placeholder="Ej: Champions League 2026"/>
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+               style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
         </div>
 
         <div class="form__group">
             <label class="form__label" for="startDate">Fecha de Inicio</label>
-            <input type="date" id="startDate" th:field="*{startDate}" class="form__input" required/>
+            <input type="date" id="startDate" th:field="*{startDate}"
+                   th:classappend="${#fields.hasErrors('startDate')} ? ' form__input--error' : ''"
+                   class="form__input"/>
+            <p th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"
+               style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
         </div>
 
         <div class="form__group">
             <label class="form__label" for="description">Descripción</label>
-            <textarea id="description" th:field="*{description}" class="form__input" rows="4"
-                      placeholder="Describe brevemente el formato y las reglas del torneo..." required></textarea>
+            <textarea id="description" th:field="*{description}"
+                      th:classappend="${#fields.hasErrors('description')} ? ' form__input--error' : ''"
+                      class="form__input" rows="4"
+                      placeholder="Describe brevemente el formato y las reglas del torneo..."></textarea>
+            <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+               style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
         </div>
 
         <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">

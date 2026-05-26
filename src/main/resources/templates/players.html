@@ -32,13 +32,36 @@
     <a th:href="@{/}" class="back-link">← Panel Principal</a>
 
     <div class="section-header">
-        <h1>🏃 Jugadores Registrados</h1>
+        <h1>Jugadores Registrados</h1>
         <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/player/new}"
-           class="btn btn--primary btn--sm" style="margin-left: auto;">➕ Registrar Jugador</a>
+           class="btn btn--primary btn--sm" style="margin-left: auto;">+ Registrar Jugador</a>
     </div>
 
+    <!-- Filtros de búsqueda -->
+    <form th:action="@{/players}" method="get" class="card"
+          style="display:flex;gap:var(--space-md);align-items:flex-end;flex-wrap:wrap;padding:var(--space-md) var(--space-lg);margin-bottom:var(--space-lg);">
+        <div class="form__group" style="flex:1;min-width:180px;margin-bottom:0;">
+            <label class="form__label">Buscar por nombre o apellido</label>
+            <input type="text" name="q" th:value="${q}" class="form__input"
+                   placeholder="Ej: Lewandowski" autocomplete="off"/>
+        </div>
+        <div class="form__group" style="min-width:160px;margin-bottom:0;">
+            <label class="form__label">Posición</label>
+            <select name="position" class="form__input">
+                <option value="" th:selected="${position == ''}">Todas</option>
+                <option value="Portero"         th:selected="${position == 'Portero'}">Portero</option>
+                <option value="Defensa"         th:selected="${position == 'Defensa'}">Defensa</option>
+                <option value="Centrocampista"  th:selected="${position == 'Centrocampista'}">Centrocampista</option>
+                <option value="Delantero"       th:selected="${position == 'Delantero'}">Delantero</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn--primary">Buscar</button>
+        <a th:href="@{/players}" class="btn btn--outline"
+           th:style="${(q != '' or position != '')} ? '' : 'display:none'">Limpiar filtros</a>
+    </form>
+
     <div th:if="${#lists.isEmpty(players)}" class="empty-state">
-        No hay jugadores registrados aún.
+        No se encontraron jugadores con los filtros aplicados.
     </div>
 
     <div class="grid-players">

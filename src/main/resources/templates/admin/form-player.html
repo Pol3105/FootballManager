@@ -16,9 +16,7 @@
         <span class="navbar__brand-text">SIW Football</span>
     </a>
     <div class="navbar__right">
-        <div class="navbar__user">
-            <strong sec:authentication="name"></strong>
-        </div>
+        <div class="navbar__user"><strong sec:authentication="name"></strong></div>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
         </form>
@@ -37,38 +35,58 @@
     <form th:action="@{/admin/player/save}" th:object="${player}" method="post" class="form card">
         <input type="hidden" th:field="*{id}"/>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);">
             <div class="form__group">
                 <label class="form__label">Nombre</label>
-                <input type="text" th:field="*{name}" class="form__input" required/>
+                <input type="text" th:field="*{name}"
+                       th:classappend="${#fields.hasErrors('name')} ? ' form__input--error' : ''"
+                       class="form__input"/>
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                   style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
             </div>
             <div class="form__group">
                 <label class="form__label">Apellido</label>
-                <input type="text" th:field="*{surname}" class="form__input" required/>
+                <input type="text" th:field="*{surname}"
+                       th:classappend="${#fields.hasErrors('surname')} ? ' form__input--error' : ''"
+                       class="form__input"/>
+                <p th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"
+                   style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);">
             <div class="form__group">
                 <label class="form__label">Fecha de Nacimiento</label>
-                <input type="date" th:field="*{birthDate}" class="form__input" required/>
+                <input type="date" th:field="*{birthDate}"
+                       th:classappend="${#fields.hasErrors('birthDate')} ? ' form__input--error' : ''"
+                       class="form__input"/>
+                <p th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"
+                   style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
             </div>
             <div class="form__group">
                 <label class="form__label">Altura (metros)</label>
-                <input type="number" step="0.01" th:field="*{height}" class="form__input"
-                       placeholder="Ej: 1.85" required/>
+                <input type="number" step="0.01" th:field="*{height}"
+                       th:classappend="${#fields.hasErrors('height')} ? ' form__input--error' : ''"
+                       class="form__input" placeholder="Ej: 1.85"/>
+                <p th:if="${#fields.hasErrors('height')}" th:errors="*{height}"
+                   style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);">
             <div class="form__group">
                 <label class="form__label">Posición</label>
-                <select th:field="*{position}" class="form__input" required>
-                    <option value="Goalkeeper">Goalkeeper (Portero)</option>
-                    <option value="Defender">Defender (Defensa)</option>
-                    <option value="Midfielder">Midfielder (Medio)</option>
-                    <option value="Forward">Forward (Delantero)</option>
+                <select th:field="*{position}"
+                        th:classappend="${#fields.hasErrors('position')} ? ' form__input--error' : ''"
+                        class="form__input">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="Portero">Portero</option>
+                    <option value="Defensa">Defensa</option>
+                    <option value="Centrocampista">Centrocampista</option>
+                    <option value="Delantero">Delantero</option>
                 </select>
+                <p th:if="${#fields.hasErrors('position')}" th:errors="*{position}"
+                   style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
             </div>
             <div class="form__group">
                 <label class="form__label">🛡️ Equipo</label>

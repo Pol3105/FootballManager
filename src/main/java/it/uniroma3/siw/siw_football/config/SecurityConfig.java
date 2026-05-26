@@ -43,10 +43,11 @@ public class SecurityConfig {
                 // Req 4.1: funciones públicas de lectura
                 .requestMatchers(
                     "/", "/login", "/register",
-                    "/css/**", "/images/**",
+                    "/css/**", "/js/**", "/images/**",
                     "/tournament/**", "/team/**",
                     "/match/**",
-                    "/players", "/referees", "/teams"
+                    "/players", "/referees", "/teams",
+                    "/api/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

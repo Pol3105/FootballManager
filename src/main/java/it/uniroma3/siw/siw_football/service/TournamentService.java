@@ -1,12 +1,21 @@
 package it.uniroma3.siw.siw_football.service;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.uniroma3.siw.siw_football.model.Match;
+import it.uniroma3.siw.siw_football.model.MatchStatus;
+import it.uniroma3.siw.siw_football.model.StandingEntry;
 import it.uniroma3.siw.siw_football.model.Team;
 import it.uniroma3.siw.siw_football.model.Tournament;
 import it.uniroma3.siw.siw_football.repository.MatchRepository;
@@ -111,5 +120,61 @@ public class TournamentService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public Page<Match> findMatchesPaginated(Long tournamentId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return matchRepository.findByTournamentIdOrderByMatchDateDesc(tournamentId, pageable);
+    }
 
+    @Transactional(readOnly = true)
+    public List<StandingEntry> computeStandings(Long tournamentId) {
+        Tournament tournament = tournamentRepository.findById(tournamentId).orElse(null);
+        if (tournament == null) return List.of();
+
+        // teamId -> [played, won, drawn, lost, goalsFor, goalsAgainst]
+        Map<Long, int[]> stats = new HashMap<>();
+        Map<Long, String> names = new HashMap<>();
+
+        for (Team team : tournament.getTeams()) {
+            stats.put(team.getId(), new int[6]);
+            names.put(team.getId(), team.getName());
+        }
+
+        for (Match match : tournament.getMatches()) {
+            if (match.getStatus() != MatchStatus.PLAYED) continue;
+
+            Long hId = match.getHomeTeam().getId();
+            Long aId = match.getAwayTeam().getId();
+            int hg = match.getHomeScore() != null ? match.getHomeScore() : 0;
+            int ag = match.getAwayScore() != null ? match.getAwayScore() : 0;
+
+            int[] h = stats.computeIfAbsent(hId, k -> new int[6]);
+            int[] a = stats.computeIfAbsent(aId, k -> new int[6]);
+
+            h[0]++; a[0]++;         // played
+            h[4] += hg; h[5] += ag; // home gf/ga
+            a[4] += ag; a[5] += hg; // away gf/ga
+
+            if (hg > ag)      { h[1]++; a[3]++; }  // home win
+            else if (hg < ag) { a[1]++; h[3]++; }  // away win
+            else              { h[2]++; a[2]++; }  // draw
+        }
+
+        return stats.entrySet().stream()
+            .map(e -> {
+                int[] s = e.getValue();
+                return new StandingEntry(
+                    e.getKey(), names.getOrDefault(e.getKey(), "?"),
+                    s[0], s[1], s[2], s[3], s[4], s[5],
+                    s[4] - s[5],
+                    s[1] * 3 + s[2]
+                );
+            })
+            .sorted(Comparator
+                .<StandingEntry>comparingInt(StandingEntry::points)
+                .thenComparingInt(StandingEntry::goalDiff)
+                .thenComparingInt(StandingEntry::goalsFor)
+                .reversed())
+            .collect(Collectors.toList());
+    }
 }

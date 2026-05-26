@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import jakarta.validation.Valid;
 
 import it.uniroma3.siw.siw_football.model.Referee;
 import it.uniroma3.siw.siw_football.repository.RefereeRepository;
@@ -25,7 +26,7 @@ public class RefereeController {
     }
 
     @PostMapping("/admin/referee/save")
-    public String saveReferee(@ModelAttribute("referee") Referee referee, BindingResult result, Model model) {
+    public String saveReferee(@Valid @ModelAttribute("referee") Referee referee, BindingResult result, Model model) {
         
         // 1. Comprobamos si el código ya existe (solo si es un árbitro nuevo o ha cambiado el código)
         if (refereeRepository.existsByRefereeCode(referee.getRefereeCode())) {

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 
 import it.uniroma3.siw.siw_football.model.Player;
 import it.uniroma3.siw.siw_football.model.Team;
@@ -32,16 +34,25 @@ public class PlayerController {
     }
 
     @PostMapping("/admin/player/save")
-    public String savePlayer(@ModelAttribute("player") Player player) {
+    public String savePlayer(@Valid @ModelAttribute("player") Player player,
+                             BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("teams", teamService.findAll());
+            return "admin/form-player";
+        }
         playerService.savePlayer(player);
-        return "redirect:/players"; // O a la lista de jugadores
+        return "redirect:/players";
     }
     
     @GetMapping("/players")
-    public String listPlayers(Model model) {
-        // Usamos el Service para traer todos los jugadores
-        model.addAttribute("players", playerService.findAll());
-        return "players"; // Nombre del archivo html que te pasé antes
+    public String listPlayers(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) String position,
+            Model model) {
+        model.addAttribute("players", playerService.search(q, position));
+        model.addAttribute("q", q != null ? q : "");
+        model.addAttribute("position", position != null ? position : "");
+        return "players";
     }
 
     @GetMapping("/admin/player/edit/{id}")

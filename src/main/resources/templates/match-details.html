@@ -107,9 +107,14 @@
                     <span th:if="${comment.user.role == 'ADMIN'}" class="comment-bubble__staff-badge">STAFF</span>
                 </div>
                 <p class="comment-bubble__text" th:text="${comment.content}">Contenido</p>
-                <a sec:authorize="hasRole('ADMIN')"
-                   th:href="@{/admin/comment/delete/{id}(id=${comment.id})}"
-                   class="btn btn--danger comment-bubble__delete">🗑️</a>
+                <div style="display:flex;gap:6px;margin-top:6px;">
+                    <a th:if="${comment.user.username == currentUsername}"
+                       th:href="@{/match/{mid}/comment/{cid}/edit(mid=${match.id},cid=${comment.id})}"
+                       class="btn btn--warning btn--sm">✏️ Editar</a>
+                    <a sec:authorize="hasRole('ADMIN')"
+                       th:href="@{/admin/comment/delete/{id}(id=${comment.id})}"
+                       class="btn btn--danger btn--sm">🗑️</a>
+                </div>
             </div>
 
             <!-- Comment form -->

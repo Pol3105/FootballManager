@@ -31,4 +31,12 @@ public class CommentService {
     public void deleteById(Long id) {
         commentRepository.deleteById(id);
     }
+
+    @Transactional
+    public boolean updateComment(Long commentId, String content, String username) {
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment == null || !comment.getUser().getUsername().equals(username)) return false;
+        comment.setContent(content);
+        return true;
+    }
 }

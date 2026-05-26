@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
+import it.uniroma3.siw.siw_football.model.Match;
 
 import it.uniroma3.siw.siw_football.model.Team;
 import it.uniroma3.siw.siw_football.model.Tournament; 
@@ -35,15 +40,16 @@ public class TournamentController {
 
 
     @GetMapping("/tournament/{id}")
-    public String showTournamentDetails(@PathVariable("id") Long id, Model model) {
-        // Ahora llamamos de forma limpia al SERVICE
+    public String showTournamentDetails(@PathVariable("id") Long id,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        Model model) {
         Tournament tournament = tournamentService.findById(id);
-        
-        if (tournament != null) {
-            model.addAttribute("tournament", tournament);
-            return "tournament-details";
-        }
-        return "redirect:/";
+        if (tournament == null) return "redirect:/";
+
+        Page<Match> matchPage = tournamentService.findMatchesPaginated(id, page, 5);
+        model.addAttribute("tournament", tournament);
+        model.addAttribute("matchPage", matchPage);
+        return "tournament-details";
     }
 
     // 1. Mostrar el formulario (GET)
@@ -56,12 +62,11 @@ public class TournamentController {
     
     // 2. Recibir los datos y guardarlos (POST)
     @PostMapping("/admin/tournament/new")
-    public String saveNewTournament(@ModelAttribute("tournament") Tournament tournament) {
-        // Le damos el torneo relleno al servicio para que lo guarde en la BD
+    public String saveNewTournament(@Valid @ModelAttribute("tournament") Tournament tournament,
+                                    BindingResult result) {
+        if (result.hasErrors()) return "admin/form-tournament";
         tournamentService.save(tournament);
-        
-        // redirect:/ hace que, tras guardar, el navegador vuelva a la portada
-        return "redirect:/"; 
+        return "redirect:/";
     }
 
 
@@ -78,8 +83,11 @@ public class TournamentController {
 
     // 2. Procesar los cambios realizados (POST)
     @PostMapping("/admin/tournament/edit/{id}")
-    public String updateTournament(@PathVariable("id") Long id, @ModelAttribute("tournament") Tournament tournament) {
-        tournament.setId(id); // ¡CLAVE! Si tiene ID, JPA hace un UPDATE en vez de un INSERT
+    public String updateTournament(@PathVariable("id") Long id,
+                                   @Valid @ModelAttribute("tournament") Tournament tournament,
+                                   BindingResult result) {
+        if (result.hasErrors()) return "admin/form-tournament";
+        tournament.setId(id);
         tournamentService.save(tournament);
         return "redirect:/tournament/" + id;
     }

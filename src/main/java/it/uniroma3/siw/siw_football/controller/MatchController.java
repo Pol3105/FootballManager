@@ -72,12 +72,39 @@ public class MatchController {
 
     // Detalle público del partido con comentarios (Req 4.1 + 4.2)
     @GetMapping("/match/{id}")
-    public String showMatchDetails(@PathVariable("id") Long id, Model model) {
+    public String showMatchDetails(@PathVariable("id") Long id, Model model,
+                                   Authentication authentication) {
         Match match = matchService.findById(id);
         if (match == null) return "redirect:/";
         model.addAttribute("match", match);
         model.addAttribute("comments", commentService.findByMatchId(id));
+        if (authentication != null) {
+            model.addAttribute("currentUsername", authentication.getName());
+        }
         return "match-details";
+    }
+
+    // Req 4.2: Editar comentario propio
+    @GetMapping("/match/{matchId}/comment/{commentId}/edit")
+    public String showEditComment(@PathVariable Long matchId,
+                                  @PathVariable Long commentId,
+                                  Model model, Authentication authentication) {
+        Comment comment = commentService.findById(commentId);
+        if (comment == null || !comment.getUser().getUsername().equals(authentication.getName())) {
+            return "redirect:/match/" + matchId;
+        }
+        model.addAttribute("comment", comment);
+        model.addAttribute("match", matchService.findById(matchId));
+        return "comment-edit";
+    }
+
+    @PostMapping("/match/{matchId}/comment/{commentId}/edit")
+    public String updateComment(@PathVariable Long matchId,
+                                @PathVariable Long commentId,
+                                @RequestParam("content") String content,
+                                Authentication authentication) {
+        commentService.updateComment(commentId, content, authentication.getName());
+        return "redirect:/match/" + matchId;
     }
 
     // Req 4.2: Insertar comentario en partida (solo usuarios autenticados)

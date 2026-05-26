@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 
 @Controller
 public class TeamController {
@@ -64,9 +66,13 @@ public class TeamController {
     }
 
     @PostMapping("/admin/team/new")
-    public String saveTeam(@ModelAttribute("team") Team team) {
+    public String saveTeam(@Valid @ModelAttribute("team") Team team, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("tournaments", tournamentService.findAll());
+            return "admin/form-team";
+        }
         teamService.save(team);
-        return "redirect:/tournament/" + team.getTournaments().get(0).getId();
+        return "redirect:/teams";
     }
 
     // 1. Mostrar formulario de edición
@@ -83,8 +89,14 @@ public class TeamController {
 
     // 2. Procesar la edición
     @PostMapping("/admin/team/edit/{id}")
-    public String updateTeam(@PathVariable("id") Long id, @ModelAttribute("team") Team team) {
-        team.setId(id); // Mantenemos el ID original para que JPA haga UPDATE
+    public String updateTeam(@PathVariable("id") Long id,
+                             @Valid @ModelAttribute("team") Team team,
+                             BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("tournaments", tournamentService.findAll());
+            return "admin/form-team";
+        }
+        team.setId(id);
         teamService.save(team);
         return "redirect:/teams";
     }

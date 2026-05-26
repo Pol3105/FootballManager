@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${status} + ' — SIW Football'">Error — SIW Football</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+</nav>
+
+<main class="main-content">
+<div class="container" style="max-width:600px;text-align:center;padding-top:var(--space-xl);">
+
+    <div style="font-size:5rem;margin-bottom:var(--space-md);"
+         th:text="${status == 404} ? '🔍' : (${status == 403} ? '🔒' : '⚠️')">⚠️</div>
+
+    <h1 style="font-size:4rem;color:#1e3a5f;margin:0;"
+        th:text="${status}">500</h1>
+
+    <h2 style="color:#6b7280;font-weight:400;margin:var(--space-sm) 0 var(--space-md);"
+        th:text="${status == 404} ? 'Página no encontrada' :
+                 (${status == 403} ? 'Acceso denegado' :
+                 (${status == 400} ? 'Solicitud incorrecta' : 'Error interno del servidor'))">
+        Error
+    </h2>
+
+    <p class="text-muted" style="margin-bottom:var(--space-xl);"
+       th:text="${status == 404} ? 'La página que buscas no existe o ha sido movida.' :
+                (${status == 403} ? 'No tienes permiso para acceder a esta sección.' :
+                'Ha ocurrido un error inesperado. Inténtalo de nuevo.')">
+        Ha ocurrido un error.
+    </p>
+
+    <div style="display:flex;gap:var(--space-sm);justify-content:center;">
+        <a th:href="@{/}" class="btn btn--primary">🏠 Volver al Inicio</a>
+        <a href="javascript:history.back()" class="btn btn--outline">← Página Anterior</a>
+    </div>
+
+    <!-- Detalle técnico solo visible si hay mensaje -->
+    <p th:if="${message != null and message != ''}"
+       style="margin-top:var(--space-xl);font-size:0.75rem;color:#9ca3af;
+              background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;
+              padding:var(--space-sm);text-align:left;">
+        <strong>Detalle:</strong> <span th:text="${message}"></span>
+    </p>
+
+</div>
+</main>
+</body>
+</html>

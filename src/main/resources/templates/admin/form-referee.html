@@ -16,9 +16,7 @@
         <span class="navbar__brand-text">SIW Football</span>
     </a>
     <div class="navbar__right">
-        <div class="navbar__user">
-            <strong sec:authentication="name"></strong>
-        </div>
+        <div class="navbar__user"><strong sec:authentication="name"></strong></div>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
         </form>
@@ -37,16 +35,22 @@
     <form th:action="@{/admin/referee/save}" th:object="${referee}" method="post" class="form card">
         <input type="hidden" th:field="*{id}"/>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);">
             <div class="form__group">
                 <label class="form__label">Nombre</label>
-                <input type="text" th:field="*{name}" class="form__input"
-                       placeholder="Ej: Pierluigi" required/>
+                <input type="text" th:field="*{name}"
+                       th:classappend="${#fields.hasErrors('name')} ? ' form__input--error' : ''"
+                       class="form__input" placeholder="Ej: Pierluigi"/>
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                   style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
             </div>
             <div class="form__group">
                 <label class="form__label">Apellido</label>
-                <input type="text" th:field="*{surname}" class="form__input"
-                       placeholder="Ej: Collina" required/>
+                <input type="text" th:field="*{surname}"
+                       th:classappend="${#fields.hasErrors('surname')} ? ' form__input--error' : ''"
+                       class="form__input" placeholder="Ej: Collina"/>
+                <p th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"
+                   style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
             </div>
         </div>
 
@@ -54,10 +58,9 @@
             <label class="form__label">Código Arbitral Oficial</label>
             <input type="text" th:field="*{refereeCode}"
                    th:classappend="${#fields.hasErrors('refereeCode')} ? ' form__input--error' : ''"
-                   class="form__input" placeholder="Ej: ITA-12345" required/>
-            <p th:if="${#fields.hasErrors('refereeCode')}"
-               th:errors="*{refereeCode}"
-               style="color: var(--color-danger); font-size: 0.8rem; margin-top: 4px;">Error</p>
+                   class="form__input" placeholder="Ej: REF-ITA-001"/>
+            <p th:if="${#fields.hasErrors('refereeCode')}" th:errors="*{refereeCode}"
+               style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
         </div>
 
         <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">

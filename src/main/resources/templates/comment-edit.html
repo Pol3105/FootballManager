@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Comentario — SIW Football</title>
+    <link th:href="@{/css/variables.css}" rel="stylesheet"/>
+    <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar__brand">
+        <span class="navbar__brand-icon">⚽</span>
+        <span class="navbar__brand-text">SIW Football</span>
+    </a>
+    <div class="navbar__right">
+        <div sec:authorize="isAuthenticated()" class="navbar__user">
+            <strong sec:authentication="name"></strong>
+        </div>
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
+        </form>
+    </div>
+</nav>
+
+<main class="main-content">
+<div class="container" style="max-width: 640px;">
+
+    <a th:href="@{/match/{id}(id=${match.id})}" class="back-link">← Volver al partido</a>
+
+    <div class="section-header">
+        <h2>✏️ Editar comentario</h2>
+    </div>
+
+    <div style="background:white;border-radius:12px;padding:var(--space-lg);box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+        <p class="text-muted" style="margin-bottom: var(--space-md);">
+            Partido: <strong th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}">Partido</strong>
+        </p>
+
+        <form th:action="@{/match/{mid}/comment/{cid}/edit(mid=${match.id},cid=${comment.id})}"
+              method="post" class="form">
+            <div class="form__group">
+                <label class="form__label">Tu comentario</label>
+                <textarea name="content" class="form__input" rows="4"
+                          required th:text="${comment.content}"></textarea>
+            </div>
+            <div class="action-group">
+                <button type="submit" class="btn btn--primary">Guardar cambios</button>
+                <a th:href="@{/match/{id}(id=${match.id})}" class="btn btn--outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+</main>
+</body>
+</html>
