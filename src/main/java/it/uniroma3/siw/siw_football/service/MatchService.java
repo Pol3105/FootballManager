@@ -1,7 +1,6 @@
 package it.uniroma3.siw.siw_football.service;
 
 import it.uniroma3.siw.siw_football.model.Match;
-import it.uniroma3.siw.siw_football.model.Team;
 import it.uniroma3.siw.siw_football.repository.MatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -7,4 +7,5 @@ import org.springframework.data.repository.ListCrudRepository;
 public interface RefereeRepository extends ListCrudRepository<Referee, Long> {
 
     boolean existsByRefereeCode(String refereeCode);
+    boolean existsByRefereeCodeAndIdNot(String refereeCode, Long id);
 }

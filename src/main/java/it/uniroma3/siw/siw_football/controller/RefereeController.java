@@ -27,9 +27,12 @@ public class RefereeController {
 
     @PostMapping("/admin/referee/save")
     public String saveReferee(@Valid @ModelAttribute("referee") Referee referee, BindingResult result, Model model) {
-        
-        // 1. Comprobamos si el código ya existe (solo si es un árbitro nuevo o ha cambiado el código)
-        if (refereeRepository.existsByRefereeCode(referee.getRefereeCode())) {
+        // 1. Comprobamos si el código ya existe
+        boolean exists = (referee.getId() == null) 
+            ? refereeRepository.existsByRefereeCode(referee.getRefereeCode())
+            : refereeRepository.existsByRefereeCodeAndIdNot(referee.getRefereeCode(), referee.getId());
+
+        if (exists) {
             // 2. Añadimos el error al campo 'refereeCode'
             result.rejectValue("refereeCode", "error.referee", "Este código arbitral ya está asignado a otro árbitro.");
         }

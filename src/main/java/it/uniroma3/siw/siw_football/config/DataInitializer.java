@@ -24,7 +24,6 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired private MatchService matchService;
     @Autowired private MatchRepository matchRepository;
     @Autowired private RefereeService refereeService;
-    @Autowired private RefereeRepository refereeRepository;
     @Autowired private UserService userService;
     @Autowired private PasswordEncoder passwordEncoder;
 

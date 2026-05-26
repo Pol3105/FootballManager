@@ -1,10 +1,7 @@
 package it.uniroma3.siw.siw_football.service;
 
 import it.uniroma3.siw.siw_football.model.Match;
-import it.uniroma3.siw.siw_football.model.Player;
 import it.uniroma3.siw.siw_football.model.Referee;
-import it.uniroma3.siw.siw_football.model.Team;
-import it.uniroma3.siw.siw_football.model.Tournament;
 import it.uniroma3.siw.siw_football.repository.MatchRepository;
 import it.uniroma3.siw.siw_football.repository.RefereeRepository;
 

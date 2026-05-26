@@ -1,40 +1,40 @@
-# SIW Football — Gestión de Torneos de Fútbol
+# SIW Football — Football Tournament Management
 
-Proyecto obligatorio para la asignatura **Sistemi Informativi su Web (SIW)** — Università degli Studi Roma Tre.
+Mandatory project for **Sistemi Informativi su Web (SIW)** — Università degli Studi Roma Tre.
 
-Aplicación web completa para gestionar torneos de fútbol: equipos, jugadores, árbitros, partidos y clasificaciones en tiempo real.
+Full-stack web application for managing football tournaments: teams, players, referees, matches and live standings.
 
 ---
 
-## Stack tecnológico
+## Tech Stack
 
-| Capa | Tecnología |
-|------|-----------|
+| Layer | Technology |
+|-------|-----------|
 | Backend | Java 21, Spring Boot 3.4.5 |
-| Persistencia | Spring Data JPA, Hibernate, PostgreSQL 15 |
+| Persistence | Spring Data JPA, Hibernate, PostgreSQL 15 |
 | Frontend | Thymeleaf 3.1.3, HTML5, CSS3 |
-| Componentes dinámicos | React 18 via CDN (sin build step) |
-| Seguridad | Spring Security 6, BCrypt |
-| Base de datos | PostgreSQL en Docker (puerto 5435) |
+| Dynamic components | React 18 via CDN (no build step) |
+| Security | Spring Security 6, BCrypt |
+| Database | PostgreSQL in Docker (port 5435) |
 
 ---
 
-## Arquitectura — 3 Capas
+## Architecture — 3 Layers
 
 ```
 Presentation  ->  Controller  (HTTP, Thymeleaf, REST)
-Business      ->  Service     (@Transactional, lógica de negocio)
+Business      ->  Service     (@Transactional, business logic)
 Persistence   ->  Repository  (Spring Data JPA, JPQL)
 ```
 
-Los controllers no acceden al repositorio directamente. Toda la lógica de negocio reside en el service layer.
+Controllers never access repositories directly. All business logic lives in the service layer.
 
 ---
 
-## Modelo de datos
+## Data Model
 
-| Entidad | Campos clave |
-|---------|-------------|
+| Entity | Key fields |
+|--------|-----------|
 | `User` | username, password (BCrypt), role (ADMIN/USER) |
 | `Tournament` | name, description, startDate |
 | `Team` | name, foundationYear, city |
@@ -43,270 +43,284 @@ Los controllers no acceden al repositorio directamente. Toda la lógica de negoc
 | `Match` | homeTeam, awayTeam, tournament, referee, homeScore, awayScore, status (SCHEDULED/PLAYED), location, matchDate |
 | `Comment` | content, match, user |
 
-### Relaciones JPA
+### JPA Relationships
 
 - `Tournament` 1:N `Match` — cascade ALL
 - `Match` 1:N `Comment` — cascade ALL
-- `Team` N:M `Tournament` — tabla intermedia `team_tournament`
+- `Team` N:M `Tournament` — join table `team_tournament`
 - `Player` N:1 `Team` — FetchType.LAZY
-- `Match` N:1 `Team` (home/away) — @JoinColumn explícito para evitar conflicto de nombres
+- `Match` N:1 `Team` (home/away) — explicit `@JoinColumn` to avoid column name conflict
 
-Todas las relaciones usan `FetchType.LAZY` por defecto para evitar el problema N+1.
+All relationships use `FetchType.LAZY` by default to prevent the N+1 problem.
 
 ---
 
-## Cómo ejecutar
+## How to Run
 
-### 1. Base de datos
+### 1. Database
 
 ```bash
 docker-compose up -d
 ```
 
-Levanta PostgreSQL en `localhost:5435` con base de datos `siw_football`.
+Starts PostgreSQL at `localhost:5435` with database `siw_football`.
 
-### 2. Aplicación
+### 2. Application
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Acceder en: `http://localhost:8081`
+Open: `http://localhost:8081`
 
-### Credenciales por defecto
+### Default credentials
 
-| Usuario | Contraseña | Rol |
-|---------|-----------|-----|
+| Username | Password | Role |
+|----------|---------|------|
 | `admin` | `admin` | ADMIN |
 | `pablo` | `1234` | USER |
 
-### Resetear datos de demo
+### Reset demo data
 
 ```sql
 TRUNCATE match, player, team_tournament, team, tournament, referee, users RESTART IDENTITY CASCADE;
 ```
 
-Reiniciar la aplicación. `DataInitializer` inserta: 3 torneos, 12 equipos, ~44 jugadores, 6 árbitros, 35 partidos.
+Restart the application. `DataInitializer` inserts: 3 tournaments, 12 teams, ~44 players, 6 referees, 35 matches.
 
 ---
 
-## Funcionalidades
+## Features
 
-### Acceso público (sin autenticación)
+### Public access (no authentication required)
 
-- Lista de torneos activos
-- Detalle de torneo: equipos participantes, clasificación en tiempo real, calendario paginado
-- Acta del partido: resultado, árbitro, estadio, comentarios
-- Lista de equipos con plantillas
-- Lista de jugadores con búsqueda y filtros
-- Lista de árbitros
+- Tournament list
+- Tournament detail: participating teams, live standings, paginated match calendar
+- Match detail: result, referee, stadium, comments
+- Team list with squads
+- Player list with search and filters
+- Referee list
 
-### Usuario autenticado (rol USER)
+### Authenticated user (USER role)
 
-- Publicar comentarios en partidos
-- Editar sus propios comentarios (con verificación de propiedad en el service layer)
+- Post comments on matches
+- Edit own comments (ownership check enforced in the service layer)
 
-### Administrador (rol ADMIN)
+### Administrator (ADMIN role)
 
-- CRUD completo de torneos, equipos, jugadores, árbitros y partidos
-- Registrar resultados de partidos
-- Gestionar equipos participantes por torneo
-- Eliminar comentarios de cualquier usuario
-
----
-
-## Clasificación — React 18 + REST API
-
-La tabla de clasificación se renderiza con **React 18 via CDN** (sin npm, webpack ni paso de compilación).
-
-- **Endpoint REST:** `GET /api/tournament/{id}/standings` → JSON
-- **Componente:** `/static/js/standings.js` — usa `React.createElement()` puro, sin JSX
-- **Integración Thymeleaf:** inyecta el ID del torneo como variable JS global para evitar conflicto con attoparser
-- **Ordenación:** puntos DESC, diferencia de goles DESC, goles a favor DESC
-
-Nota técnica: JSX no es compatible con el parser HTML de Thymeleaf (attoparser interpreta los spreads `{...obj}` como atributos HTML malformados). La solución fue separar el componente React en un archivo estático `.js` que Thymeleaf no procesa.
+- Full CRUD for tournaments, teams, players, referees and matches
+- Register match results
+- Manage participating teams per tournament
+- Delete any user's comments
 
 ---
 
-## Paginación de partidos
+## Standings — React 18 + REST API
 
-Los partidos de cada torneo se muestran paginados: 5 por página, ordenados por fecha descendente (más reciente primero).
+The standings table is rendered with **React 18 via CDN** (no npm, webpack or compilation step).
+
+- **REST endpoint:** `GET /api/tournament/{id}/standings` → JSON
+- **Component:** `/static/js/standings.js` — pure `React.createElement()`, no JSX
+- **Thymeleaf integration:** tournament ID injected as a global JS variable to avoid attoparser conflicts
+- **Sort order:** points DESC, goal difference DESC, goals scored DESC
+
+Technical note: JSX is incompatible with Thymeleaf's HTML parser (attoparser interprets `{...obj}` spreads as malformed HTML attributes). The solution was to move the React component into a static `.js` file that Thymeleaf does not process.
+
+---
+
+## Match Pagination
+
+Each tournament's matches are paginated: 5 per page, sorted by date descending (most recent first).
 
 - `MatchRepository`: `Page<Match> findByTournamentIdOrderByMatchDateDesc(Long id, Pageable pageable)`
 - `TournamentService.findMatchesPaginated(Long tournamentId, int page, int size)`
-- `TournamentController`: acepta `@RequestParam(defaultValue="0") int page`
+- `TournamentController`: accepts `@RequestParam(defaultValue="0") int page`
 
 ---
 
-## Búsqueda y filtros de jugadores
+## Player Search and Filters
 
-La página `/players` permite filtrar por nombre/apellido y por posición mediante un formulario GET.
+The `/players` page allows filtering by name/surname and position via a GET form.
 
-- **JPQL con parámetros opcionales:** si el parámetro es `null`, la condición se omite con `IS NULL`
-- **Posiciones disponibles:** Portero, Defensa, Centrocampista, Delantero
-- **Reseteo de filtros:** botón "Limpiar filtros" visible solo cuando hay filtros activos
+- **JPQL with optional parameters:** empty string sentinel (`= ''`) instead of null — avoids PostgreSQL `lower(bytea)` type inference error
+- **Available positions:** Portero, Defensa, Centrocampista, Delantero
+- **Clear filters:** button visible only when filters are active
 
 ---
 
-## Optimización N+1 (requisito SS.8)
+## N+1 Query Optimisation (requirement §8)
 
-### Problema
+### Problem
 
-Al cargar el detalle de un partido, Hibernate lanzaba 7 queries separadas por lazy loading de cada relación (`homeTeam`, `awayTeam`, `tournament`, `referee`, comentarios).
+When loading a match detail page, Hibernate fired 7 separate queries due to lazy loading of each relationship (`homeTeam`, `awayTeam`, `tournament`, `referee`, comments).
 
-Tiempo medido: ~7.5 ms solo en consultas.
+Measured time: ~7.5 ms in queries alone.
 
-### Solución: LEFT JOIN FETCH
+### Solution: LEFT JOIN FETCH
 
 ```java
 @Query("SELECT m FROM Match m " +
-       "LEFT JOIN FETCH m.comments c " +
        "LEFT JOIN FETCH m.homeTeam " +
        "LEFT JOIN FETCH m.awayTeam " +
+       "LEFT JOIN FETCH m.tournament " +
+       "LEFT JOIN FETCH m.referee " +
        "WHERE m.id = :id")
-Optional<Match> findByIdWithComments(@Param("id") Long id);
+Optional<Match> findByIdWithDetails(@Param("id") Long id);
 ```
 
-`JOIN FETCH` obliga a Hibernate a generar un único `SELECT` con `JOIN`, cargando todas las relaciones en una sola consulta.
+`JOIN FETCH` forces Hibernate to generate a single `SELECT` with `JOIN`, loading all relationships in one query.
 
-### Resultado
+### Result
 
-| Métrica | Sin optimización | Con JOIN FETCH |
-|---------|-----------------|---------------|
-| Queries JDBC | 7 | 3 |
-| Tiempo total | ~7.5 ms | ~3.6 ms |
-| Mejora | — | 52% mas rapido |
+| Metric | Without optimisation | With JOIN FETCH |
+|--------|---------------------|----------------|
+| JDBC queries | 7 | 3 |
+| Total time | ~7.5 ms | ~3.6 ms |
+| Improvement | — | 52% faster |
 
-Análisis completo documentado en:
+Full analysis:
 - `n+1/analisis_queries_pablo_rejon.md` (ES)
 - `n+1/query_analysis_pablo_rejon_en.md` (EN)
 
 ---
 
-## Validación de datos
+## Data Validation
 
-Todas las entidades llevan anotaciones Bean Validation. Los controllers aplican `@Valid` + `BindingResult` y devuelven el formulario con mensajes de error si la validación falla.
+All entities carry Bean Validation annotations. Controllers apply `@Valid` + `BindingResult` and return the form with error messages on failure.
 
-| Entidad | Validaciones |
-|---------|-------------|
-| `Tournament` | `@NotBlank` + `@Size(3,100)` en name; `@NotBlank` + `@Size(max=1000)` en description; `@NotNull` en startDate |
-| `Team` | `@NotBlank` en name y city; `@NotNull @Min(1800) @Max(2100)` en foundationYear |
-| `Player` | `@NotBlank` en name, surname, position; `@NotNull @DecimalMin(1.40) @DecimalMax(2.20)` en height; `@NotNull` en birthDate |
-| `Referee` | `@NotBlank` en name, surname; `@NotBlank @Size(3,20)` en refereeCode; unicidad verificada en controller |
-
----
-
-## Gestión de errores
-
-Spring Boot detecta automáticamente `templates/error.html` y la usa para todos los errores HTTP.
-
-- **404** — "Página no encontrada"
-- **403** — "Acceso denegado"
-- **500** — "Error interno del servidor"
-
-Para probar la vista de error:
-- Navegar a una URL inexistente, p.ej. `http://localhost:8081/nonexistent` → 404
-- Intentar acceder a `/admin/tournament/new` sin haber iniciado sesión como admin → 403
+| Entity | Validations |
+|--------|------------|
+| `Tournament` | `@NotBlank` + `@Size(3,100)` on name; `@NotBlank` + `@Size(max=1000)` on description; `@NotNull` on startDate |
+| `Team` | `@NotBlank` on name and city; `@NotNull @Min(1800) @Max(2100)` on foundationYear |
+| `Player` | `@NotBlank` on name, surname, position; `@NotNull @DecimalMin(1.40) @DecimalMax(2.20)` on height; `@NotNull` on birthDate |
+| `Referee` | `@NotBlank` on name, surname; `@NotBlank @Size(3,20)` on refereeCode; uniqueness checked programmatically in controller via `result.rejectValue()` |
 
 ---
 
-## Seguridad
+## Error Handling
 
-| Configuración | Detalle |
-|--------------|---------|
-| Contraseñas | BCrypt (`BCryptPasswordEncoder`) |
-| CSRF | Activo (protección por defecto Spring Security) |
-| Rutas públicas | `/`, `/tournament/**`, `/team/**`, `/match/**`, `/players`, `/referees`, `/teams`, `/api/**`, `/css/**`, `/js/**`, `/images/**`, `/login`, `/register` |
-| Autenticación requerida | `POST /match/*/comment` |
-| Solo ADMIN | `/admin/**` |
-| Roles | `ROLE_ADMIN`, `ROLE_USER` (prefijo `ROLE_` añadido por `CustomUserDetailsService`) |
+Spring Boot automatically detects `templates/error.html` and uses it for all HTTP errors.
+
+- **404** — Page not found
+- **403** — Access denied
+- **500** — Internal server error
+
+To test:
+- Navigate to a non-existent URL, e.g. `http://localhost:8081/nonexistent` → 404
+- Try to access `/admin/tournament/new` without admin session → 403
 
 ---
 
-## Estructura del proyecto
+## Security
+
+| Configuration | Detail |
+|--------------|--------|
+| Passwords | BCrypt (`BCryptPasswordEncoder`) |
+| CSRF | Enabled (Spring Security default) |
+| Public routes | `/`, `/tournament/**`, `/team/**`, `/match/**`, `/players`, `/referees`, `/teams`, `/api/**`, `/css/**`, `/js/**`, `/images/**`, `/login`, `/register` |
+| Authentication required | `POST /match/*/comment` |
+| ADMIN only | `/admin/**` |
+| Roles | `ROLE_ADMIN`, `ROLE_USER` (`ROLE_` prefix added by `CustomUserDetailsService`) |
+
+---
+
+## Project Structure
 
 ```
 src/main/java/.../
 ├── config/
-│   ├── SecurityConfig.java         -- Spring Security: roles, rutas, BCrypt, CSRF
-│   └── DataInitializer.java        -- Seed: 3 torneos, 12 equipos, 44 jugadores, 35 partidos
+│   ├── SecurityConfig.java             -- Spring Security: roles, routes, BCrypt, CSRF
+│   └── DataInitializer.java            -- Seed: 3 tournaments, 12 teams, 44 players, 35 matches
 ├── controller/
-│   ├── TournamentController.java   -- @Valid + partidos paginados
-│   ├── TeamController.java         -- @Valid + BindingResult
-│   ├── PlayerController.java       -- @Valid + búsqueda con filtros
-│   ├── RefereeController.java      -- @Valid + unicidad refereeCode
-│   ├── MatchController.java        -- comentarios + edición propia + borrado admin
-│   ├── StandingsController.java    -- REST: GET /api/tournament/{id}/standings
-│   └── AuthController.java         -- /login, /register
+│   ├── TournamentController.java       -- @Valid + paginated matches
+│   ├── TeamController.java             -- @Valid + BindingResult
+│   ├── PlayerController.java           -- @Valid + search with filters
+│   ├── RefereeController.java          -- @Valid + refereeCode uniqueness check
+│   ├── MatchController.java            -- comments + own edit + admin delete
+│   ├── StandingsController.java        -- REST: GET /api/tournament/{id}/standings
+│   └── AuthController.java             -- /login, /register
 ├── service/
-│   ├── TournamentService.java      -- computeStandings() + findMatchesPaginated()
-│   ├── TeamService.java            -- cascade delete: limpia jugadores y partidos
-│   ├── PlayerService.java          -- search(q, position)
-│   ├── MatchService.java           -- save + delete + findByIdWithComments
-│   ├── CommentService.java         -- updateComment() con verificación de propiedad
+│   ├── TournamentService.java          -- computeStandings() + findMatchesPaginated()
+│   ├── TeamService.java                -- cascade delete: cleans players and matches
+│   ├── PlayerService.java              -- search(q, position)
+│   ├── MatchService.java               -- save + delete + findByIdWithComments
+│   ├── CommentService.java             -- updateComment() with ownership check
 │   ├── RefereeService.java
 │   ├── UserService.java
-│   └── CustomUserDetailsService.java -- UserDetailsService impl, añade prefijo ROLE_
+│   └── CustomUserDetailsService.java   -- UserDetailsService impl, adds ROLE_ prefix
 ├── repository/
-│   ├── MatchRepository.java        -- JOIN FETCH + Page<Match>
-│   ├── PlayerRepository.java       -- search @Query con parámetros opcionales
+│   ├── MatchRepository.java            -- JOIN FETCH + Page<Match>
+│   ├── PlayerRepository.java           -- search @Query with optional parameters
 │   └── ...
 └── model/
     ├── Tournament.java, Team.java, Player.java, Referee.java
     ├── Match.java, Comment.java, User.java, MatchStatus.java
-    └── StandingEntry.java          -- Java record para serialización JSON
+    └── StandingEntry.java              -- Java record for JSON serialisation
 
 src/main/resources/
-├── static/js/standings.js          -- React 18 (React.createElement, sin JSX)
-├── templates/error.html            -- Página de error (404/403/500)
-├── templates/comment-edit.html     -- Formulario edición comentario propio
-├── templates/tournament-details.html -- Clasificación + partidos paginados
-└── templates/players.html          -- Lista jugadores con búsqueda y filtros
+├── static/js/standings.js              -- React 18 (React.createElement, no JSX)
+├── templates/error.html                -- Custom error page (404/403/500)
+├── templates/comment-edit.html         -- Own comment edit form
+├── templates/tournament-details.html   -- Standings + paginated matches
+└── templates/players.html              -- Player list with search and filters
 
 n+1/
-├── analisis_queries_pablo_rejon.md       -- Análisis N+1 (ES)
-└── query_analysis_pablo_rejon_en.md      -- N+1 analysis (EN)
-
+├── analisis_queries_pablo_rejon.md     -- N+1 analysis (ES)
+└── query_analysis_pablo_rejon_en.md    -- N+1 analysis (EN)
 ```
 
 ---
 
-## Datos de demo
+## Demo Data
 
-El `DataInitializer` se ejecuta al arrancar si la base de datos está vacía:
+`DataInitializer` runs on startup if the database is empty:
 
-- **Torneos:** Champions League 2025/26, La Liga 2025/26, Serie A 2025/26
-- **Equipos:** Real Madrid, FC Barcelona, Atlético, Sevilla, Man. City, Liverpool, PSG, Bayern, AS Roma, Inter, Juventus, Napoli
-- **Jugadores:** ~44 con nombre, apellido, posición, fecha de nacimiento y altura
-- **Árbitros:** 6 árbitros con código oficial
-- **Partidos:** 35 distribuidos entre los 3 torneos (mix PLAYED/SCHEDULED con marcadores reales)
-- **Usuarios:** admin/admin (ADMIN), pablo/1234 (USER)
+- **Tournaments:** Champions League 2025/26, La Liga 2025/26, Serie A 2025/26
+- **Teams:** Real Madrid, FC Barcelona, Atletico, Sevilla, Man. City, Liverpool, PSG, Bayern, AS Roma, Inter, Juventus, Napoli
+- **Players:** ~44 with name, surname, position, date of birth and height
+- **Referees:** 6 referees with official codes
+- **Matches:** 35 distributed across 3 tournaments (mix of PLAYED/SCHEDULED with real scorelines)
+- **Users:** admin/admin (ADMIN), pablo/1234 (USER)
 
 ---
 
 ## Changelog
 
-| Fase | Descripción |
-|------|------------|
-| 1 | Setup Spring Boot + PostgreSQL Docker + dominio base |
-| 2 | Entidades completas (Player, Referee, Match) + relaciones JPA |
-| 3 | Presentación Thymeleaf + Spring Security + CRUD admin |
-| 4 | ManyToMany Tournament-Team + limpieza de datos huérfanos |
-| 5 | Campos obligatorios PDF: description, city, birthDate, height, refereeCode, status, location |
-| 6 | Sistema de comentarios + vista de acta de partido |
-| 7 | React 18 CDN + clasificación en tiempo real via REST API |
-| 8 | Datos de demo expandidos (3 torneos, 12 equipos, 44 jugadores, 35 partidos) |
-| 9 | Edición de comentarios propios + correcciones (@Transactional, unique constraint) |
-| 10 | Validación Bean Validation en entidades + @Valid + BindingResult en controllers |
-| 11 | Página de error personalizada (404/403/500) via templates/error.html |
-| 12 | Paginación de partidos por torneo (5/pág, más reciente primero) |
-| 13 | Búsqueda y filtros de jugadores por nombre/apellido y posición |
+| Phase | Description |
+|-------|------------|
+| 1 | Spring Boot + PostgreSQL Docker setup + base domain |
+| 2 | Full entities (Player, Referee, Match) + JPA relationships |
+| 3 | Thymeleaf views + Spring Security + admin CRUD |
+| 4 | ManyToMany Tournament-Team + orphan data cleanup |
+| 5 | Required PDF fields: description, city, birthDate, height, refereeCode, status, location |
+| 6 | Comment system + match detail view |
+| 7 | React 18 CDN + live standings via REST API |
+| 8 | Expanded demo data (3 tournaments, 12 teams, 44 players, 35 matches) |
+| 9 | Own comment editing + fixes (@Transactional, unique constraint) |
+| 10 | Bean Validation on entities + @Valid + BindingResult in controllers |
+| 11 | Custom error page (404/403/500) via templates/error.html |
+| 12 | Match pagination per tournament (5/page, most recent first) |
+| 13 | Player search and filters by name/surname and position |
 
 ---
 
-## Entrega
+## Submission
 
-- **Destinatario:** siw.roma3@gmail.com
-- **Asunto:** `[Giugno 2026 PROGETTO DOCENTE] Rejón Camacho 652799`
-- **Contenido:** URL del repositorio GitHub + malfuncionamientos conocidos + consideraciones generales
-- **Malfuncionamientos conocidos:** ninguno
+- **To:** siw.roma3@gmail.com
+- **Subject:** `[Giugno 2026 PROGETTO DOCENTE] Rejón Camacho 652799`
+- **Body:** GitHub repository URL + known malfunctions + general considerations
+- **Known malfunctions:** none (a referee validation bug was discovered during a thorough QA audit and has been successfully resolved)
+
+---
+
+## Exhaustive QA & Solved Bugs
+
+After a comprehensive Quality Assurance (QA) session testing all CRUD operations, user roles, security, and edge cases, we found and solved the following issue:
+
+### 1. Referee Edit Validation Bug (Resolved)
+- **Description:** When editing an existing referee, the database uniqueness check for the `refereeCode` was also scanning the record itself, resulting in a false-positive duplicate error ("Este código arbitral ya está asignado a otro árbitro") when saving the form without modifying the code.
+- **Fix:**
+  - Added `existsByRefereeCodeAndIdNot(String refereeCode, Long id)` to `RefereeRepository`.
+  - Updated `RefereeController` to conditionally check uniqueness: utilizing the ID-excluding query on updates and the standard query on new entries.
+  - This allows existing referee records to be successfully edited and saved with their original codes.
+
