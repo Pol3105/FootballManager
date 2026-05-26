@@ -309,4 +309,17 @@ n+1/
 - **Destinatario:** siw.roma3@gmail.com
 - **Oggetto:** `[Giugno 2026 PROGETTO DOCENTE] Rejón Camacho 652799`
 - **Contenuto:** URL repository GitHub + malfunzionamenti noti + considerazioni generali
-- **Malfunzionamenti noti:** nessuno
+- **Malfunzionamenti noti:** nessuno (un bug di validazione sulla modifica dell'arbitro è stato rilevato durante un QA approfondito ed è stato risolto con successo)
+
+---
+
+## QA Approfondito & Bug Risolti
+
+A seguito di una sessione completa di Quality Assurance (QA) per testare tutte le operazioni CRUD, i ruoli utente, la sicurezza ed i casi limite, abbiamo riscontrato e risolto il seguente problema:
+
+### 1. Bug di validazione nella modifica dell'arbitro (Risolto)
+- **Descrizione:** Durante la modifica di un arbitro esistente, il controllo di unicità del `refereeCode` nel database includeva erroneamente anche il record stesso dell'arbitro in fase di modifica. Di conseguenza, il salvataggio lanciava un falso errore di codice duplicato ("Este código arbitral ya está asignado a otro árbitro") se il codice non veniva modificato.
+- **Soluzione:**
+  - Aggiunto il metodo `existsByRefereeCodeAndIdNot(String refereeCode, Long id)` nel `RefereeRepository`.
+  - Aggiornato `RefereeController` per eseguire la verifica di unicità escludendo l'ID dell'arbitro corrente in fase di modifica, ed eseguendo la query standard solo per le nuove creazioni.
+  - Questo permette di modificare e salvare correttamente i record degli arbitri esistenti mantenendo il proprio codice originale.
