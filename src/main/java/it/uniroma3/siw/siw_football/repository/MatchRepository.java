@@ -32,4 +32,16 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
                "LEFT JOIN FETCH m.awayTeam " +
                "WHERE m.id = :id")
         Optional<Match> findByIdWithComments(@Param("id") Long id);
+
+        /**
+         * Solución completa N+1: carga match + homeTeam + awayTeam + tournament + referee
+         * en una sola query SQL con JOIN. Usado en el análisis experimental de rendimiento.
+         */
+        @Query("SELECT m FROM Match m " +
+               "LEFT JOIN FETCH m.homeTeam " +
+               "LEFT JOIN FETCH m.awayTeam " +
+               "LEFT JOIN FETCH m.tournament " +
+               "LEFT JOIN FETCH m.referee " +
+               "WHERE m.id = :id")
+        Optional<Match> findByIdWithDetails(@Param("id") Long id);
 }
