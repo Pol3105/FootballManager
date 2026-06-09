@@ -40,6 +40,14 @@
                    style="color: var(--color-danger); font-size: 0.8rem; margin-top: 4px;">Error</p>
             </div>
 
+            <div class="form__group">
+                <label class="form__label" for="securityAnswer">Verificación humana: ¿Cuánto es 5 + 3?</label>
+                <input type="text" id="securityAnswer" name="securityAnswer" class="form__input"
+                       placeholder="Respuesta en número" required/>
+                <p th:if="${securityError}"
+                   style="color: var(--color-danger); font-size: 0.8rem; margin-top: 4px;" th:text="${securityError}"></p>
+            </div>
+
             <button type="submit" class="btn btn--primary auth-submit">
                 ✅ Crear Cuenta
             </button>

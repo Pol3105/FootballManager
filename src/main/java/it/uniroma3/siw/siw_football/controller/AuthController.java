@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import it.uniroma3.siw.siw_football.model.User;
 import it.uniroma3.siw.siw_football.service.UserService;
@@ -31,7 +32,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result) {
+    public String registerUser(@Valid @ModelAttribute("user") User user, 
+                               BindingResult result,
+                               @RequestParam(value = "securityAnswer", required = false) String securityAnswer,
+                               Model model) {
+        
+        // Reto matemático anti-bot
+        if (securityAnswer == null || !"8".equals(securityAnswer.trim())) {
+            model.addAttribute("securityError", "Respuesta incorrecta. Por favor, resuelve la suma para demostrar que eres humano.");
+            return "register";
+        }
+
         if (result.hasErrors()) {
             return "register";
         }
