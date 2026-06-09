@@ -64,4 +64,9 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    @Bean
+    public org.springframework.web.servlet.resource.ResourceUrlEncodingFilter resourceUrlEncodingFilter() {
+        return new org.springframework.web.servlet.resource.ResourceUrlEncodingFilter();
+    }
 }
