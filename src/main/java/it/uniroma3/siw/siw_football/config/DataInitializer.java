@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,12 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired private RefereeService refereeService;
     @Autowired private UserService userService;
     @Autowired private PasswordEncoder passwordEncoder;
+
+    @Value("${admin.password}")
+    private String adminPassword;
+
+    @Value("${user.password}")
+    private String userPassword;
 
     @Override
     public void run(String... args) throws Exception {
@@ -298,19 +305,22 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createUsers() {
-        if (userService.findByUsername("admin") == null) {
-            User admin = new User();
+        User admin = userService.findByUsername("admin");
+        if (admin == null) {
+            admin = new User();
             admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin"));
             admin.setRole("ADMIN");
-            userService.saveUser(admin);
         }
-        if (userService.findByUsername("pablo") == null) {
-            User user = new User();
+        admin.setPassword(passwordEncoder.encode(adminPassword));
+        userService.saveUser(admin);
+
+        User user = userService.findByUsername("pablo");
+        if (user == null) {
+            user = new User();
             user.setUsername("pablo");
-            user.setPassword(passwordEncoder.encode("1234"));
             user.setRole("USER");
-            userService.saveUser(user);
         }
+        user.setPassword(passwordEncoder.encode(userPassword));
+        userService.saveUser(user);
     }
 }
