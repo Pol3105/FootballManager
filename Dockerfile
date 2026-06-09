@@ -1,3 +1,4 @@
+# Test dummy commit to trigger auto-deploy workflow
 # Stage 1: Build the application
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 WORKDIR /app
