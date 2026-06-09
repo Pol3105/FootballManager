@@ -332,19 +332,38 @@ This project is configured to be deployed automatically to a Hetzner VPS (IP: `1
 
 ### 1. Port Configuration & Isolation (.env)
 We run the entire application (monolithic Spring Boot + PostgreSQL) in Docker:
-- Create a `.env` file in `/home/pablo/apps/uni/` with your database credentials.
-- **Security:** Ports are mapped only to `127.0.0.1` (`127.0.0.1:8081:8081` for the app and `127.0.0.1:5435:5432` for PostgreSQL) to prevent direct external access via the firewall.
-- **Spring Boot Multi-stage Build:** The app compiles and runs inside Docker using `Dockerfile`.
+- Create a `.env` file in the root of your project `/home/pablo/apps/uni/FootballManager/.env` with your database credentials.
+- **Configurable Credentials:** You can set secure production passwords for default users in the `.env` file:
+  ```env
+  ADMIN_PASSWORD=your_secure_admin_password
+  USER_PASSWORD=your_secure_pablo_password
+  ```
+  On container startup, Spring Boot automatically updates the password hashes in the database using these variables.
+- **Security:** Ports are mapped only to `127.0.0.1` (`127.0.0.1:8081:8081` for the app and `127.0.0.1:5435:5432` for PostgreSQL) to prevent direct external access.
+- **Spring Boot Multi-stage Build:** The app compiles and runs inside Docker using a multi-stage `Dockerfile`.
 
-### 2. Caddy Reverse Proxy
-Add the following block to your Caddyfile at `/etc/caddy/Caddyfile`:
+### 2. Caddy Reverse Proxy (Docker Network Integration)
+Since Caddy is running in Docker (container `caddy-caddy-1`) on the VPS, both Caddy and the application container (`siw_football_app`) join the shared external docker network `proxy-network`.
+Add the following block to your Caddyfile:
 ```caddy
 uni.pablo-server.178.105.2.24.sslip.io {
-    reverse_proxy localhost:8081
+    reverse_proxy siw_football_app:8081
 }
 ```
 
-### 3. CI/CD with GitHub Actions
+### 3. PWA & macOS "Add to Dock" Integration
+We added support for Progressive Web Apps (PWA) and macOS standalone web apps:
+- Icons (favicon, Apple touch icons) and `site.webmanifest` are located in `src/main/resources/static/`.
+- The manifest has been configured with the app name `SIW Football Manager` and branding colors.
+- **Security Config:** Spring Security (`SecurityConfig.java`) permits public access to `/favicon.ico`, `/*.png`, `/site.webmanifest`, and `/about.txt` so they can be loaded by browsers/macOS without auth redirects.
+- In Safari on macOS, choose **File > Add to Dock...** to install the application with a high-resolution soccer ball icon.
+
+### 4. Anti-Bot Register Spam Protection (Math Challenge + fail2ban)
+To prevent malicious bots from spamming the database with registration queries:
+- **Math Verification:** Added a math challenge (*"Verificación humana: ¿Cuánto es 5 + 3?"*) to the `/register` form. The backend verifies the answer is exactly `8` before executing database queries or password encoding.
+- **fail2ban Protection:** Added a jail `caddy-register` on the host to monitor Caddy logs and block IPs that make excessive POST requests to `/register` (more than 5 attempts per minute).
+
+### 5. CI/CD with GitHub Actions
 Pushing to the `vps-deploy` branch triggers `.github/workflows/deploy.yml` which logs into the VPS via SSH, fetches changes, and runs:
 ```bash
 docker compose down
