@@ -370,3 +370,17 @@ docker compose down
 docker compose up -d --build
 ```
 
+### 6. Secure Database Management (TablePlus / SSH Tunnel)
+Since PostgreSQL is bound strictly to `127.0.0.1:5435` on the VPS host, you can connect to it visually and securely from your Mac using **TablePlus** via an **SSH Tunnel**:
+- **Connection Details (PostgreSQL):**
+  - **Host:** `127.0.0.1` (refers to the localhost of the VPS itself once the tunnel is active)
+  - **Port:** `5435`
+  - **User / Password / Database:** As defined in your `.env` configuration file.
+- **SSH Tunnel Settings:**
+  - Click the **Over SSH** button in TablePlus.
+  - **SSH Host:** `178.105.2.24` (VPS IP)
+  - **Port:** `22`
+  - **SSH User:** `pablo`
+  - **Use SSH Key:** Select your private key file from your Mac (e.g. `~/.ssh/id_rsa` or `~/.ssh/id_ed25519`).
+  - Click **Test** and then **Connect**.
+

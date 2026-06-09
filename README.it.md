@@ -369,3 +369,17 @@ L'invio di modifiche al branch `vps-deploy` attiva il workflow `.github/workflow
 docker compose down
 docker compose up -d --build
 ```
+
+### 6. Gestione Sicura del Database (TablePlus / SSH Tunnel)
+Poiché PostgreSQL è mappato strettamente su `127.0.0.1:5435` sul VPS, puoi connetterti visivamente e in sicurezza dal tuo Mac usando **TablePlus** tramite un **túnel SSH** (SSH Tunnel):
+- **Dettagli Connessione (PostgreSQL):**
+  - **Host:** `127.0.0.1` (si riferisce al localhost del VPS stesso una volta attivo il tunnel)
+  - **Port:** `5435`
+  - **User / Password / Database:** Come definiti nel tuo file di configurazione `.env`.
+- **Configurazione SSH Tunnel:**
+  - Fai clic sul pulsante **Over SSH** in TablePlus.
+  - **SSH Host:** `178.105.2.24` (IP del VPS)
+  - **Port:** `22`
+  - **SSH User:** `pablo`
+  - **Use SSH Key:** Seleziona la tua chiave privata SSH dal tuo Mac (ad es. `~/.ssh/id_rsa` o `~/.ssh/id_ed25519`).
+  - Fai clic su **Test** e poi su **Connect**.
