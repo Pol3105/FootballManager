@@ -28,6 +28,7 @@ services:
       - db
     networks:
       - siw-network
+      - proxy-network
 
 volumes:
   postgres_data:
@@ -35,3 +36,5 @@ volumes:
 networks:
   siw-network:
     driver: bridge
+  proxy-network:
+    external: true
