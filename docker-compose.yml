@@ -3,13 +3,35 @@ services:
     image: postgres:15-alpine
     container_name: siw_postgres_db
     environment:
-      POSTGRES_DB: siw_football
-      POSTGRES_USER: siw_user
-      POSTGRES_PASSWORD: siw_password
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5435:5432"
+      - "127.0.0.1:${DB_PORT_HOST}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - siw-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: siw_football_app
+    ports:
+      - "127.0.0.1:${APP_PORT_HOST}:${APP_PORT_CONTAINER}"
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/${DB_NAME}
+      - DB_USERNAME=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      - db
+    networks:
+      - siw-network
 
 volumes:
   postgres_data:
+
+networks:
+  siw-network:
+    driver: bridge

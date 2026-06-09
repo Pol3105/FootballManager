@@ -323,3 +323,30 @@ A seguito di una sessione completa di Quality Assurance (QA) per testare tutte l
   - Aggiunto il metodo `existsByRefereeCodeAndIdNot(String refereeCode, Long id)` nel `RefereeRepository`.
   - Aggiornato `RefereeController` per eseguire la verifica di unicità escludendo l'ID dell'arbitro corrente in fase di modifica, ed eseguendo la query standard solo per le nuove creazioni.
   - Questo permette di modificare e salvare correttamente i record degli arbitri esistenti mantenendo il proprio codice originale.
+
+---
+
+## Distribuzione su VPS Hetzner (vps-deploy branch)
+
+Questo progetto è configurato per essere distribuito automaticamente su un VPS Hetzner (IP: `178.105.2.24`) utilizzando una configurazione completamente Dockerizzata per evitare collisioni di porte e garantire un'elevata sicurezza.
+
+### 1. Configurazione Porte & Isolamento (.env)
+Eseguiamo l'intera applicazione (Spring Boot monolitico + PostgreSQL) in Docker:
+- Crea un file `.env` in `/home/pablo/apps/uni/` con le credenziali del database.
+- **Sicurezza:** Le porte sono mappate solo su `127.0.0.1` (`127.0.0.1:8081:8081` per l'app e `127.0.0.1:5435:5432` per PostgreSQL) per impedire l'accesso esterno diretto tramite il firewall.
+- **Spring Boot Multi-stage Build:** L'applicazione viene compilata ed eseguita all'interno di Docker utilizzando il `Dockerfile`.
+
+### 2. Caddy Reverse Proxy
+Aggiungi il seguente blocco al tuo Caddyfile su `/etc/caddy/Caddyfile`:
+```caddy
+uni.pablo-server.178.105.2.24.sslip.io {
+    reverse_proxy localhost:8081
+}
+```
+
+### 3. CI/CD con GitHub Actions
+L'invio di modifiche al branch `vps-deploy` attiva il workflow `.github/workflows/deploy.yml` che effettua l'accesso al VPS tramite SSH, scarica le modifiche ed esegue:
+```bash
+docker compose down
+docker compose up -d --build
+```

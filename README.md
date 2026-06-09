@@ -324,3 +324,30 @@ After a comprehensive Quality Assurance (QA) session testing all CRUD operations
   - Updated `RefereeController` to conditionally check uniqueness: utilizing the ID-excluding query on updates and the standard query on new entries.
   - This allows existing referee records to be successfully edited and saved with their original codes.
 
+---
+
+## VPS Hetzner Deployment (vps-deploy branch)
+
+This project is configured to be deployed automatically to a Hetzner VPS (IP: `178.105.2.24`) using a fully Dockerized setup to avoid port collisions and maintain high security.
+
+### 1. Port Configuration & Isolation (.env)
+We run the entire application (monolithic Spring Boot + PostgreSQL) in Docker:
+- Create a `.env` file in `/home/pablo/apps/uni/` with your database credentials.
+- **Security:** Ports are mapped only to `127.0.0.1` (`127.0.0.1:8081:8081` for the app and `127.0.0.1:5435:5432` for PostgreSQL) to prevent direct external access via the firewall.
+- **Spring Boot Multi-stage Build:** The app compiles and runs inside Docker using `Dockerfile`.
+
+### 2. Caddy Reverse Proxy
+Add the following block to your Caddyfile at `/etc/caddy/Caddyfile`:
+```caddy
+uni.pablo-server.178.105.2.24.sslip.io {
+    reverse_proxy localhost:8081
+}
+```
+
+### 3. CI/CD with GitHub Actions
+Pushing to the `vps-deploy` branch triggers `.github/workflows/deploy.yml` which logs into the VPS via SSH, fetches changes, and runs:
+```bash
+docker compose down
+docker compose up -d --build
+```
+

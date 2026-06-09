@@ -1,0 +1,26 @@
+name: Deploy to VPS Hetzner
+
+on:
+  push:
+    branches:
+      - vps-deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 178.105.2.24
+          username: pablo
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /home/pablo/apps/uni
+            # Descargar la última versión de la rama de despliegue
+            git fetch origin vps-deploy
+            git reset --hard origin/vps-deploy
+            
+            # Reconstruir y levantar los contenedores con la nueva versión
+            docker compose down
+            docker compose up -d --build
