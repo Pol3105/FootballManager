@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head><meta charset="UTF-8"><title>Fragments</title></head>
+<body>
+
+<!-- ═══════════ Fondo Ethereal Shadow (site-wide) ═══════════ -->
+<div th:fragment="ethereal" class="ethereal-bg" aria-hidden="true">
+    <svg class="ethereal-bg__svg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <filter id="ethereal-filter">
+                <feTurbulence result="undulation" numOctaves="2"
+                              baseFrequency="0.0008,0.0025" seed="0" type="turbulence"/>
+                <feColorMatrix in="undulation" type="hueRotate" values="180">
+                    <animate attributeName="values" from="0" to="360"
+                             dur="30s" repeatCount="indefinite"/>
+                </feColorMatrix>
+                <feColorMatrix in="dist" result="circulation" type="matrix"
+                               values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0"/>
+                <feDisplacementMap in="SourceGraphic" in2="circulation" scale="60" result="dist"/>
+                <feDisplacementMap in="dist" in2="undulation" scale="60" result="output"/>
+            </filter>
+        </defs>
+    </svg>
+    <div class="ethereal-bg__shape"></div>
+    <div class="ethereal-bg__noise"></div>
+</div>
+
+<!-- ═══════════ Dock macOS (navegación) ═══════════ -->
+<nav th:fragment="dock" class="dock" data-dock aria-label="Navegación rápida">
+    <a th:href="@{/players}" class="dock__item" data-label="Jugadores"><span>🏃</span></a>
+    <a th:href="@{/referees}" class="dock__item" data-label="Árbitros"><span>🧑‍⚖️</span></a>
+    <a th:href="@{/teams}" class="dock__item" data-label="Equipos"><span>📋</span></a>
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/tournament/new}"
+       class="dock__item dock__item--admin" data-label="Nuevo Torneo"><span>➕</span></a>
+</nav>
+
+<!-- ═══════════ Footer ═══════════ -->
+<footer th:fragment="footer" class="site-footer">
+    <div class="site-footer__glow"></div>
+    <div class="site-footer__inner">
+        <div class="site-footer__brand">
+            <div class="site-footer__logo">
+                <span class="site-footer__logo-icon">⚽</span>
+                <span class="site-footer__logo-text">SIW Football</span>
+            </div>
+            <p class="site-footer__desc">
+                Plataforma de gestión de torneos, equipos, jugadores y árbitros.
+                Proyecto SIW — Università Roma Tre.
+            </p>
+        </div>
+
+        <div class="site-footer__cols">
+            <div class="site-footer__col">
+                <p class="site-footer__col-title">Navegación</p>
+                <ul>
+                    <li><a th:href="@{/}">Torneos</a></li>
+                    <li><a th:href="@{/players}">Jugadores</a></li>
+                    <li><a th:href="@{/referees}">Árbitros</a></li>
+                    <li><a th:href="@{/teams}">Equipos</a></li>
+                </ul>
+            </div>
+            <div class="site-footer__col">
+                <p class="site-footer__col-title">Cuenta</p>
+                <ul>
+                    <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Iniciar sesión</a></li>
+                    <li sec:authorize="isAnonymous()"><a th:href="@{/register}">Registro</a></li>
+                    <li sec:authorize="isAuthenticated()"><span sec:authentication="name">Usuario</span></li>
+                </ul>
+            </div>
+            <div class="site-footer__col">
+                <p class="site-footer__col-title">Info</p>
+                <ul>
+                    <li><span>Proyecto SIW 2025/26</span></li>
+                    <li><a href="mailto:siw@uniroma3.it">siw@uniroma3.it</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <p class="site-footer__copy">&copy; 2026 SIW Football — Università Roma Tre</p>
+</footer>
+
+</body>
+</html>

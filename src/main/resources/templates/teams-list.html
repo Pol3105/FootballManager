@@ -13,6 +13,8 @@
     <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
 </head>
 <body>
+<div th:replace="~{fragments :: ethereal}"></div>
+
 
 <nav class="navbar">
     <a th:href="@{/}" class="navbar__brand">
@@ -90,5 +92,9 @@ function confirmDeleteTeam(id) {
     }).then(r => { if (r.isConfirmed) window.location.href = '/admin/team/delete/' + id; });
 }
 </script>
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: dock}"></div>
+<script th:src="@{/js/dock.js}"></script>
+
 </body>
 </html>

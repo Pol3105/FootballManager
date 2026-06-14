@@ -6,6 +6,11 @@
 /* Fallback font import if variables.css not loaded */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap');
 
+/* Componentes site-wide (fondo, dock, footer) — disponibles en todas las páginas */
+@import url('etheral-shadow.css');
+@import url('dock.css');
+@import url('footer.css');
+
 /* Fallback :root — same values as variables.css */
 :root {
   --color-pitch:        #4a372e;
@@ -96,6 +101,7 @@ code {
 /* ── 3. Layout ──────────────────────────────────────────── */
 .main-content {
   padding: var(--space-xl) var(--space-md);
+  padding-bottom: 110px; /* espacio para el dock fijo inferior */
 }
 
 /* Legacy body.page support */
@@ -200,44 +206,86 @@ code {
 }
 
 
-/* ── 6. Tournament card ─────────────────────────────────── */
+/* ── 6. Tournament card (clicable, hover expande descripción) ── */
 .tournament-card {
-  background: var(--color-white);
-  border-radius: var(--radius-md);
-  padding: var(--space-lg);
-  box-shadow: var(--shadow-card);
-  border-top: 4px solid var(--color-pitch-light);
-  transition: transform var(--transition), box-shadow var(--transition);
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
 .tournament-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   box-shadow: var(--shadow-hover);
 }
 
+/* Banda superior con gradiente de marca + balón */
+.tournament-card__banner {
+  position: relative;
+  height: 96px;
+  background: linear-gradient(135deg, var(--color-pitch) 0%, var(--primary) 55%, var(--color-pitch-light) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.tournament-card__banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 46px);
+}
+.tournament-card__ball { font-size: 2.4rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); position: relative; }
+
+.tournament-card__teams {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(4px);
+}
+
+.tournament-card__body { padding: var(--space-lg); display: flex; flex-direction: column; gap: 4px; }
+
+.tournament-card__meta { font-size: 0.8rem; color: var(--muted-foreground); }
+
 .tournament-card__title {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: var(--color-night);
+  color: var(--foreground);
+  line-height: 1.2;
 }
 
-.tournament-card__meta { font-size: 0.875rem; color: var(--color-gray-600); }
-
-.tournament-card__link {
-  display: inline-block;
-  margin-top: auto;
-  padding-top: var(--space-sm);
-  font-weight: 600;
-  color: var(--color-pitch-mid);
-  font-size: 0.9rem;
-  transition: color var(--transition);
+/* Descripción: oculta por defecto, se revela al hover */
+.tournament-card__desc {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-top: 0;
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+  line-height: 1.55;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
 }
-
-.tournament-card__link:hover { color: var(--color-pitch); }
+.tournament-card:hover .tournament-card__desc,
+.tournament-card:focus-visible .tournament-card__desc {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: var(--space-sm);
+}
 
 
 /* ── 7. Team badge ──────────────────────────────────────── */
