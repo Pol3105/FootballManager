@@ -19,7 +19,7 @@
 
 <nav class="navbar">
     <a th:href="@{/}" class="navbar__brand">
-        <span class="navbar__brand-icon">⚽</span>
+        <img th:src="@{/logo.webp}" alt="Logo" class="navbar__brand-logo"/>
         <span class="navbar__brand-text">SIW Football</span>
     </a>
     <div class="navbar__right">
@@ -38,7 +38,7 @@
 
         <!-- Hero header -->
         <header class="site-header blur-fade" style="animation-delay:0.02s;">
-            <h1 class="site-header__title">⚽ SIW Football Manager</h1>
+            <h1 class="site-header__title"><img th:src="@{/logo.webp}" alt="Logo" class="site-header__logo-img"/> SIW Football Manager</h1>
             <p class="site-header__subtitle">Plataforma oficial de gestión de torneos</p>
         </header>
 
@@ -52,7 +52,7 @@
             <div class="grid-tournaments">
                 <a th:each="t : ${tournaments}" th:href="@{/tournament/{id}(id=${t.id})}" class="tournament-card">
                     <div class="tournament-card__banner">
-                        <span class="tournament-card__ball">⚽</span>
+                        <img th:src="@{/logo.webp}" alt="Logo" class="tournament-card__logo-img"/>
                         <span class="tournament-card__teams"
                               th:text="${#lists.size(t.teams)} + ' equipos'">0 equipos</span>
                     </div>

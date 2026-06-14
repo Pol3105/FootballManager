@@ -75,6 +75,37 @@
   .grid-tournaments .tournament-card { animation: none; }
 }
 
+/* ── Estilos de logos WebP ──────────────────────────────── */
+.navbar__brand-logo {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+.site-header__logo-img {
+  height: 48px;
+  width: auto;
+  vertical-align: middle;
+  margin-right: var(--space-xs);
+  display: inline-block;
+}
+.site-footer__logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+  margin: 0 auto var(--space-xs) auto;
+}
+.tournament-card__logo-img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  margin-bottom: var(--space-xs);
+}
+.auth-logo-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
 /* ── 1. Reset & Base ────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
