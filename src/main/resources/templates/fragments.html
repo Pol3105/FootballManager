@@ -169,15 +169,17 @@
             <div class="modal-field">
                 <label>Asignar a Torneos</label>
                 <div class="grid-list" role="group" aria-label="Selección de torneos">
-                    <div th:each="t : ${tournaments}" class="grid-list-item">
-                        <label class="custom-checkbox">
-                            <input type="checkbox" name="tournaments" th:value="${t.id}" class="tournament-checkbox"/>
-                            <span class="checkbox-indicator">
-                                <svg class="checkbox-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"></path></svg>
-                            </span>
-                            <span class="checkbox-label" th:text="${t.name}">Nombre del torneo</span>
-                        </label>
-                    </div>
+                    <th:block th:if="${tournaments != null}">
+                        <div th:each="t : ${tournaments}" class="grid-list-item">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" name="tournaments" th:value="${t.id}" class="tournament-checkbox"/>
+                                <span class="checkbox-indicator">
+                                    <svg class="checkbox-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                                </span>
+                                <span class="checkbox-label" th:text="${t.name}">Nombre del torneo</span>
+                            </label>
+                        </div>
+                    </th:block>
                 </div>
             </div>
 

@@ -39,7 +39,7 @@
     <a th:href="@{/}" class="back-link">← Panel Principal</a>
 
     <div class="section-header">
-        <h1>👨‍⚖️ Cuerpo Arbitral</h1>
+        <h1>Cuerpo Arbitral</h1>
         <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/referee/new}"
            class="btn btn--primary btn--sm" style="margin-left: auto;">➕ Nuevo Árbitro</a>
     </div>
@@ -48,22 +48,32 @@
         No hay árbitros registrados aún.
     </div>
 
-    <div class="grid-players">
-        <div th:each="referee : ${referees}" class="player-card"
-             style="border-left-color: var(--color-info);">
-            <div class="player-info">
-                <span class="player-card__name" th:text="${referee.name} + ' ' + ${referee.surname}">Nombre</span>
-                <p class="text-muted" style="margin-bottom: 0; font-size: 0.8rem;">
-                    🆔 Código: <code th:text="${referee.refereeCode}">REF-001</code>
-                </p>
-            </div>
+    <div class="grid-teams">
+        <div th:each="referee : ${referees}" class="card-container">
+            <div class="frosted-glass-card" style="border-left: 6px solid #e11d48; --team-color: #e11d48;">
+                <div class="frosted-card-content">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div style="width: 24px; height: 32px; background: #e11d48; border-radius: 4px; box-shadow: 0 4px 10px rgba(225,29,72,0.4); margin-bottom: 8px;"></div>
+                        <div>
+                            <h2 class="text-xl font-bold" th:text="${referee.name} + ' ' + ${referee.surname}">Nombre</h2>
+                            <p class="text-muted" style="font-size: 0.82rem; margin-top: 2px;">
+                                Código: <code th:text="${referee.refereeCode}">REF-001</code>
+                            </p>
+                        </div>
+                    </div>
 
-            <div sec:authorize="hasRole('ADMIN')" class="action-group" style="margin-top: 0; margin-left: auto;">
-                <a th:href="@{/admin/referee/edit/{id}(id=${referee.id})}" class="btn btn--warning btn--sm">✏️</a>
-                <button type="button" class="btn btn--danger btn--sm"
-                        th:data-id="${referee.id}"
-                        th:data-name="${referee.name} + ' ' + ${referee.surname}"
-                        onclick="confirmDeleteReferee(this)">🗑️</button>
+                    <div sec:authorize="hasRole('ADMIN')" style="display:flex; gap: 8px; justify-content: flex-end; margin-top: var(--space-md);">
+                        <a th:href="@{/admin/referee/edit/{id}(id=${referee.id})}" class="btn btn--warning btn--sm">
+                            <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </a>
+                        <button type="button" class="btn btn--danger btn--sm"
+                                th:data-id="${referee.id}"
+                                th:data-name="${referee.name} + ' ' + ${referee.surname}"
+                                onclick="confirmDeleteReferee(this)">
+                            <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
