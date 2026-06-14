@@ -73,7 +73,7 @@
                             <span>Opciones</span>
                             <svg style="width:14px;height:14px;margin-left:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </button>
-                        <div class="team-dropdown-menu" hidden style="position: absolute; right: 0; bottom: calc(100% + 6px); background: var(--color-white); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-deep); padding: var(--space-xs); display: flex; flex-direction: column; gap: 4px; min-width: 140px; z-index: 20;">
+                        <div class="team-dropdown-menu" style="display: none; position: absolute; right: 0; bottom: calc(100% + 6px); background: var(--color-white); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-deep); padding: var(--space-xs); flex-direction: column; gap: 4px; min-width: 140px; z-index: 20;">
                             <button type="button" class="btn btn--ghost btn--sm edit-team-btn" style="justify-content: flex-start; width: 100%; text-align: left; font-size: 0.82rem; padding: 6px 12px; color: var(--color-night);"
                                     th:data-id="${team.id}"
                                     th:data-name="${team.name}"

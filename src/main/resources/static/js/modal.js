@@ -179,7 +179,7 @@
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       // Cerrar todos los dropdowns al hacer clic en editar
-      document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.hidden = true; });
+      document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.style.display = 'none'; });
     });
   });
 
@@ -188,19 +188,19 @@
     trigger.addEventListener('click', function (e) {
       e.stopPropagation();
       var menu = trigger.nextElementSibling;
-      var isHidden = menu.hidden;
+      var isClosed = menu.style.display === 'none';
       
       // Cerrar otros menús abiertos
-      document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.hidden = true; });
+      document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.style.display = 'none'; });
       
-      menu.hidden = !isHidden;
+      menu.style.display = isClosed ? 'flex' : 'none';
     });
   });
 
   // Cerrar menús al hacer click fuera
   document.addEventListener('click', function () {
     document.querySelectorAll('.team-dropdown-menu').forEach(function (el) {
-      el.hidden = true;
+      el.style.display = 'none';
     });
   });
 
