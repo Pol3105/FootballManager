@@ -49,7 +49,7 @@
     </div>
 
     <div class="grid-teams">
-        <div th:each="team : ${teams}" class="card-container">
+        <div th:each="team, iter : ${teams}" class="card-container blur-fade" th:style="'animation-delay:' + ${iter.index * 0.08} + 's;'">
             <div class="frosted-glass-card team-clickable-card" th:data-href="@{/team/{id}/players(id=${team.id})}" style="cursor: pointer; --team-color: var(--color-pitch-light);">
                 <div class="frosted-card-content">
                     <div class="flex items-center gap-4 mb-4">
@@ -68,23 +68,30 @@
                         <span th:if="${#lists.isEmpty(team.tournaments)}" style="color: var(--color-gray-400);">Sin torneo asignado</span>
                     </p>
 
-                    <div sec:authorize="hasRole('ADMIN')" style="display:flex; gap: 8px; justify-content: flex-end; margin-top: var(--space-md); position: relative; z-index: 10;">
-                        <button type="button" class="btn btn--warning btn--sm edit-team-btn"
-                                th:data-id="${team.id}"
-                                th:data-name="${team.name}"
-                                th:data-city="${team.city}"
-                                th:data-year="${team.foundationYear}"
-                                th:data-tournaments="${#strings.listJoin(team.tournaments.![id], ',')}">
-                            <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <div sec:authorize="hasRole('ADMIN')" class="team-dropdown-container" style="display:flex; justify-content: flex-end; margin-top: var(--space-md); position: relative; z-index: 10;">
+                        <button type="button" class="btn btn--outline btn--sm team-dropdown-trigger" style="border-color: var(--color-gray-300); color: var(--color-night); padding: 4px 8px;">
+                            <span>Opciones</span>
+                            <svg style="width:14px;height:14px;margin-left:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </button>
-                        <button type="button" class="btn-hold-and-release btn-delete-team"
-                                th:data-id="${team.id}">
-                            <div class="hold-progress"></div>
-                            <span class="hold-content">
-                                <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                <span class="hold-text">Eliminar</span>
-                            </span>
-                        </button>
+                        <div class="team-dropdown-menu" hidden style="position: absolute; right: 0; bottom: calc(100% + 6px); background: var(--color-white); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-deep); padding: var(--space-xs); display: flex; flex-direction: column; gap: 4px; min-width: 140px; z-index: 20;">
+                            <button type="button" class="btn btn--ghost btn--sm edit-team-btn" style="justify-content: flex-start; width: 100%; text-align: left; font-size: 0.82rem; padding: 6px 12px; color: var(--color-night);"
+                                    th:data-id="${team.id}"
+                                    th:data-name="${team.name}"
+                                    th:data-city="${team.city}"
+                                    th:data-year="${team.foundationYear}"
+                                    th:data-tournaments="${#strings.listJoin(team.tournaments.![id], ',')}">
+                                <svg style="width:14px;height:14px;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                Editar
+                            </button>
+                            <button type="button" class="btn-hold-and-release btn-delete-team" style="width: 100%; border: none !important; border-radius: var(--radius-sm);"
+                                    th:data-id="${team.id}">
+                                <div class="hold-progress"></div>
+                                <span class="hold-content">
+                                    <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    <span class="hold-text" style="font-size: 0.82rem;">Eliminar</span>
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -178,6 +178,29 @@
   document.querySelectorAll('.edit-team-btn').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
+      // Cerrar todos los dropdowns al hacer clic en editar
+      document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.hidden = true; });
+    });
+  });
+
+  // Toggle de Dropdown Menu
+  document.querySelectorAll('.team-dropdown-trigger').forEach(function (trigger) {
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var menu = trigger.nextElementSibling;
+      var isHidden = menu.hidden;
+      
+      // Cerrar otros menús abiertos
+      document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.hidden = true; });
+      
+      menu.hidden = !isHidden;
+    });
+  });
+
+  // Cerrar menús al hacer click fuera
+  document.addEventListener('click', function () {
+    document.querySelectorAll('.team-dropdown-menu').forEach(function (el) {
+      el.hidden = true;
     });
   });
 

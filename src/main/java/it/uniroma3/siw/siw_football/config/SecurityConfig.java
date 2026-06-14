@@ -71,6 +71,11 @@ public class SecurityConfig {
             .logout((logout) -> logout
                 .logoutSuccessUrl("/")
                 .permitAll()
+            )
+            .rememberMe((remember) -> remember
+                .userDetailsService(userDetailsService)
+                .key("siw-football-remember-me-key")
+                .tokenValiditySeconds(86400 * 14) // 14 días
             );
 
         return http.build();
