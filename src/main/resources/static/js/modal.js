@@ -55,6 +55,9 @@
       plusBtn.removeAttribute('data-open-modal');
       plusBtn.setAttribute('href', '/admin/player/new');
       plusBtn.setAttribute('data-label', 'Nuevo Jugador');
+    } else if (window.location.pathname.startsWith('/team/')) {
+      plusBtn.setAttribute('data-open-modal', 'player-modal');
+      plusBtn.setAttribute('data-label', 'Fichar Jugador');
     } else {
       plusBtn.setAttribute('data-open-modal', 'tournament-modal');
       plusBtn.setAttribute('data-label', 'Nuevo Torneo');
@@ -217,6 +220,26 @@
       document.getElementById('player-position').value = '';
       document.getElementById('player-team').value = '';
       document.getElementById('player-title').textContent = 'Añadir nuevo jugador';
+      document.getElementById('player-submit-btn').textContent = 'Guardar jugador';
+      document.getElementById('player-form').setAttribute('action', '/admin/player/save');
+    });
+  }
+
+  // Asegurar que al abrir para añadir jugador desde la vista de equipo se limpie y pre-seleccione
+  if (plusBtn && window.location.pathname.startsWith('/team/')) {
+    plusBtn.addEventListener('click', function () {
+      document.getElementById('player-id').value = '';
+      document.getElementById('player-name').value = '';
+      document.getElementById('player-surname').value = '';
+      document.getElementById('player-birth').value = '';
+      document.getElementById('player-height').value = '';
+      document.getElementById('player-position').value = '';
+      if (typeof CURRENT_TEAM_ID !== 'undefined' && CURRENT_TEAM_ID !== null) {
+        document.getElementById('player-team').value = CURRENT_TEAM_ID;
+      } else {
+        document.getElementById('player-team').value = '';
+      }
+      document.getElementById('player-title').textContent = 'Fichar Jugador';
       document.getElementById('player-submit-btn').textContent = 'Guardar jugador';
       document.getElementById('player-form').setAttribute('action', '/admin/player/save');
     });

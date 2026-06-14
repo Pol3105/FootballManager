@@ -36,65 +36,178 @@
 <main class="main-content">
 <div class="container">
 
-    <a href="javascript:history.back()" class="back-link">← Volver atrás</a>
+    <a href="javascript:history.back()" class="back-link">
+        <svg style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>Volver atrás
+    </a>
 
     <div class="section-header">
         <div style="flex: 1;">
-            <h1 th:text="'🛡️ ' + ${team.name}">Nombre del Equipo</h1>
-            <p class="text-muted" style="margin-bottom: 0;">
-                📅 Fundado en <strong th:text="${team.foundationYear}">1900</strong>
-                &nbsp;·&nbsp;
-                📍 <strong th:text="${team.city}">Ciudad</strong>
-            </p>
+            <h1 th:text="${team.name}">Nombre del Equipo</h1>
+            <div class="flex items-center gap-4 text-muted mt-2" style="display: flex; gap: 16px; align-items: center; color: var(--color-gray-600); font-size: 0.88rem;">
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
+                    <svg style="width:14px;height:14px;color:var(--primary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    Fundado en <strong th:text="${team.foundationYear}">1900</strong>
+                </span>
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
+                    <svg style="width:14px;height:14px;color:var(--primary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <strong th:text="${team.city}">Ciudad</strong>
+                </span>
+            </div>
         </div>
-        <a sec:authorize="hasRole('ADMIN')"
-           th:href="@{/admin/player/new(teamId=${team.id})}"
-           class="btn btn--primary btn--sm" style="margin-left: auto;">+ Fichar Jugador</a>
     </div>
 
     <div th:if="${#lists.isEmpty(team.players)}" class="empty-state">
         <p>No hay jugadores registrados en este equipo.</p>
     </div>
 
-    <div class="grid-players">
-        <div th:each="player : ${team.players}" class="player-card">
-            <div class="player-info">
-                <span class="player-card__name" th:text="${player.name} + ' ' + ${player.surname}">Nombre</span>
-                <span class="player-card__position" th:text="${player.position}">Posición</span>
+    <!-- Tabla Premium de Jugadores del Equipo -->
+    <div th:if="${!#lists.isEmpty(team.players)}" class="card" style="padding:0; overflow:hidden; margin-bottom:var(--space-xl);">
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; padding:var(--space-lg); border-bottom:1px solid var(--border); flex-wrap:wrap; gap:var(--space-md);">
+            <div>
+                <h3 style="margin:0; font-size:1.2rem; font-weight:700;">Plantilla</h3>
+                <p style="margin:4px 0 0 0; font-size:0.82rem; color:var(--color-gray-400);">Lista de jugadores activos del club.</p>
             </div>
+            <!-- Botón Mostrar/Ocultar Columnas -->
+            <div style="position:relative;">
+                <button type="button" id="col-toggle-btn" class="btn btn--outline btn--sm" style="display:flex; align-items:center; gap:6px;">
+                    <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Columnas</span>
+                </button>
+                <div id="col-toggle-dropdown" class="team-dropdown-menu" style="display:none; position:absolute; right:0; top:calc(100% + 6px); background:var(--color-white); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-deep); padding:var(--space-xs); flex-direction:column; gap:4px; min-width:180px; z-index:40;">
+                    <label class="custom-checkbox" style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:0;">
+                        <input type="checkbox" data-column="col-name" checked class="col-checkbox"/>
+                        <span style="font-size:0.82rem; color:var(--color-night);">Nombre</span>
+                    </label>
+                    <label class="custom-checkbox" style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:0;">
+                        <input type="checkbox" data-column="col-position" checked class="col-checkbox"/>
+                        <span style="font-size:0.82rem; color:var(--color-night);">Posición</span>
+                    </label>
+                    <label class="custom-checkbox" style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:0;">
+                        <input type="checkbox" data-column="col-birth" checked class="col-checkbox"/>
+                        <span style="font-size:0.82rem; color:var(--color-night);">F. Nacimiento</span>
+                    </label>
+                    <label class="custom-checkbox" style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:0;">
+                        <input type="checkbox" data-column="col-height" checked class="col-checkbox"/>
+                        <span style="font-size:0.82rem; color:var(--color-night);">Altura</span>
+                    </label>
+                    <label sec:authorize="hasRole('ADMIN')" class="custom-checkbox" style="padding:6px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:0;">
+                        <input type="checkbox" data-column="col-actions" checked class="col-checkbox"/>
+                        <span style="font-size:0.82rem; color:var(--color-night);">Acciones</span>
+                    </label>
+                </div>
+            </div>
+        </div>
 
-            <div sec:authorize="hasRole('ADMIN')" class="action-group" style="margin-top: 0; margin-left: auto;">
-                <a th:href="@{/admin/player/edit/{id}(id=${player.id})}"
-                   class="btn btn--warning btn--sm">✏️</a>
-                <button type="button" class="btn btn--danger btn--sm"
-                        th:data-id="${player.id}"
-                        th:data-name="${player.name} + ' ' + ${player.surname}"
-                        onclick="confirmDeletePlayer(this)">🗑️</button>
-            </div>
+        <div style="width:100%; overflow-x:auto;">
+            <table class="premium-table" style="width:100%; text-align:left; font-size:0.88rem;">
+                <thead>
+                    <tr style="border-bottom:1px solid var(--border); background:rgba(0,0,0,0.01);">
+                        <th class="col-name" style="padding:var(--space-md); font-weight:600; color:var(--color-gray-600);">Nombre</th>
+                        <th class="col-position" style="padding:var(--space-md); font-weight:600; color:var(--color-gray-600);">Posición</th>
+                        <th class="col-birth" style="padding:var(--space-md); font-weight:600; color:var(--color-gray-600);">F. Nacimiento</th>
+                        <th class="col-height" style="padding:var(--space-md); font-weight:600; color:var(--color-gray-600);">Altura</th>
+                        <th sec:authorize="hasRole('ADMIN')" class="col-actions" style="padding:var(--space-md); font-weight:600; color:var(--color-gray-600);">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="player : ${team.players}" style="border-bottom:1px solid var(--border); transition:background 0.15s;" class="table-row-hover">
+                        <td class="col-name" style="padding:var(--space-md); font-weight:500; color:var(--color-night);" th:text="${player.name} + ' ' + ${player.surname}">Nombre</td>
+                        <td class="col-position" style="padding:var(--space-md); color:var(--color-gray-600);" th:text="${player.position}">Posición</td>
+                        <td class="col-birth" style="padding:var(--space-md); color:var(--color-gray-600);" th:text="${player.birthDate != null ? #temporals.format(player.birthDate, 'dd/MM/yyyy') : '—'}">—</td>
+                        <td class="col-height" style="padding:var(--space-md); color:var(--color-gray-600);" th:text="${player.height != null ? player.height + ' m' : '—'}">—</td>
+                        <td sec:authorize="hasRole('ADMIN')" class="col-actions" style="padding:var(--space-md); position: relative;">
+                            <div class="team-dropdown-container" style="display:flex; justify-content: flex-end; position: relative; z-index: 10;">
+                                <button type="button" class="btn btn--outline btn--sm team-dropdown-trigger" style="border-color: var(--color-gray-300); color: var(--color-night); padding: 4px 8px;">
+                                    <span>Opciones</span>
+                                    <svg style="width:14px;height:14px;margin-left:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="team-dropdown-menu" style="display: none; position: absolute; right: 0; bottom: calc(100% + 6px); background: var(--color-white); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-deep); padding: var(--space-xs); flex-direction: column; gap: 4px; min-width: 140px; z-index: 20;">
+                                    <button type="button" class="btn btn--ghost btn--sm edit-player-btn" style="justify-content: flex-start; width: 100%; text-align: left; font-size: 0.82rem; padding: 6px 12px; color: var(--color-night);"
+                                            th:data-id="${player.id}"
+                                            th:data-name="${player.name}"
+                                            th:data-surname="${player.surname}"
+                                            th:data-birth="${player.birthDate}"
+                                            th:data-height="${player.height}"
+                                            th:data-position="${player.position}"
+                                            th:data-team="${player.team != null ? player.team.id : ''}">
+                                        <svg style="width:14px;height:14px;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                        Editar
+                                    </button>
+                                    <button type="button" class="btn-hold-and-release btn-delete-player" style="width: 100%; border: none !important; border-radius: var(--radius-sm);"
+                                            th:data-id="${player.id}">
+                                        <div class="hold-progress"></div>
+                                        <span class="hold-content">
+                                            <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                            <span class="hold-text" style="font-size: 0.82rem;">Eliminar</span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
 </div>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-function confirmDeletePlayer(btn) {
-    const id = btn.getAttribute('data-id');
-    const name = btn.getAttribute('data-name');
-    Swal.fire({
-        title: '¿Dar de baja a ' + name + '?',
-        text: 'Se eliminará al jugador permanentemente.',
-        icon: 'warning', showCancelButton: true,
-        confirmButtonColor: '#e63946', cancelButtonColor: '#2ecc71',
-        confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar'
-    }).then(r => { if (r.isConfirmed) window.location.href = '/admin/player/delete/' + id; });
-}
+document.addEventListener('DOMContentLoaded', function() {
+    var toggleBtn = document.getElementById('col-toggle-btn');
+    var dropdown = document.getElementById('col-toggle-dropdown');
+    
+    if (toggleBtn && dropdown) {
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isClosed = dropdown.style.display === 'none';
+            dropdown.style.display = isClosed ? 'flex' : 'none';
+        });
+        
+        document.addEventListener('click', function() {
+            dropdown.style.display = 'none';
+        });
+        
+        dropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        var checkboxes = document.querySelectorAll('.col-checkbox');
+        checkboxes.forEach(function(checkbox) {
+            var colClass = checkbox.getAttribute('data-column');
+            
+            var isVisible = localStorage.getItem('team-player-col-' + colClass);
+            if (isVisible !== null) {
+                checkbox.checked = isVisible === 'true';
+                toggleColumn(colClass, checkbox.checked);
+            }
+            
+            checkbox.addEventListener('change', function() {
+                toggleColumn(colClass, checkbox.checked);
+                localStorage.setItem('team-player-col-' + colClass, checkbox.checked);
+            });
+        });
+    }
+    
+    function toggleColumn(colClass, show) {
+        var elements = document.querySelectorAll('.' + colClass);
+        elements.forEach(function(el) {
+            el.style.display = show ? '' : 'none';
+        });
+    }
+});
 </script>
+
+<script th:inline="javascript">
+    var CURRENT_TEAM_ID = /*[[${team.id}]]*/ null;
+</script>
+
 <div th:replace="~{fragments :: footer}"></div>
-<div th:replace="~{fragments :: dock}"></div>
+<div th:replace="~{fragments :: dock(isHome=false)}"></div>
 <script th:src="@{/js/dock.js}"></script>
 <div th:replace="~{fragments :: tournamentModal}"></div>
+<div th:replace="~{fragments :: playerModal}"></div>
 <script th:src="@{/js/modal.js}"></script>
 
 </body>
