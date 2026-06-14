@@ -72,6 +72,14 @@
     } else if (window.location.pathname.startsWith('/team/')) {
       plusBtn.setAttribute('data-open-modal', 'player-modal');
       plusBtn.setAttribute('data-label', 'Fichar Jugador');
+    } else if (window.location.pathname.startsWith('/tournament/')) {
+      plusBtn.setAttribute('data-open-modal', 'match-modal');
+      plusBtn.setAttribute('href', '#');
+      plusBtn.setAttribute('data-label', 'Programar Partido');
+    } else if (window.location.pathname.startsWith('/match/')) {
+      plusBtn.setAttribute('data-open-modal', 'comment-modal');
+      plusBtn.setAttribute('href', '#');
+      plusBtn.setAttribute('data-label', 'Nuevo Comentario');
     } else {
       plusBtn.setAttribute('data-open-modal', 'tournament-modal');
       plusBtn.setAttribute('data-label', 'Nuevo Torneo');
@@ -265,6 +273,22 @@
     });
   }
 
+  // Limpiar el formulario del modal de partido al abrir (crear nuevo)
+  if (plusBtn && window.location.pathname.startsWith('/tournament/')) {
+    plusBtn.addEventListener('click', function () {
+      var f = document.getElementById('match-form');
+      if (!f) return;
+      var ids = ['match-home-score', 'match-away-score', 'match-location', 'match-date'];
+      ids.forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ''; });
+      // selects: dejar primera opción
+      ['match-home-team', 'match-away-team', 'match-referee'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el && el.options.length) setSelect(id, el.options[0].value);
+      });
+      setSelect('match-status', 'SCHEDULED');
+    });
+  }
+
   // ── Botón Hold and Release (Hold to Delete) ─────────────
   var holdDuration = 3000; // 3 segundos
   
@@ -403,8 +427,41 @@
     });
   });
 
+  // Partidos
+  document.querySelectorAll('.btn-delete-match').forEach(function (btn) {
+    var holdTimer = null;
+    var id = btn.getAttribute('data-id');
+    var progressEl = btn.querySelector('.hold-progress');
+    var textEl = btn.querySelector('.hold-text');
+    var originalText = textEl.textContent;
+
+    function handleStart(e) {
+      e.preventDefault();
+      textEl.textContent = 'Soltar';
+      progressEl.style.transition = 'width ' + (holdDuration / 1000) + 's linear';
+      progressEl.style.width = '100%';
+      holdTimer = setTimeout(function () {
+        window.location.href = '/admin/match/delete/' + id;
+      }, holdDuration);
+    }
+    function handleEnd() {
+      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+      textEl.textContent = originalText;
+      progressEl.style.transition = 'width 0.15s ease-out';
+      progressEl.style.width = '0%';
+    }
+
+    btn.addEventListener('mousedown', handleStart);
+    btn.addEventListener('mouseup', handleEnd);
+    btn.addEventListener('mouseleave', handleEnd);
+    btn.addEventListener('touchstart', handleStart, { passive: false });
+    btn.addEventListener('touchend', handleEnd);
+    btn.addEventListener('touchcancel', handleEnd);
+    btn.addEventListener('click', function (e) { e.stopPropagation(); });
+  });
+
   // Evitar propagación del botón editar al contenedor
-  document.querySelectorAll('.edit-team-btn, .edit-referee-btn, .edit-player-btn').forEach(function (btn) {
+  document.querySelectorAll('.edit-team-btn, .edit-referee-btn, .edit-player-btn, .edit-match-btn').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       // Cerrar todos los dropdowns al hacer clic en editar

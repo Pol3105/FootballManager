@@ -48,8 +48,16 @@
         <svg class="dock__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
     </a>
     
+    <!-- Botón añadir comentario (+) — cualquier usuario autenticado, solo en vista de partido -->
+    <a th:if="${plusTarget == 'comment'}" sec:authorize="isAuthenticated()" href="#"
+       class="dock__item dock__item--admin" data-label="Nuevo Comentario"
+       data-open-modal="comment-modal">
+        <svg class="dock__plus" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+    </a>
+
     <!-- Botón Admin añadir (+) -->
-    <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/tournament/new}"
+    <a th:if="${plusTarget == null or plusTarget != 'comment'}" sec:authorize="hasRole('ADMIN')" th:href="@{/admin/tournament/new}"
        class="dock__item dock__item--admin" data-label="Nuevo Torneo"
        data-open-modal="tournament-modal">
         <svg class="dock__plus" viewBox="0 0 24 24" fill="none" stroke="currentColor"

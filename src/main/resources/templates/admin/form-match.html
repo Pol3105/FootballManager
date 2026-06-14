@@ -39,7 +39,7 @@
     <a th:href="@{/tournament/{id}(id=${tournament.id})}" class="back-link">← Volver al Torneo</a>
 
     <div class="section-header">
-        <h1 th:text="${match.id == null} ? '🏟️ Programar Nuevo Partido' : '✏️ Editar Resultado'">Gestión</h1>
+        <h1 th:text="${match.id == null} ? 'Programar Nuevo Partido' : 'Editar Resultado'">Gestión</h1>
     </div>
 
     <form th:action="@{/admin/match/save}" th:object="${match}" method="post" class="form card">
@@ -48,7 +48,7 @@
 
         <div class="form-grid-2">
             <div class="form__group">
-                <label class="form__label">🛡️ Equipo Local</label>
+                <label class="form__label">Equipo Local</label>
                 <select th:field="*{homeTeam}" class="form__input" required>
                     <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
                 </select>
@@ -57,7 +57,7 @@
             </div>
 
             <div class="form__group">
-                <label class="form__label">🛡️ Equipo Visitante</label>
+                <label class="form__label">Equipo Visitante</label>
                 <select th:field="*{awayTeam}" class="form__input" required>
                     <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
                 </select>
@@ -68,13 +68,13 @@
 
         <div class="form-grid-2">
             <div class="form__group">
-                <label class="form__label">📍 Lugar del Encuentro</label>
+                <label class="form__label">Lugar del Encuentro</label>
                 <input type="text" th:field="*{location}" class="form__input"
                        placeholder="Ej: Estadio Olímpico" required/>
             </div>
 
             <div class="form__group">
-                <label class="form__label">🚥 Estado del Partido</label>
+                <label class="form__label">Estado del Partido</label>
                 <select th:field="*{status}" class="form__input" required>
                     <option value="SCHEDULED">Programado (SCHEDULED)</option>
                     <option value="PLAYED">Jugado (PLAYED)</option>
@@ -83,7 +83,7 @@
         </div>
 
         <div class="form__group">
-            <label class="form__label">👨‍⚖️ Árbitro</label>
+            <label class="form__label">Árbitro</label>
             <select th:field="*{referee}" class="form__input" required>
                 <option th:each="r : ${referees}" th:value="${r.id}"
                         th:text="${r.name} + ' ' + ${r.surname}"></option>
@@ -91,12 +91,12 @@
         </div>
 
         <div class="form__group">
-            <label class="form__label">📅 Fecha y Hora</label>
+            <label class="form__label">Fecha y Hora</label>
             <input type="datetime-local" th:field="*{matchDate}" class="form__input" required/>
         </div>
 
         <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">
-            💾 Guardar Partido
+            Guardar Partido
         </button>
     </form>
 

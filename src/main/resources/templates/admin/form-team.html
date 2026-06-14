@@ -37,7 +37,7 @@
     <a th:href="@{/teams}" class="back-link">← Cancelar y Volver</a>
 
     <div class="section-header">
-        <h1 th:text="${team.id == null} ? '🛡️ Registrar Nuevo Equipo' : '✏️ Editar Equipo'">Equipo</h1>
+        <h1 th:text="${team.id == null} ? 'Registrar Nuevo Equipo' : 'Editar Equipo'">Equipo</h1>
     </div>
 
     <form th:action="${team.id == null} ? @{/admin/team/new} : @{/admin/team/edit/{id}(id=${team.id})}"
@@ -80,7 +80,7 @@
         </div>
 
         <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">
-            <span th:text="${team.id == null} ? '💾 Guardar Equipo' : '🔄 Actualizar Equipo'">Guardar</span>
+            <span th:text="${team.id == null} ? 'Guardar Equipo' : 'Actualizar Equipo'">Guardar</span>
         </button>
     </form>
 

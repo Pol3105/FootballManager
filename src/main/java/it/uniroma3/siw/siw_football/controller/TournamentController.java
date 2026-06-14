@@ -1,5 +1,6 @@
 package it.uniroma3.siw.siw_football.controller;
 
+import it.uniroma3.siw.siw_football.service.RefereeService;
 import it.uniroma3.siw.siw_football.service.TeamService;
 import it.uniroma3.siw.siw_football.service.TournamentService;
 
@@ -32,6 +33,9 @@ public class TournamentController {
     @Autowired
     private TeamService teamService;
 
+    @Autowired
+    private RefereeService refereeService;
+
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("tournaments", tournamentService.findAll());
@@ -49,6 +53,10 @@ public class TournamentController {
         Page<Match> matchPage = tournamentService.findMatchesPaginated(id, page, 5);
         model.addAttribute("tournament", tournament);
         model.addAttribute("matchPage", matchPage);
+        model.addAttribute("referees", refereeService.findAll());
+        // Para las flechas de paginación del dock
+        model.addAttribute("currentPage", matchPage.getNumber());
+        model.addAttribute("totalPages", matchPage.getTotalPages());
         return "tournament-details";
     }
 

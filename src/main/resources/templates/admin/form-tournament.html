@@ -36,7 +36,7 @@
     <a th:href="@{/}" class="back-link">← Cancelar y Volver</a>
 
     <div class="section-header">
-        <h1 th:text="${tournament.id == null} ? '🏆 Crear Nuevo Torneo' : '✏️ Editar Torneo'">Torneo</h1>
+        <h1 th:text="${tournament.id == null} ? 'Crear Nuevo Torneo' : 'Editar Torneo'">Torneo</h1>
     </div>
 
     <form th:action="${tournament.id == null} ? @{/admin/tournament/new} : @{/admin/tournament/edit/{id}(id=${tournament.id})}"
@@ -72,7 +72,7 @@
         </div>
 
         <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">
-            💾 Guardar Torneo
+            Guardar Torneo
         </button>
     </form>
 

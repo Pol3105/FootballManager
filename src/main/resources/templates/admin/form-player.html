@@ -37,7 +37,7 @@
     <a th:href="@{/players}" class="back-link">← Cancelar y Volver</a>
 
     <div class="section-header">
-        <h1 th:text="${player.id == null} ? '👤 Registrar Jugador' : '✏️ Editar Jugador'">Jugador</h1>
+        <h1 th:text="${player.id == null} ? 'Registrar Jugador' : 'Editar Jugador'">Jugador</h1>
     </div>
 
     <form th:action="@{/admin/player/save}" th:object="${player}" method="post" class="form card">
@@ -97,7 +97,7 @@
                    style="color:#e63946;font-size:0.8rem;margin-top:4px;">Error</p>
             </div>
             <div class="form__group">
-                <label class="form__label">🛡️ Equipo</label>
+                <label class="form__label">Equipo</label>
                 <select th:field="*{team}" class="form__input">
                     <option value="">Agente Libre (Sin equipo)</option>
                     <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
@@ -106,7 +106,7 @@
         </div>
 
         <button type="submit" class="btn btn--primary" style="width:100%;justify-content:center;">
-            <span th:text="${player.id == null} ? '💾 Guardar Jugador' : '🔄 Actualizar Ficha'">Guardar</span>
+            <span th:text="${player.id == null} ? 'Guardar Jugador' : 'Actualizar Ficha'">Guardar</span>
         </button>
     </form>
 

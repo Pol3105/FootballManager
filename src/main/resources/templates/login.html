@@ -30,10 +30,10 @@
         </div>
 
         <div th:if="${param.error}" class="auth-error">
-            ⚠️ Usuario o contraseña incorrectos.
+            Usuario o contraseña incorrectos.
         </div>
         <div th:if="${param.logout}" class="auth-error" style="background:rgba(100,74,64,0.08);border-color:rgba(100,74,64,0.3);color:var(--primary);">
-            ✅ Has cerrado sesión correctamente.
+            Has cerrado sesión correctamente.
         </div>
 
         <form th:action="@{/login}" method="POST" class="auth-form">

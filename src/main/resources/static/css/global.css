@@ -217,6 +217,79 @@ code {
   .grid-teams { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* Lista de partidos: tarjetas alargadas, una por fila */
+.grid-matches {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  perspective: 1000px;
+}
+
+/* Fila interna de una tarjeta de partido */
+.match-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+.match-row__teams {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.match-row__team {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-night);
+}
+.match-row__team--away { text-align: left; }
+.match-row__team--home { text-align: right; }
+.match-row__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 84px;
+}
+.match-row__score {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-night);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.match-row__meta {
+  font-size: 0.8rem;
+  color: var(--color-gray-600);
+  margin-top: var(--space-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px var(--space-md);
+}
+
+/* Badge de estado reutilizable */
+.state-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.state-badge--played    { background: #d8efe0; color: #1f7a4d; }
+.state-badge--scheduled { background: var(--secondary); color: var(--secondary-foreground); }
+
+@media (max-width: 560px) {
+  .match-row__teams { gap: var(--space-sm); }
+  .match-row__team { font-size: 1rem; }
+}
+
 /* ── Frosted Glass Card 3D Tilt ─────────────────────────── */
 .card-container {
   perspective: 1000px;

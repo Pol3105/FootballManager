@@ -39,7 +39,7 @@
 
     <div class="section-header">
         <div>
-            <h1>⚽ Gestionar Equipos</h1>
+            <h1>Gestionar Equipos</h1>
             <p class="text-muted" style="margin-bottom: 0;">
                 Torneo: <strong th:text="${tournament.name}">Nombre</strong>
                 &nbsp;·&nbsp; Inscribe o retira equipos de esta competición.
@@ -53,10 +53,10 @@
             <div class="player-info">
                 <span class="player-card__name" th:text="${team.name}">Equipo</span>
                 <p class="text-muted" style="margin-bottom: 0; font-size: 0.8rem;">
-                    📍 <span th:text="${team.city}">Ciudad</span>
+                    <span th:text="${team.city}">Ciudad</span>
                     <span th:if="${#lists.contains(tournament.teams, team)}"
                           style="margin-left: 8px; color: var(--color-success); font-weight: 600;">
-                        ✅ Inscrito
+                        Inscrito
                     </span>
                 </p>
             </div>
