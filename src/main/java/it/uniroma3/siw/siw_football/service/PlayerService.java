@@ -30,10 +30,10 @@ public class PlayerService {
     }
 
     @Transactional(readOnly = true)
-    public org.springframework.data.domain.Page<Player> search(String q, String position, org.springframework.data.domain.Pageable pageable) {
+    public org.springframework.data.domain.Page<Player> search(String q, String position, Long teamId, org.springframework.data.domain.Pageable pageable) {
         String qParam = (q != null && !q.isBlank()) ? q.trim() : "";
         String posParam = (position != null && !position.isBlank()) ? position : "";
-        return playerRepository.search(qParam, posParam, pageable);
+        return playerRepository.search(qParam, posParam, teamId, pageable);
     }
 
     public Player findById(Long id) {

@@ -50,16 +50,19 @@ public class PlayerController {
             @RequestParam(value = "size", defaultValue = "6") int size,
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String position,
+            @RequestParam(required = false) Long teamId,
             Model model) {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
-        org.springframework.data.domain.Page<Player> playersPage = playerService.search(q, position, pageable);
+        org.springframework.data.domain.Page<Player> playersPage = playerService.search(q, position, teamId, pageable);
         
         model.addAttribute("playersPage", playersPage);
         model.addAttribute("players", playersPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", playersPage.getTotalPages());
+        model.addAttribute("teams", teamService.findAll());
         model.addAttribute("q", q != null ? q : "");
         model.addAttribute("position", position != null ? position : "");
+        model.addAttribute("teamId", teamId);
         return "players";
     }
 

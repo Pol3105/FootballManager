@@ -42,8 +42,6 @@
 
     <div class="section-header">
         <h1>Jugadores Registrados</h1>
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/player/new}"
-           class="btn btn--primary btn--sm" style="margin-left: auto;">+ Registrar Jugador</a>
     </div>
 
     <!-- Filtros de búsqueda (sin emojis) -->
@@ -64,9 +62,16 @@
                 <option value="Delantero"       th:selected="${position == 'Delantero'}">Delantero</option>
             </select>
         </div>
+        <div class="form__group" style="min-width:160px;margin-bottom:0;">
+            <label class="form__label">Equipo</label>
+            <select name="teamId" class="form__input">
+                <option value="" th:selected="${teamId == null}">Todos</option>
+                <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}" th:selected="${teamId == t.id}"></option>
+            </select>
+        </div>
         <button type="submit" class="btn btn--primary">Buscar</button>
         <a th:href="@{/players}" class="btn btn--outline"
-           th:style="${(q != '' or position != '')} ? '' : 'display:none'">Limpiar filtros</a>
+           th:style="${(q != '' or position != '' or teamId != null)} ? '' : 'display:none'">Limpiar filtros</a>
     </form>
 
     <div th:if="${#lists.isEmpty(players)}" class="empty-state">

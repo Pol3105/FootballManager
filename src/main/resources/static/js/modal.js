@@ -51,6 +51,10 @@
     } else if (window.location.pathname.startsWith('/referees')) {
       plusBtn.setAttribute('data-open-modal', 'referee-modal');
       plusBtn.setAttribute('data-label', 'Nuevo Árbitro');
+    } else if (window.location.pathname.startsWith('/players')) {
+      plusBtn.removeAttribute('data-open-modal');
+      plusBtn.setAttribute('href', '/admin/player/new');
+      plusBtn.setAttribute('data-label', 'Nuevo Jugador');
     } else {
       plusBtn.setAttribute('data-open-modal', 'tournament-modal');
       plusBtn.setAttribute('data-label', 'Nuevo Torneo');

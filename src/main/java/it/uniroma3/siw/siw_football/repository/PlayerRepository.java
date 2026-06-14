@@ -16,6 +16,7 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
            "(:q = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :q, '%')) " +
            "   OR LOWER(p.surname) LIKE LOWER(CONCAT('%', :q, '%'))) " +
            "AND (:position = '' OR p.position = :position) " +
+           "AND (:teamId IS NULL OR t.id = :teamId) " +
            "ORDER BY p.surname ASC, p.name ASC")
-    org.springframework.data.domain.Page<Player> search(@Param("q") String q, @Param("position") String position, org.springframework.data.domain.Pageable pageable);
+    org.springframework.data.domain.Page<Player> search(@Param("q") String q, @Param("position") String position, @Param("teamId") Long teamId, org.springframework.data.domain.Pageable pageable);
 }
