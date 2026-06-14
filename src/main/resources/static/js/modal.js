@@ -39,4 +39,16 @@
       document.querySelectorAll('.modal-overlay:not([hidden])').forEach(close);
     }
   });
+
+  // Cambiar dinámicamente el modal del botón del dock según la página activa
+  var plusBtn = document.querySelector('.dock__item--admin');
+  if (plusBtn) {
+    if (window.location.pathname.startsWith('/teams')) {
+      plusBtn.setAttribute('data-open-modal', 'team-modal');
+      plusBtn.setAttribute('data-label', 'Nuevo Equipo');
+    } else {
+      plusBtn.setAttribute('data-open-modal', 'tournament-modal');
+      plusBtn.setAttribute('data-label', 'Nuevo Torneo');
+    }
+  }
 })();

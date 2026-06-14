@@ -119,3 +119,142 @@
 @media (prefers-reduced-motion: reduce) {
   .modal-overlay, .modal-card { animation: none; }
 }
+
+/* ── Modal de Equipos (AuthorFormCard style) ───────────── */
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+@media (min-width: 576px) {
+  .modal-grid {
+    grid-template-columns: 120px 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+.modal-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.modal-avatar-container {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border: 2px dashed var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.modal-avatar-fallback {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal-avatar-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.modal-avatar-sublabel {
+  font-size: 0.72rem;
+  color: var(--muted-foreground);
+}
+
+.modal-fields-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── GridList / Selector de Torneos ────────────────────── */
+.grid-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 140px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 8px;
+  border-radius: var(--radius-md);
+}
+
+.grid-list-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Checkbox personalizado */
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  width: 100%;
+  user-select: none;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-indicator {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background);
+  color: var(--primary-foreground);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.checkbox-check {
+  width: 12px;
+  height: 12px;
+  stroke: var(--primary-foreground);
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  transition: stroke-dashoffset 0.18s ease-out;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-indicator {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkbox-indicator .checkbox-check {
+  stroke-dashoffset: 0;
+}
+
+.checkbox-label {
+  font-size: 0.88rem;
+  color: var(--foreground);
+  transition: color var(--transition);
+}
+
+.custom-checkbox:hover .checkbox-indicator {
+  border-color: var(--ring);
+}

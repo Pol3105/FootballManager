@@ -40,8 +40,8 @@
 
     <div class="section-header">
         <h1>🛡️ Todos los Equipos</h1>
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/team/new}"
-           class="btn btn--primary btn--sm" style="margin-left: auto;">+ Nuevo Equipo</a>
+        <button sec:authorize="hasRole('ADMIN')" type="button" data-open-modal="team-modal"
+           class="btn btn--primary btn--sm" style="margin-left: auto;">+ Nuevo Equipo</button>
     </div>
 
     <div th:if="${#lists.isEmpty(teams)}" class="empty-state">
@@ -97,6 +97,7 @@ function confirmDeleteTeam(id) {
 <div th:replace="~{fragments :: dock}"></div>
 <script th:src="@{/js/dock.js}"></script>
 <div th:replace="~{fragments :: tournamentModal}"></div>
+<div th:replace="~{fragments :: teamModal}"></div>
 <script th:src="@{/js/modal.js}"></script>
 
 </body>

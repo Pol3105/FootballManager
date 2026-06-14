@@ -33,6 +33,7 @@ public class TeamController {
     @GetMapping("/teams")
     public String showAllTeams(Model model) {
         model.addAttribute("teams", teamService.findAll());
+        model.addAttribute("tournaments", tournamentService.findAll());
         return "teams-list"; // Nueva página
     }
 

@@ -104,5 +104,73 @@
     </div>
 </div>
 
+<!-- ═══════════ Modal: crear equipo (solo admin) ═══════════ -->
+<div th:fragment="teamModal" sec:authorize="hasRole('ADMIN')"
+     class="modal-overlay" id="team-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="team-title">
+        <div class="modal-card__head">
+            <h3 class="modal-card__title" id="team-title">Añadir nuevo equipo</h3>
+            <button type="button" class="modal-card__close" data-close-modal aria-label="Cerrar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <form th:action="@{/admin/team/new}" method="post" class="modal-form">
+            <!-- Grid de dos columnas similar al de AuthorFormCard -->
+            <div class="modal-grid">
+                <!-- Columna izquierda: Subida de escudo simulada -->
+                <div class="modal-avatar-section">
+                    <div class="modal-avatar-container">
+                        <span class="modal-avatar-fallback">ESCUDO</span>
+                    </div>
+                    <span class="modal-avatar-label">Subir imagen</span>
+                    <span class="modal-avatar-sublabel">Límite: 1MB</span>
+                </div>
+
+                <!-- Columna derecha: Campos del formulario -->
+                <div class="modal-fields-section">
+                    <div class="modal-field">
+                        <label for="team-name">Nombre del Club <span class="req">*</span></label>
+                        <input type="text" id="team-name" name="name" required
+                               placeholder="Ej: AS Roma"/>
+                    </div>
+                    <div class="modal-field">
+                        <label for="team-city">Ciudad <span class="req">*</span></label>
+                        <input type="text" id="team-city" name="city" required
+                               placeholder="Ej: Roma"/>
+                    </div>
+                    <div class="modal-field">
+                        <label for="team-year">Año de Fundación <span class="req">*</span></label>
+                        <input type="number" id="team-year" name="foundationYear" required min="1800" max="2100"
+                               placeholder="Ej: 1927"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listado de Selección Múltiple de Torneos (GridList de React-Aria) -->
+            <div class="modal-field">
+                <label>Asignar a Torneos</label>
+                <div class="grid-list" role="group" aria-label="Selección de torneos">
+                    <div th:each="t : ${tournaments}" class="grid-list-item">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="tournaments" th:value="${t.id}"/>
+                            <span class="checkbox-indicator">
+                                <svg class="checkbox-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                            </span>
+                            <span class="checkbox-label" th:text="${t.name}">Nombre del torneo</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn--ghost" data-close-modal>Cancelar</button>
+                <button type="submit" class="modal-btn modal-btn--primary">Guardar equipo</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 </body>
 </html>
