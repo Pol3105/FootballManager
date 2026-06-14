@@ -52,8 +52,8 @@
       plusBtn.setAttribute('data-open-modal', 'referee-modal');
       plusBtn.setAttribute('data-label', 'Nuevo Árbitro');
     } else if (window.location.pathname.startsWith('/players')) {
-      plusBtn.removeAttribute('data-open-modal');
-      plusBtn.setAttribute('href', '/admin/player/new');
+      plusBtn.setAttribute('data-open-modal', 'player-modal');
+      plusBtn.setAttribute('href', '#');
       plusBtn.setAttribute('data-label', 'Nuevo Jugador');
     } else if (window.location.pathname.startsWith('/team/')) {
       plusBtn.setAttribute('data-open-modal', 'player-modal');

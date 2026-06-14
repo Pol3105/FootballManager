@@ -56,6 +56,7 @@ public class TeamController {
         
         if (team != null) {
             model.addAttribute("team", team);
+            model.addAttribute("teams", teamService.findAll());
             return "team-details"; // Nos llevará al nuevo HTML
         }
         
@@ -69,6 +70,7 @@ public class TeamController {
         
         model.addAttribute("team", team);
         model.addAttribute("players", players);
+        model.addAttribute("teams", teamService.findAll());
         return "team-details";
     }
 
