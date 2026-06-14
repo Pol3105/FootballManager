@@ -78,6 +78,8 @@ public class MatchController {
         if (match == null) return "redirect:/";
         model.addAttribute("match", match);
         model.addAttribute("comments", commentService.findByMatchId(id));
+        model.addAttribute("teams", match.getTournament().getTeams());
+        model.addAttribute("referees", refereeService.findAll());
         if (authentication != null) {
             model.addAttribute("currentUsername", authentication.getName());
         }

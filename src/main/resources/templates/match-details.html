@@ -84,11 +84,36 @@
             </div>
         </div>
 
-        <div sec:authorize="hasRole('ADMIN')" class="scoreboard__actions">
-            <a th:href="@{/admin/match/edit/{id}(id=${match.id})}" class="btn btn--warning btn--sm">Editar Resultado</a>
-            <button type="button" class="btn btn--danger btn--sm"
-                    th:data-id="${match.id}"
-                    onclick="confirmDeleteMatch(this.getAttribute('data-id'))">Eliminar</button>
+        <div sec:authorize="hasRole('ADMIN')" class="team-dropdown-container" style="display: flex; justify-content: center; margin-top: var(--space-md); position: relative; z-index: 10;">
+            <button type="button" class="btn btn--outline btn--sm team-dropdown-trigger" style="border-color: var(--color-gray-300); color: var(--color-night); padding: 6px 12px;">
+                <span>Opciones</span>
+                <svg style="width:14px;height:14px;margin-left:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="team-dropdown-menu" style="display: none; position: absolute; left: 50%; transform: translateX(-50%); top: calc(100% + 6px); background: var(--color-white); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-deep); padding: var(--space-xs); flex-direction: column; gap: 4px; min-width: 140px; z-index: 20;">
+                <button type="button" class="btn btn--ghost btn--sm edit-match-details-btn"
+                        th:data-id="${match.id}"
+                        th:data-home-team="${match.homeTeam.id}"
+                        th:data-away-team="${match.awayTeam.id}"
+                        th:data-home-score="${match.homeScore}"
+                        th:data-away-score="${match.awayScore}"
+                        th:data-location="${match.location}"
+                        th:data-status="${match.status.name()}"
+                        th:data-referee="${match.referee.id}"
+                        th:data-date="${match.matchDate}"
+                        style="justify-content: flex-start; width: 100%; text-align: left; font-size: 0.82rem; padding: 6px 12px; color: var(--color-night);">
+                    <svg style="width:14px;height:14px;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    Editar Resultado
+                </button>
+                <button type="button" class="btn-hold-and-release btn-delete-match"
+                        style="width: 100%; border: none !important; border-radius: var(--radius-sm);"
+                        th:data-id="${match.id}">
+                    <div class="hold-progress"></div>
+                    <span class="hold-content">
+                        <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        <span class="hold-text" style="font-size: 0.82rem;">Eliminar</span>
+                    </span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -130,13 +155,33 @@
                                 </div>
                             </div>
                             <p class="cc-card__text" th:text="${comment.content}">Contenido del comentario</p>
-                            <div class="cc-card__actions">
-                                <a th:if="${comment.user.username == currentUsername}"
-                                   th:href="@{/match/{mid}/comment/{cid}/edit(mid=${match.id},cid=${comment.id})}"
-                                   class="btn btn--warning btn--sm">Editar</a>
-                                <a sec:authorize="hasRole('ADMIN')"
-                                   th:href="@{/admin/comment/delete/{id}(id=${comment.id})}"
-                                   class="btn btn--danger btn--sm">Eliminar</a>
+                            <div class="cc-card__actions" th:if="${comment.user.username == currentUsername or #authorization.expression('hasRole(''ADMIN'')')}">
+                                <div class="team-dropdown-container" style="position: relative; z-index: 10; display: inline-block;">
+                                    <button type="button" class="btn btn--outline btn--sm team-dropdown-trigger" style="border-color: var(--color-gray-300); color: var(--color-night); padding: 4px 8px; font-size: 0.78rem;">
+                                        <span>Opciones</span>
+                                        <svg style="width:12px;height:12px;margin-left:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <div class="team-dropdown-menu" style="display: none; position: absolute; right: 0; bottom: calc(100% + 6px); background: var(--color-white); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-deep); padding: var(--space-xs); flex-direction: column; gap: 4px; min-width: 120px; z-index: 20;">
+                                        <button th:if="${comment.user.username == currentUsername}"
+                                                type="button" class="btn btn--ghost btn--sm edit-comment-btn"
+                                                th:data-id="${comment.id}"
+                                                th:data-content="${comment.content}"
+                                                style="justify-content: flex-start; width: 100%; text-align: left; font-size: 0.8rem; padding: 6px 12px; color: var(--color-night);">
+                                            <svg style="width:12px;height:12px;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                            Editar
+                                        </button>
+                                        <button sec:authorize="hasRole('ADMIN')"
+                                                type="button" class="btn-hold-and-release btn-delete-comment"
+                                                style="width: 100%; border: none !important; border-radius: var(--radius-sm);"
+                                                th:data-id="${comment.id}">
+                                            <div class="hold-progress"></div>
+                                            <span class="hold-content">
+                                                <svg style="width:12px;height:12px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                <span class="hold-text" style="font-size: 0.8rem;">Eliminar</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -186,7 +231,7 @@ function confirmDeleteMatch(id) {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
             </button>
         </div>
-        <form th:action="@{/match/{id}/comment(id=${match.id})}" method="post" class="modal-form">
+        <form th:action="@{/match/{id}/comment(id=${match.id})}" method="post" class="modal-form" id="comment-form">
             <div class="modal-field">
                 <label for="comment-content">Tu opinión sobre el partido <span class="req">*</span></label>
                 <textarea id="comment-content" name="content" rows="4" required
@@ -194,7 +239,73 @@ function confirmDeleteMatch(id) {
             </div>
             <div class="modal-actions">
                 <button type="button" class="modal-btn modal-btn--ghost" data-close-modal>Cancelar</button>
-                <button type="submit" class="modal-btn modal-btn--primary">Publicar comentario</button>
+                <button type="submit" class="modal-btn modal-btn--primary" id="comment-submit-btn">Publicar comentario</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: editar resultado del partido (solo admin) -->
+<div sec:authorize="hasRole('ADMIN')" class="modal-overlay" id="match-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="match-title">
+        <div class="modal-card__head">
+            <h3 class="modal-card__title" id="match-title">Editar Resultado</h3>
+            <button type="button" class="modal-card__close" data-close-modal aria-label="Cerrar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <form th:action="@{/admin/match/save}" method="post" class="modal-form" id="match-form">
+            <input type="hidden" id="match-id" name="id"/>
+            <input type="hidden" name="tournament" th:value="${match.tournament.id}"/>
+
+            <div class="modal-fields-section form-grid-2">
+                <div class="modal-field">
+                    <label for="match-home-team">Equipo Local <span class="req">*</span></label>
+                    <select id="match-home-team" name="homeTeam" required>
+                        <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
+                    </select>
+                    <input type="number" id="match-home-score" name="homeScore" min="0" placeholder="Goles local"/>
+                </div>
+                <div class="modal-field">
+                    <label for="match-away-team">Equipo Visitante <span class="req">*</span></label>
+                    <select id="match-away-team" name="awayTeam" required>
+                        <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
+                    </select>
+                    <input type="number" id="match-away-score" name="awayScore" min="0" placeholder="Goles visitante"/>
+                </div>
+            </div>
+
+            <div class="modal-fields-section form-grid-2">
+                <div class="modal-field">
+                    <label for="match-location">Lugar del Encuentro <span class="req">*</span></label>
+                    <input type="text" id="match-location" name="location" required placeholder="Ej: Estadio Olímpico"/>
+                </div>
+                <div class="modal-field">
+                    <label for="match-status">Estado del Partido <span class="req">*</span></label>
+                    <select id="match-status" name="status" required>
+                        <option value="SCHEDULED">Programado</option>
+                        <option value="PLAYED">Jugado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-fields-section form-grid-2">
+                <div class="modal-field">
+                    <label for="match-referee">Árbitro <span class="req">*</span></label>
+                    <select id="match-referee" name="referee" required>
+                        <option th:each="r : ${referees}" th:value="${r.id}" th:text="${r.name} + ' ' + ${r.surname}"></option>
+                    </select>
+                </div>
+                <div class="modal-field">
+                    <label for="match-date">Fecha y Hora <span class="req">*</span></label>
+                    <input type="datetime-local" id="match-date" name="matchDate" required/>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn--ghost" data-close-modal>Cancelar</button>
+                <button type="submit" class="modal-btn modal-btn--primary">Guardar partido</button>
             </div>
         </form>
     </div>
@@ -202,6 +313,36 @@ function confirmDeleteMatch(id) {
 
 <script th:src="@{/js/modal.js}"></script>
 <script th:src="@{/js/comments-carousel.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var statusSelect = document.getElementById('match-status');
+    var homeScore = document.getElementById('match-home-score');
+    var awayScore = document.getElementById('match-away-score');
+
+    function toggleScores() {
+        if (!statusSelect || !homeScore || !awayScore) return;
+        if (statusSelect.value === 'SCHEDULED') {
+            homeScore.style.display = 'none';
+            homeScore.disabled = true;
+            homeScore.value = '';
+            awayScore.style.display = 'none';
+            awayScore.disabled = true;
+            awayScore.value = '';
+        } else {
+            homeScore.style.display = 'block';
+            homeScore.disabled = false;
+            awayScore.style.display = 'block';
+            awayScore.disabled = false;
+        }
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener('change', toggleScores);
+        // También exponerlo globalmente para llamarlo al prellenar el modal
+        window.toggleEditMatchScores = toggleScores;
+    }
+});
+</script>
 
 </body>
 </html>

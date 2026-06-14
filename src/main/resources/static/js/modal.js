@@ -461,12 +461,130 @@
   });
 
   // Evitar propagación del botón editar al contenedor
-  document.querySelectorAll('.edit-team-btn, .edit-referee-btn, .edit-player-btn, .edit-match-btn').forEach(function (btn) {
+  document.querySelectorAll('.edit-team-btn, .edit-referee-btn, .edit-player-btn, .edit-match-btn, .edit-match-details-btn, .edit-comment-btn').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       // Cerrar todos los dropdowns al hacer clic en editar
       document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.style.display = 'none'; });
     });
+  });
+
+  // Editar Comentario Modal Prefill
+  document.querySelectorAll('.edit-comment-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var modal = document.getElementById('comment-modal');
+      if (!modal) return;
+
+      var id = btn.getAttribute('data-id');
+      var content = btn.getAttribute('data-content');
+
+      // Llenar campos
+      document.getElementById('comment-content').value = content;
+
+      // Cambiar Título, Acción del formulario y Botón
+      document.getElementById('comment-title').textContent = 'Editar comentario';
+      document.getElementById('comment-submit-btn').textContent = 'Guardar cambios';
+      
+      var form = document.getElementById('comment-form');
+      var matchId = window.location.pathname.split('/').pop();
+      form.setAttribute('action', '/match/' + matchId + '/comment/' + id + '/edit');
+
+      // Cerrar dropdowns
+      document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.style.display = 'none'; });
+
+      open('comment-modal');
+    });
+  });
+
+  // Asegurar que al abrir para añadir comentario se limpie el formulario y restaure la acción
+  var commentPlusBtn = document.querySelector('[data-open-modal="comment-modal"]');
+  if (commentPlusBtn) {
+    commentPlusBtn.addEventListener('click', function () {
+      var modal = document.getElementById('comment-modal');
+      if (!modal) return;
+      document.getElementById('comment-content').value = '';
+      document.getElementById('comment-title').textContent = 'Nuevo comentario';
+      document.getElementById('comment-submit-btn').textContent = 'Publicar comentario';
+      var form = document.getElementById('comment-form');
+      var matchId = window.location.pathname.split('/').pop();
+      form.setAttribute('action', '/match/' + matchId + '/comment');
+    });
+  }
+
+  // Editar Partido Modal Prefill (en match-details)
+  document.querySelectorAll('.edit-match-details-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var modal = document.getElementById('match-modal');
+      if (!modal) return;
+
+      var id = btn.getAttribute('data-id');
+      var homeTeam = btn.getAttribute('data-home-team');
+      var awayTeam = btn.getAttribute('data-away-team');
+      var homeScore = btn.getAttribute('data-home-score');
+      var awayScore = btn.getAttribute('data-away-score');
+      var location = btn.getAttribute('data-location');
+      var status = btn.getAttribute('data-status');
+      var referee = btn.getAttribute('data-referee');
+      var date = btn.getAttribute('data-date');
+
+      // Llenar campos
+      document.getElementById('match-id').value = id;
+      document.getElementById('match-home-team').value = homeTeam;
+      document.getElementById('match-away-team').value = awayTeam;
+      document.getElementById('match-home-score').value = (homeScore !== 'null' && homeScore !== null) ? homeScore : '';
+      document.getElementById('match-away-score').value = (awayScore !== 'null' && awayScore !== null) ? awayScore : '';
+      document.getElementById('match-location').value = location;
+      document.getElementById('match-status').value = status;
+      document.getElementById('match-referee').value = referee;
+      document.getElementById('match-date').value = date;
+
+      // Disparar la lógica de visibilidad de marcadores si existe
+      if (window.toggleEditMatchScores) {
+        window.toggleEditMatchScores();
+      }
+
+      // Cerrar dropdowns
+      document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.style.display = 'none'; });
+
+      open('match-modal');
+    });
+  });
+
+  // Eliminar Comentario (Hold to Delete)
+  document.querySelectorAll('.btn-delete-comment').forEach(function (btn) {
+    var holdTimer = null;
+    var id = btn.getAttribute('data-id');
+    var progressEl = btn.querySelector('.hold-progress');
+    var textEl = btn.querySelector('.hold-text');
+    var originalText = textEl.textContent;
+
+    function handleStart(e) {
+      e.preventDefault();
+      textEl.textContent = 'Soltar';
+      progressEl.style.transition = 'width ' + (holdDuration / 1000) + 's linear';
+      progressEl.style.width = '100%';
+      holdTimer = setTimeout(function () {
+        window.location.href = '/admin/comment/delete/' + id;
+      }, holdDuration);
+    }
+    function handleEnd() {
+      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+      textEl.textContent = originalText;
+      progressEl.style.transition = 'width 0.15s ease-out';
+      progressEl.style.width = '0%';
+    }
+
+    btn.addEventListener('mousedown', handleStart);
+    btn.addEventListener('mouseup', handleEnd);
+    btn.addEventListener('mouseleave', handleEnd);
+    btn.addEventListener('touchstart', handleStart, { passive: false });
+    btn.addEventListener('touchend', handleEnd);
+    btn.addEventListener('touchcancel', handleEnd);
+    btn.addEventListener('click', function (e) { e.stopPropagation(); });
   });
 
   // Toggle de Dropdown Menu

@@ -225,6 +225,42 @@ function confirmDeleteMatch(id) {
 
 <script th:src="@{/js/modal.js}"></script>
 <script th:src="@{/js/fancy-select.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var statusSelect = document.getElementById('match-status');
+    var homeScore = document.getElementById('match-home-score');
+    var awayScore = document.getElementById('match-away-score');
+
+    function toggleScores() {
+        if (!statusSelect || !homeScore || !awayScore) return;
+        if (statusSelect.value === 'SCHEDULED') {
+            homeScore.style.display = 'none';
+            homeScore.disabled = true;
+            homeScore.value = '';
+            awayScore.style.display = 'none';
+            awayScore.disabled = true;
+            awayScore.value = '';
+        } else {
+            homeScore.style.display = 'block';
+            homeScore.disabled = false;
+            awayScore.style.display = 'block';
+            awayScore.disabled = false;
+        }
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener('change', toggleScores);
+        toggleScores();
+    }
+    
+    var plusBtn = document.querySelector('.dock__item--admin');
+    if (plusBtn) {
+        plusBtn.addEventListener('click', function() {
+            setTimeout(toggleScores, 50);
+        });
+    }
+});
+</script>
 
 </body>
 </html>
