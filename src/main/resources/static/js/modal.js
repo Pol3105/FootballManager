@@ -18,8 +18,10 @@
   document.querySelectorAll('[data-open-modal]').forEach(function (t) {
     t.addEventListener('click', function (e) {
       var id = t.getAttribute('data-open-modal');
-      if (document.getElementById(id)) {  // solo intercepta si el modal existe (admin)
+      var modal = document.getElementById(id);
+      if (modal) {  // intercepta y abre de forma fluida el modal si está cargado
         e.preventDefault();
+        e.stopPropagation();
         open(id);
       }
     });

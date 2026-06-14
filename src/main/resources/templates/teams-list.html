@@ -54,18 +54,18 @@
                 <div class="frosted-card-content">
                     <div class="flex items-center gap-4 mb-4">
                         <div>
-                            <h2 class="text-xl font-bold" style="color: var(--color-white);" th:text="${team.name}">Nombre del Club</h2>
-                            <p style="color: rgba(255,255,255,0.7); font-size: 0.82rem; margin-top: 2px;">
+                            <h2 class="text-xl font-bold" style="color: var(--color-night);" th:text="${team.name}">Nombre del Club</h2>
+                            <p style="color: var(--color-gray-600); font-size: 0.82rem; margin-top: 2px;">
                                 <span th:text="${team.city}">Ciudad</span> &nbsp;·&nbsp; Fund. <span th:text="${team.foundationYear}">1900</span>
                             </p>
                         </div>
                     </div>
                     
-                    <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; min-height: 40px; margin-bottom: var(--space-md);">
+                    <p style="color: var(--color-gray-600); font-size: 0.8rem; min-height: 40px; margin-bottom: var(--space-md);">
                         <span th:each="t : ${team.tournaments}"
                               th:text="'[' + ${t.name} + '] '"
                               style="margin-right: 4px; display: inline-block;"></span>
-                        <span th:if="${#lists.isEmpty(team.tournaments)}" style="color: rgba(255,255,255,0.4);">Sin torneo asignado</span>
+                        <span th:if="${#lists.isEmpty(team.tournaments)}" style="color: var(--color-gray-400);">Sin torneo asignado</span>
                     </p>
 
                     <div sec:authorize="hasRole('ADMIN')" style="display:flex; gap: 8px; justify-content: flex-end; margin-top: var(--space-md); position: relative; z-index: 10;">
