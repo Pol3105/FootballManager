@@ -14,13 +14,16 @@
   pointer-events: none;
 }
 
-/* Capa de la "sombra" enmascarada con la silueta orgánica */
+/* Capa de la "sombra" enmascarada con la silueta orgánica.
+   NOTA: se usa solo `blur` (GPU-barato). El filtro SVG feDisplacementMap se
+   retiró porque WebKit/Safari lo computa en CPU a pantalla completa y se atasca;
+   Chromium lo hacía en GPU. blur + deriva por transform va fluido en todos. */
 .ethereal-bg__shape {
   position: absolute;
-  inset: -60px;
+  inset: -80px;
   background-color: var(--muted-foreground);
-  opacity: 0.55;
-  filter: url(#ethereal-filter) blur(4px);
+  opacity: 0.5;
+  filter: blur(60px);
 
   -webkit-mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
   mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
@@ -49,13 +52,6 @@
   background-repeat: repeat;
   opacity: 0.5;
   mix-blend-mode: soft-light;
-}
-
-/* El SVG que define el filtro va oculto (solo aporta el <filter>) */
-.ethereal-bg__svg {
-  position: absolute;
-  width: 0;
-  height: 0;
 }
 
 /* Respeta usuarios que prefieren menos movimiento */
