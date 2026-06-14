@@ -14,7 +14,7 @@
 <nav th:fragment="dock" class="dock" data-dock aria-label="Navegación rápida">
     <!-- Flecha izquierda para paginación (si se está en /teams o /referees y hay página anterior) -->
     <a th:if="${currentPage != null and currentPage > 0}"
-       th:href="@{${pagePrefix != null ? pagePrefix : '/teams'}(page=${currentPage - 1})}"
+       th:href="@{${pagePrefix != null ? pagePrefix : '/teams'}(page=${currentPage - 1}, q=${q}, position=${position})}"
        class="dock__item dock__item--arrow" data-label="Página Anterior">
         <svg class="dock__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </a>
@@ -58,7 +58,7 @@
 
     <!-- Flecha derecha para paginación (si se está en /teams o /referees y hay página siguiente) -->
     <a th:if="${currentPage != null and currentPage + 1 < totalPages}"
-       th:href="@{${pagePrefix != null ? pagePrefix : '/teams'}(page=${currentPage + 1})}"
+       th:href="@{${pagePrefix != null ? pagePrefix : '/teams'}(page=${currentPage + 1}, q=${q}, position=${position})}"
        class="dock__item dock__item--arrow" data-label="Página Siguiente">
         <svg class="dock__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
     </a>

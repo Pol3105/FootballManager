@@ -46,10 +46,18 @@ public class PlayerController {
     
     @GetMapping("/players")
     public String listPlayers(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "6") int size,
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String position,
             Model model) {
-        model.addAttribute("players", playerService.search(q, position));
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+        org.springframework.data.domain.Page<Player> playersPage = playerService.search(q, position, pageable);
+        
+        model.addAttribute("playersPage", playersPage);
+        model.addAttribute("players", playersPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", playersPage.getTotalPages());
         model.addAttribute("q", q != null ? q : "");
         model.addAttribute("position", position != null ? position : "");
         return "players";
