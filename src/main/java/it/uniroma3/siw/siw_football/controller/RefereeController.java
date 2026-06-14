@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.validation.Valid;
 
 import it.uniroma3.siw.siw_football.model.Referee;
@@ -47,9 +48,16 @@ public class RefereeController {
     }
 
     @GetMapping("/referees")
-    public String listReferees(Model model) {
-        // Usamos el Service para traer todos los árbitros
-        model.addAttribute("referees", refereeService.findAll());
+    public String listReferees(@RequestParam(value = "page", defaultValue = "0") int page,
+                               @RequestParam(value = "size", defaultValue = "6") int size,
+                               Model model) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+        org.springframework.data.domain.Page<Referee> refereesPage = refereeService.findAll(pageable);
+        
+        model.addAttribute("refereesPage", refereesPage);
+        model.addAttribute("referees", refereesPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", refereesPage.getTotalPages());
         return "referees"; // Nombre del archivo html que te pasé antes
     }
 

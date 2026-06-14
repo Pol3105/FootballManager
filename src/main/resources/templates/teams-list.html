@@ -113,7 +113,7 @@ function confirmDeleteTeam(id) {
 }
 </script>
 <div th:replace="~{fragments :: footer}"></div>
-<div th:replace="~{fragments :: dock}"></div>
+<div th:replace="~{fragments :: dock(pagePrefix='/teams')}"></div>
 <script th:src="@{/js/dock.js}"></script>
 <div th:replace="~{fragments :: tournamentModal}"></div>
 <div th:replace="~{fragments :: teamModal}"></div>

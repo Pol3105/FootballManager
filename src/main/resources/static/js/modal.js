@@ -48,6 +48,9 @@
     if (window.location.pathname.startsWith('/teams')) {
       plusBtn.setAttribute('data-open-modal', 'team-modal');
       plusBtn.setAttribute('data-label', 'Nuevo Equipo');
+    } else if (window.location.pathname.startsWith('/referees')) {
+      plusBtn.setAttribute('data-open-modal', 'referee-modal');
+      plusBtn.setAttribute('data-label', 'Nuevo Árbitro');
     } else {
       plusBtn.setAttribute('data-open-modal', 'tournament-modal');
       plusBtn.setAttribute('data-label', 'Nuevo Torneo');
@@ -110,6 +113,33 @@
     });
   });
 
+  // ── Editar Árbitro Modal Prefill ────────────────────────
+  document.querySelectorAll('.edit-referee-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var modal = document.getElementById('referee-modal');
+      if (!modal) return;
+
+      var id = btn.getAttribute('data-id');
+      var name = btn.getAttribute('data-name');
+      var surname = btn.getAttribute('data-surname');
+      var code = btn.getAttribute('data-code');
+
+      // Llenar campos
+      document.getElementById('referee-id').value = id;
+      document.getElementById('referee-name').value = name;
+      document.getElementById('referee-surname').value = surname;
+      document.getElementById('referee-code').value = code;
+
+      // Cambiar Título del Modal y texto del Botón
+      document.getElementById('referee-title').textContent = 'Editar Árbitro';
+      document.getElementById('referee-submit-btn').textContent = 'Guardar cambios';
+      document.getElementById('referee-form').setAttribute('action', '/admin/referee/save');
+
+      open('referee-modal');
+    });
+  });
+
   // Asegurar que al abrir para añadir equipo se limpie el formulario
   if (plusBtn && window.location.pathname.startsWith('/teams')) {
     plusBtn.addEventListener('click', function () {
@@ -126,8 +156,23 @@
     });
   }
 
+  // Asegurar que al abrir para añadir árbitro se limpie el formulario
+  if (plusBtn && window.location.pathname.startsWith('/referees')) {
+    plusBtn.addEventListener('click', function () {
+      document.getElementById('referee-id').value = '';
+      document.getElementById('referee-name').value = '';
+      document.getElementById('referee-surname').value = '';
+      document.getElementById('referee-code').value = '';
+      document.getElementById('referee-title').textContent = 'Añadir nuevo árbitro';
+      document.getElementById('referee-submit-btn').textContent = 'Guardar árbitro';
+      document.getElementById('referee-form').setAttribute('action', '/admin/referee/save');
+    });
+  }
+
   // ── Botón Hold and Release (Hold to Delete) ─────────────
   var holdDuration = 3000; // 3 segundos
+  
+  // Equipos
   document.querySelectorAll('.btn-delete-team').forEach(function (btn) {
     var holdTimer = null;
     var startTime = null;
@@ -145,7 +190,6 @@
       progressEl.style.width = '100%';
 
       holdTimer = setTimeout(function () {
-        // Ejecutar borrado si se mantiene 3 segundos
         window.location.href = '/admin/team/delete/' + id;
       }, holdDuration);
     }
@@ -168,14 +212,58 @@
     btn.addEventListener('touchend', handleEnd);
     btn.addEventListener('touchcancel', handleEnd);
 
-    // Evitar propagación del click al contenedor de la tarjeta
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+    });
+  });
+
+  // Árbitros
+  document.querySelectorAll('.btn-delete-referee').forEach(function (btn) {
+    var holdTimer = null;
+    var startTime = null;
+    var id = btn.getAttribute('data-id');
+    var progressEl = btn.querySelector('.hold-progress');
+    var textEl = btn.querySelector('.hold-text');
+    var originalText = textEl.textContent;
+
+    function handleStart(e) {
+      e.preventDefault();
+      startTime = Date.now();
+      textEl.textContent = 'Soltar';
+      
+      progressEl.style.transition = 'width ' + (holdDuration / 1000) + 's linear';
+      progressEl.style.width = '100%';
+
+      holdTimer = setTimeout(function () {
+        window.location.href = '/admin/referee/delete/' + id;
+      }, holdDuration);
+    }
+
+    function handleEnd() {
+      if (holdTimer) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+      textEl.textContent = originalText;
+      progressEl.style.transition = 'width 0.15s ease-out';
+      progressEl.style.width = '0%';
+    }
+
+    btn.addEventListener('mousedown', handleStart);
+    btn.addEventListener('mouseup', handleEnd);
+    btn.addEventListener('mouseleave', handleEnd);
+
+    btn.addEventListener('touchstart', handleStart, { passive: false });
+    btn.addEventListener('touchend', handleEnd);
+    btn.addEventListener('touchcancel', handleEnd);
+
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
     });
   });
 
   // Evitar propagación del botón editar al contenedor
-  document.querySelectorAll('.edit-team-btn').forEach(function (btn) {
+  document.querySelectorAll('.edit-team-btn, .edit-referee-btn').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       // Cerrar todos los dropdowns al hacer clic en editar
