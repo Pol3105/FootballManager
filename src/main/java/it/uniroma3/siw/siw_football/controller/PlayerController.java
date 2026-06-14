@@ -35,12 +35,18 @@ public class PlayerController {
 
     @PostMapping("/admin/player/save")
     public String savePlayer(@Valid @ModelAttribute("player") Player player,
-                             BindingResult result, Model model) {
+                             BindingResult result,
+                             @RequestParam(required = false) String returnUrl,
+                             Model model) {
         if (result.hasErrors()) {
             model.addAttribute("teams", teamService.findAll());
             return "admin/form-player";
         }
         playerService.savePlayer(player);
+        // Volver a la página de origen (p.ej. la del equipo) si se indicó una ruta interna segura
+        if (returnUrl != null && returnUrl.startsWith("/") && !returnUrl.startsWith("//")) {
+            return "redirect:" + returnUrl;
+        }
         return "redirect:/players";
     }
     

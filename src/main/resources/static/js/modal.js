@@ -15,6 +15,20 @@
     document.body.style.overflow = '';
   }
 
+  // Setea el valor de un <select> y notifica al fancy-select para refrescar el display
+  function setSelect(id, value) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.value = value == null ? '' : value;
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // Setea el returnUrl oculto del modal de jugador (a dónde volver tras guardar)
+  function setReturnUrl(url) {
+    var el = document.getElementById('player-return-url');
+    if (el) el.value = url || '';
+  }
+
   document.querySelectorAll('[data-open-modal]').forEach(function (t) {
     t.addEventListener('click', function (e) {
       var id = t.getAttribute('data-open-modal');
@@ -168,8 +182,11 @@
       document.getElementById('player-surname').value = surname;
       document.getElementById('player-birth').value = birth;
       document.getElementById('player-height').value = height;
-      document.getElementById('player-position').value = position;
-      document.getElementById('player-team').value = team;
+      setSelect('player-position', position);
+      setSelect('player-team', team);
+
+      // Volver a la página actual tras guardar (equipo o /players)
+      setReturnUrl(window.location.pathname + window.location.search);
 
       // Cambiar Título del Modal y texto del Botón
       document.getElementById('player-title').textContent = 'Editar Jugador';
@@ -217,8 +234,9 @@
       document.getElementById('player-surname').value = '';
       document.getElementById('player-birth').value = '';
       document.getElementById('player-height').value = '';
-      document.getElementById('player-position').value = '';
-      document.getElementById('player-team').value = '';
+      setSelect('player-position', '');
+      setSelect('player-team', '');
+      setReturnUrl('');  // jugador genérico → volver a /players (default del backend)
       document.getElementById('player-title').textContent = 'Añadir nuevo jugador';
       document.getElementById('player-submit-btn').textContent = 'Guardar jugador';
       document.getElementById('player-form').setAttribute('action', '/admin/player/save');
@@ -233,12 +251,14 @@
       document.getElementById('player-surname').value = '';
       document.getElementById('player-birth').value = '';
       document.getElementById('player-height').value = '';
-      document.getElementById('player-position').value = '';
+      setSelect('player-position', '');
       if (typeof CURRENT_TEAM_ID !== 'undefined' && CURRENT_TEAM_ID !== null) {
-        document.getElementById('player-team').value = CURRENT_TEAM_ID;
+        setSelect('player-team', CURRENT_TEAM_ID);
       } else {
-        document.getElementById('player-team').value = '';
+        setSelect('player-team', '');
       }
+      // Volver a la página del equipo tras fichar, no a /players
+      setReturnUrl(window.location.pathname + window.location.search);
       document.getElementById('player-title').textContent = 'Fichar Jugador';
       document.getElementById('player-submit-btn').textContent = 'Guardar jugador';
       document.getElementById('player-form').setAttribute('action', '/admin/player/save');

@@ -262,8 +262,10 @@
         <form th:action="@{/admin/player/save}" method="post" class="modal-form" id="player-form">
             <!-- Campo oculto para edición -->
             <input type="hidden" id="player-id" name="id" />
+            <!-- A dónde volver tras guardar (vacío = /players) -->
+            <input type="hidden" id="player-return-url" name="returnUrl" />
             
-            <div class="modal-fields-section" style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-md);">
+            <div class="modal-fields-section form-grid-2">
                 <div class="modal-field">
                     <label for="player-name">Nombre <span class="req">*</span></label>
                     <input type="text" id="player-name" name="name" required placeholder="Ej: Lionel"/>
@@ -274,7 +276,7 @@
                 </div>
             </div>
 
-            <div class="modal-fields-section" style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-md);">
+            <div class="modal-fields-section form-grid-2">
                 <div class="modal-field">
                     <label for="player-birth">Fecha de Nacimiento <span class="req">*</span></label>
                     <input type="date" id="player-birth" name="birthDate" required/>
@@ -285,7 +287,7 @@
                 </div>
             </div>
 
-            <div class="modal-fields-section" style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-md);">
+            <div class="modal-fields-section form-grid-2">
                 <div class="modal-field">
                     <label for="player-position">Posición <span class="req">*</span></label>
                     <select id="player-position" name="position" required>

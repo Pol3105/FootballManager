@@ -12,6 +12,7 @@
     <link th:href="@{/css/variables.css}" rel="stylesheet"/>
     <link th:href="@{/css/global.css}" rel="stylesheet"/>
     <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
+    <link th:href="@{/css/fancy-select.css}" rel="stylesheet"/>
 </head>
 <body>
 <div th:replace="~{fragments :: ethereal}"></div>
@@ -209,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div th:replace="~{fragments :: tournamentModal}"></div>
 <div th:replace="~{fragments :: playerModal}"></div>
 <script th:src="@{/js/modal.js}"></script>
+<script th:src="@{/js/fancy-select.js}"></script>
 
 </body>
 </html>

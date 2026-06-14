@@ -225,13 +225,11 @@ code {
 
 .frosted-glass-card {
   position: relative;
-  background: color-mix(in srgb, #FF8A89 82%, transparent);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #efefef;
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
-  box-shadow: 0 8px 32px 0 rgba(32, 32, 32, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(32, 32, 32, 0.12);
   transform-style: preserve-3d;
   transition: transform 0.1s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   overflow: hidden;
@@ -245,17 +243,17 @@ code {
   right: 0;
   bottom: 0;
   background: radial-gradient(
-    circle 260px at var(--mouse-x, 0) var(--mouse-y, 0),
-    rgba(255, 255, 255, 0.06),
-    transparent 80%
+    circle 200px at var(--mouse-x, 0) var(--mouse-y, 0),
+    rgba(255, 255, 255, 0.55),
+    transparent 75%
   );
   pointer-events: none;
   z-index: 1;
 }
 
 .frosted-glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.12);
+  border-color: var(--color-gray-300);
+  box-shadow: 0 16px 40px 0 rgba(32, 32, 32, 0.18);
 }
 
 .frosted-card-content {
@@ -730,9 +728,23 @@ code {
 @media (max-width: 480px) {
   .container { padding: var(--space-md); border-radius: var(--radius-md); }
   h1 { font-size: 1.8rem; }
+  .frosted-glass-card { padding: var(--space-md); }
+  .premium-table th, .premium-table td { padding-left: 8px; padding-right: 8px; font-size: 0.82rem; }
+}
+
+/* Desactiva el tilt 3D en pantallas táctiles/pequeñas (evita transforms raros) */
+@media (max-width: 768px) {
+  .frosted-glass-card { transform: none !important; }
 }
 
 /* ── 16. Premium Table Component ─────────────────────────── */
+/* Contenedor con scroll horizontal para tablas en móvil */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .premium-table {
   width: 100%;
   border-collapse: collapse;

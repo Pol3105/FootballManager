@@ -12,6 +12,7 @@
     <link th:href="@{/css/variables.css}" rel="stylesheet"/>
     <link th:href="@{/css/global.css}" rel="stylesheet"/>
     <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
+    <link th:href="@{/css/fancy-select.css}" rel="stylesheet"/>
 </head>
 <body>
 <div th:replace="~{fragments :: ethereal}"></div>
@@ -45,7 +46,7 @@
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{tournament}"/>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+        <div class="form-grid-2">
             <div class="form__group">
                 <label class="form__label">🛡️ Equipo Local</label>
                 <select th:field="*{homeTeam}" class="form__input" required>
@@ -65,7 +66,7 @@
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+        <div class="form-grid-2">
             <div class="form__group">
                 <label class="form__label">📍 Lugar del Encuentro</label>
                 <input type="text" th:field="*{location}" class="form__input"
@@ -106,6 +107,7 @@
 <script th:src="@{/js/dock.js}"></script>
 <div th:replace="~{fragments :: tournamentModal}"></div>
 <script th:src="@{/js/modal.js}"></script>
+<script th:src="@{/js/fancy-select.js}"></script>
 
 </body>
 </html>

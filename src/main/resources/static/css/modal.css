@@ -120,6 +120,31 @@
   .modal-overlay, .modal-card { animation: none; }
 }
 
+/* ── Responsive (móvil/tablet) ─────────────────────────── */
+@media (max-width: 560px) {
+  .modal-overlay { padding: var(--space-sm); align-items: flex-start; }
+  .modal-card {
+    max-width: 100%;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    max-height: 92vh;
+    overflow-y: auto;
+    margin-top: var(--space-md);
+  }
+  .modal-actions { flex-direction: column-reverse; }
+  .modal-actions .modal-btn { width: 100%; }
+}
+
+/* Grid de 2 columnas que colapsa a 1 en móvil (modales y formularios) */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+@media (max-width: 520px) {
+  .form-grid-2 { grid-template-columns: 1fr; }
+}
+
 /* ── Modal de Equipos (AuthorFormCard style) ───────────── */
 .modal-grid {
   display: grid;

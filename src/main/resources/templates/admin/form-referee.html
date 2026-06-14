@@ -42,7 +42,7 @@
     <form th:action="@{/admin/referee/save}" th:object="${referee}" method="post" class="form card">
         <input type="hidden" th:field="*{id}"/>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl);">
+        <div class="form-grid-2">
             <div class="form__group">
                 <label class="form__label">Nombre</label>
                 <input type="text" th:field="*{name}"

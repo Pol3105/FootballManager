@@ -1,0 +1,140 @@
+/* =============================================================================
+   Fancy Select — dropdown moderno que envuelve un <select> nativo.
+   El <select> real se mantiene oculto como fuente de verdad (binding Thymeleaf).
+   ============================================================================= */
+
+.fancy-select {
+  position: relative;
+  width: 100%;
+}
+
+/* El select nativo queda oculto pero accesible/funcional para el form */
+.fancy-select__native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fancy-select__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: 10px 12px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.fancy-select__trigger:hover { border-color: var(--ring); }
+
+.fancy-select.is-open .fancy-select__trigger,
+.fancy-select__trigger:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px rgba(100, 74, 64, 0.18);
+}
+
+.fancy-select__value {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fancy-select__value.is-placeholder { color: var(--muted-foreground); }
+
+.fancy-select__chevron {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  transition: transform var(--transition);
+}
+.fancy-select.is-open .fancy-select__chevron { transform: rotate(180deg); }
+
+/* ── Panel ────────────────────────────────────────────────── */
+.fancy-select__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 5px;
+  background: var(--popover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-deep);
+  transform-origin: top center;
+  /* estado cerrado */
+  opacity: 0;
+  transform: translateY(-4px) scaleY(0.96);
+  pointer-events: none;
+  transition: opacity 0.14s ease, transform 0.14s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.fancy-select.is-open .fancy-select__menu {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+  pointer-events: auto;
+}
+
+.fancy-select__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.fancy-select__item:hover,
+.fancy-select__item.is-active {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.fancy-select__item.is-selected {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.fancy-select__check {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  opacity: 0;
+  color: var(--primary);
+  transition: opacity 0.12s ease;
+}
+.fancy-select__item.is-selected .fancy-select__check { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fancy-select__menu,
+  .fancy-select__chevron { transition: none; }
+}
