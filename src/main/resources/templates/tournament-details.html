@@ -53,11 +53,15 @@
                 <svg style="width:14px;height:14px;margin-left:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
             <div class="team-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 6px); background: var(--color-white); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-deep); padding: var(--space-xs); flex-direction: column; gap: 4px; min-width: 140px; z-index: 40;">
-                <a th:href="@{/admin/tournament/edit/{id}(id=${tournament.id})}" class="btn btn--ghost btn--sm"
-                   style="justify-content: flex-start; width: 100%; text-align: left; font-size: 0.82rem; padding: 6px 12px; color: var(--color-night);">
+                <button type="button" class="btn btn--ghost btn--sm edit-tournament-details-btn"
+                        th:data-id="${tournament.id}"
+                        th:data-name="${tournament.name}"
+                        th:data-start-date="${tournament.startDate}"
+                        th:data-description="${tournament.description}"
+                        style="justify-content: flex-start; width: 100%; text-align: left; font-size: 0.82rem; padding: 6px 12px; color: var(--color-night);">
                     <svg style="width:14px;height:14px;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                     Editar
-                </a>
+                </button>
                 <button type="button" class="btn-hold-and-release btn-delete-tournament"
                         style="width: 100%; border: none !important; border-radius: var(--radius-sm);"
                         th:data-id="${tournament.id}">
@@ -250,6 +254,7 @@ function confirmDeleteMatch(id) {
     </div>
 </div>
 
+<div th:replace="~{fragments :: tournamentModal}"></div>
 <script th:src="@{/js/modal.js}"></script>
 <script th:src="@{/js/fancy-select.js}"></script>
 <script>

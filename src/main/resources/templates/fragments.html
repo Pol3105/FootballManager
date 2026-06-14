@@ -130,7 +130,8 @@
         </div>
 
         <!-- name/startDate/description con name= directos (bindea por @ModelAttribute) -->
-        <form th:action="@{/admin/tournament/new}" method="post" class="modal-form">
+        <form th:action="@{/admin/tournament/new}" method="post" class="modal-form" id="tournament-form">
+            <input type="hidden" id="tournament-id" name="id"/>
             <div class="modal-field">
                 <label for="tm-name">Nombre del torneo <span class="req">*</span></label>
                 <input type="text" id="tm-name" name="name" required

@@ -13,6 +13,7 @@
     <link th:href="@{/css/global.css}" rel="stylesheet"/>
     <link th:href="@{/css/navbar.css}" rel="stylesheet"/>
     <link th:href="@{/css/match-details.css}" rel="stylesheet"/>
+    <link th:href="@{/css/fancy-select.css}" rel="stylesheet"/>
 </head>
 <body>
 <div th:replace="~{fragments :: ethereal}"></div>
@@ -316,6 +317,7 @@ function confirmDeleteMatch(id) {
 
 <script th:src="@{/js/modal.js}"></script>
 <script th:src="@{/js/comments-carousel.js}"></script>
+<script th:src="@{/js/fancy-select.js}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var statusSelect = document.getElementById('match-status');

@@ -221,6 +221,21 @@
     });
   }
 
+  // Asegurar que al abrir para añadir torneo se limpie el formulario
+  if (plusBtn && (window.location.pathname === '/' || window.location.pathname === '' || window.location.pathname === '/index.html')) {
+    plusBtn.addEventListener('click', function () {
+      var modal = document.getElementById('tournament-modal');
+      if (!modal) return;
+      document.getElementById('tournament-id').value = '';
+      document.getElementById('tm-name').value = '';
+      document.getElementById('tm-date').value = '';
+      document.getElementById('tm-desc').value = '';
+      document.getElementById('tm-title').textContent = 'Crear nuevo torneo';
+      var form = document.getElementById('tournament-form');
+      form.setAttribute('action', '/admin/tournament/new');
+    });
+  }
+
   // Asegurar que al abrir para añadir árbitro se limpie el formulario
   if (plusBtn && window.location.pathname.startsWith('/referees')) {
     plusBtn.addEventListener('click', function () {
@@ -463,7 +478,7 @@
   });
 
   // Evitar propagación del botón editar al contenedor
-  document.querySelectorAll('.edit-team-btn, .edit-referee-btn, .edit-player-btn, .edit-match-btn, .edit-match-details-btn, .edit-comment-btn').forEach(function (btn) {
+  document.querySelectorAll('.edit-team-btn, .edit-referee-btn, .edit-player-btn, .edit-match-btn, .edit-match-details-btn, .edit-comment-btn, .edit-tournament-details-btn').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       // Cerrar todos los dropdowns al hacer clic en editar
@@ -563,6 +578,37 @@
       document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.style.display = 'none'; });
 
       open('match-modal');
+    });
+  });
+
+  // Editar Torneo Modal Prefill
+  document.querySelectorAll('.edit-tournament-details-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var modal = document.getElementById('tournament-modal');
+      if (!modal) return;
+
+      var id = btn.getAttribute('data-id');
+      var name = btn.getAttribute('data-name');
+      var startDate = btn.getAttribute('data-start-date');
+      var description = btn.getAttribute('data-description');
+
+      // Llenar campos
+      document.getElementById('tournament-id').value = id;
+      document.getElementById('tm-name').value = name;
+      document.getElementById('tm-date').value = startDate;
+      document.getElementById('tm-desc').value = description;
+
+      // Cambiar Título, Acción del formulario y Botón
+      document.getElementById('tm-title').textContent = 'Editar Torneo';
+      var form = document.getElementById('tournament-form');
+      form.setAttribute('action', '/admin/tournament/edit/' + id);
+
+      // Cerrar dropdowns
+      document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.style.display = 'none'; });
+
+      open('tournament-modal');
     });
   });
 
