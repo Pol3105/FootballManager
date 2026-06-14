@@ -1,0 +1,64 @@
+/* =============================================================================
+   Ethereal Shadow — fondo animado detrás de las tarjetas de auth.
+   Reimplementación CSS/SVG del componente React (sin framer-motion).
+   La ondulación se logra con un filtro SVG (feTurbulence + feDisplacementMap)
+   cuyo hueRotate se anima con SMIL (<animate>), más una capa de ruido.
+   ============================================================================= */
+
+.ethereal-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--background);
+  pointer-events: none;
+}
+
+/* Capa de la "sombra" enmascarada con la silueta orgánica */
+.ethereal-bg__shape {
+  position: absolute;
+  inset: -60px;
+  background-color: var(--muted-foreground);
+  opacity: 0.55;
+  filter: url(#ethereal-filter) blur(4px);
+
+  -webkit-mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
+  mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+
+  animation: ethereal-drift 18s ease-in-out infinite alternate;
+}
+
+@keyframes ethereal-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(2%, -2%) scale(1.05); }
+  100% { transform: translate(-2%, 2%) scale(1); }
+}
+
+/* Capa de ruido sutil */
+.ethereal-bg__noise {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://framerusercontent.com/images/g0QcWrxr87K0ufOxIUFBakwYA8.png');
+  background-size: 240px;
+  background-repeat: repeat;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+}
+
+/* El SVG que define el filtro va oculto (solo aporta el <filter>) */
+.ethereal-bg__svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Respeta usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .ethereal-bg__shape { animation: none; }
+}

@@ -10,54 +10,129 @@
     <link rel="manifest" th:href="@{/site.webmanifest}">
     <link th:href="@{/css/variables.css}" rel="stylesheet"/>
     <link th:href="@{/css/global.css}" rel="stylesheet"/>
+    <link th:href="@{/css/etheral-shadow.css}" rel="stylesheet"/>
     <link th:href="@{/css/auth.css}" rel="stylesheet"/>
 </head>
 <body class="auth-page">
 
-    <div class="auth-card">
-        <div class="auth-logo">
-            <span class="auth-logo__icon">⚽</span>
-            <span class="auth-logo__title">SIW Football</span>
-            <p class="auth-logo__subtitle">Crea tu cuenta de aficionado</p>
-        </div>
-
-        <h2>Crear Cuenta</h2>
-
-        <form th:action="@{/register}" th:object="${user}" method="POST" class="form">
-            <div class="form__group">
-                <label class="form__label" for="username">Nombre de usuario</label>
-                <input type="text" id="username" th:field="*{username}" class="form__input"
-                       placeholder="Ej: pablo_siw" required autofocus/>
-            </div>
-
-            <div class="form__group">
-                <label class="form__label" for="password">Contraseña</label>
-                <input type="password" id="password" th:field="*{password}"
-                       th:classappend="${#fields.hasErrors('password')} ? ' form__input--error' : ''"
-                       class="form__input" placeholder="Mínimo 6 caracteres" required/>
-                <p th:if="${#fields.hasErrors('password')}"
-                   th:errors="*{password}"
-                   style="color: var(--color-danger); font-size: 0.8rem; margin-top: 4px;">Error</p>
-            </div>
-
-            <div class="form__group">
-                <label class="form__label" for="securityAnswer">Verificación humana: ¿Cuánto es 5 + 3?</label>
-                <input type="text" id="securityAnswer" name="securityAnswer" class="form__input"
-                       placeholder="Respuesta en número" required/>
-                <p th:if="${securityError}"
-                   style="color: var(--color-danger); font-size: 0.8rem; margin-top: 4px;" th:text="${securityError}"></p>
-            </div>
-
-            <button type="submit" class="btn btn--primary auth-submit">
-                ✅ Crear Cuenta
-            </button>
-        </form>
-
-        <div class="auth-footer">
-            <p>¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a></p>
-        </div>
-        <a th:href="@{/}" class="auth-back">← Volver a la web pública</a>
+    <!-- Fondo Ethereal Shadow -->
+    <div class="ethereal-bg" aria-hidden="true">
+        <svg class="ethereal-bg__svg" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="ethereal-filter">
+                    <feTurbulence result="undulation" numOctaves="2"
+                                  baseFrequency="0.0008,0.0025" seed="0" type="turbulence"/>
+                    <feColorMatrix in="undulation" type="hueRotate" values="180">
+                        <animate attributeName="values" from="0" to="360"
+                                 dur="30s" repeatCount="indefinite"/>
+                    </feColorMatrix>
+                    <feColorMatrix in="dist" result="circulation" type="matrix"
+                                   values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0"/>
+                    <feDisplacementMap in="SourceGraphic" in2="circulation" scale="60" result="dist"/>
+                    <feDisplacementMap in="dist" in2="undulation" scale="60" result="output"/>
+                </filter>
+            </defs>
+        </svg>
+        <div class="ethereal-bg__shape"></div>
+        <div class="ethereal-bg__noise"></div>
     </div>
 
+    <div class="auth-split">
+        <!-- Panel izquierdo: mapa de puntos animado -->
+        <div class="auth-split__panel">
+            <canvas class="auth-map" data-dotmap></canvas>
+            <div class="auth-panel__overlay">
+                <div class="auth-panel__logo">⚽</div>
+                <h2 class="auth-panel__title">SIW Football</h2>
+                <p class="auth-panel__text">Únete a la plataforma de gestión de torneos y comenta los partidos.</p>
+            </div>
+        </div>
+
+        <!-- Columna derecha: formulario -->
+        <div class="auth-split__form">
+            <div class="auth-head">
+                <h1 class="auth-title">Crear cuenta</h1>
+                <p class="auth-subtitle">Regístrate como aficionado</p>
+            </div>
+
+            <form th:action="@{/register}" th:object="${user}" method="POST" class="auth-form">
+                <!-- Usuario -->
+                <div>
+                    <label class="auth-label" for="username">Nombre de usuario <span class="req">*</span></label>
+                    <div class="auth-field">
+                        <svg class="auth-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" id="username" th:field="*{username}" class="auth-input"
+                               placeholder="Ej: pablo_siw" required autofocus/>
+                    </div>
+                </div>
+
+                <!-- Contraseña -->
+                <div>
+                    <label class="auth-label" for="password">Contraseña <span class="req">*</span></label>
+                    <div class="auth-field">
+                        <svg class="auth-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="password" th:field="*{password}" class="auth-input"
+                               th:classappend="${#fields.hasErrors('password')} ? ' auth-input--error' : ''"
+                               placeholder="Mínimo 6 caracteres" required autocomplete="new-password" data-pass-input/>
+                        <button type="button" class="auth-pass-toggle" data-pass-toggle aria-label="Mostrar contraseña">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="auth-field-error">Error</p>
+                </div>
+
+                <!-- Captcha humano -->
+                <div>
+                    <label class="auth-label" for="securityAnswer">Verificación humana: ¿Cuánto es 5 + 3? <span class="req">*</span></label>
+                    <div class="auth-field">
+                        <svg class="auth-field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 11V6a3 3 0 0 1 6 0v5"></path>
+                            <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                        </svg>
+                        <input type="text" id="securityAnswer" name="securityAnswer" class="auth-input"
+                               placeholder="Respuesta en número" required/>
+                    </div>
+                    <p th:if="${securityError}" class="auth-field-error" th:text="${securityError}"></p>
+                </div>
+
+                <button type="submit" class="auth-btn">
+                    Crear cuenta
+                    <svg class="auth-btn__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </button>
+
+                <div class="auth-divider">o</div>
+
+                <!-- Registro/login con Google (OAuth2) -->
+                <a th:href="@{/oauth2/authorization/google}" class="auth-google">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18A10.97 10.97 0 0 0 1 12c0 1.77.43 3.45 1.18 4.93l3.66-2.83z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38z"/>
+                    </svg>
+                    Continuar con Google
+                </a>
+            </form>
+
+            <p class="auth-switch">
+                ¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a>
+            </p>
+            <a th:href="@{/}" class="auth-back">← Volver a la web pública</a>
+        </div>
+    </div>
+
+    <script th:src="@{/js/auth.js}"></script>
+    <script th:src="@{/js/dotmap.js}"></script>
 </body>
 </html>

@@ -311,6 +311,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setUsername("admin");
             admin.setRole("ADMIN");
         }
+        admin.setProvider("LOCAL");
         admin.setPassword(passwordEncoder.encode(adminPassword));
         userService.saveUser(admin);
 
@@ -320,6 +321,7 @@ public class DataInitializer implements CommandLineRunner {
             user.setUsername("pablo");
             user.setRole("USER");
         }
+        user.setProvider("LOCAL");
         user.setPassword(passwordEncoder.encode(userPassword));
         userService.saveUser(user);
     }

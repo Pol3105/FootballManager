@@ -15,12 +15,20 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
+    // Nullable: los usuarios creados vía OAuth (Google) no tienen contraseña local.
+    // @Size permite null, así que solo valida cuando el form de registro envía valor.
+    @Column(nullable = true)
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
     @Column(nullable = false)
     private String role; // Tomará los valores "ADMIN" o "USER"
+
+    // Proveedor de la cuenta: "LOCAL" (usuario/contraseña) o "GOOGLE" (OAuth).
+    // columnDefinition con default 'LOCAL' → backfill seguro de filas existentes
+    // cuando Hibernate (ddl-auto=update) añade la columna a una tabla ya poblada.
+    @Column(nullable = false, columnDefinition = "varchar(255) default 'LOCAL'")
+    private String provider = "LOCAL";
 
     // Constructor vacío (Obligatorio para JPA/Hibernate)
     public User() {
@@ -30,6 +38,14 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.provider = "LOCAL";
+    }
+
+    public User(String username, String password, String role, String provider) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.provider = provider;
     }
 
     // Getters y Setters
@@ -44,6 +60,9 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getProvider() { return provider; }
+    public void setProvider(String provider) { this.provider = provider; }
 
     // Métodos equals() y hashCode() basados en el 'username'
     @Override

@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--space-xl);
-  box-shadow: 0 2px 16px rgba(13,27,42,0.4);
+  box-shadow: 0 2px 16px rgba(32,32,32,0.4);
   gap: var(--space-md);
 }
 
@@ -34,7 +34,7 @@
 .navbar__brand-icon {
   font-size: 1.6rem;
   line-height: 1;
-  filter: drop-shadow(0 0 6px rgba(46,204,113,0.5));
+  filter: drop-shadow(0 0 6px rgba(255,224,194,0.5));
 }
 
 /* ── Right cluster ────────────────────────────────────── */

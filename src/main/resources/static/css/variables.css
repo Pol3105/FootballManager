@@ -2,26 +2,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap');
 
 :root {
-  /* ── Palette ─────────────────────── */
-  --color-pitch:        #0d4f2e;
-  --color-pitch-mid:    #1a6e40;
-  --color-pitch-light:  #2ecc71;
-  --color-night:        #0d1b2a;
-  --color-slate:        #1c2f45;
-  --color-mist:         #f0f4f2;
+  /* ── Tema (paleta marrón/crema) ─────────────────────────── */
+  --card:                 #fcfcfc;
+  --card-foreground:      #202020;
+  --popover:              #fcfcfc;
+  --popover-foreground:   #202020;
+  --background:           #f9f9f9;
+  --foreground:           #202020;
+  --primary:              #644a40;
+  --primary-foreground:   #ffffff;
+  --secondary:            #ffdfb5;
+  --secondary-foreground: #582d1d;
+  --muted:                #efefef;
+  --muted-foreground:     #646464;
+  --accent:               #e8e8e8;
+  --accent-foreground:    #202020;
+  --border:               #d8d8d8;
+  --input:                #d8d8d8;
+  --ring:                 #644a40;
+  --destructive:          #e54d2e;
+  --destructive-foreground:#ffffff;
+  --radius:               0.5rem;
+  --chart-1:              #644a40;
+  --chart-2:              #ffdfb5;
+  --chart-3:              #e8e8e8;
+  --chart-4:              #ffe6c4;
+  --chart-5:              #66493e;
 
-  /* Neutrals */
+  /* ── Palette (remapeada al nuevo tema; nombres legacy) ──── */
+  --color-pitch:        #4a372e;   /* marrón oscuro */
+  --color-pitch-mid:    #644a40;   /* primary */
+  --color-pitch-light:  #8a6a55;   /* marrón claro (acentos, focus) */
+  --color-night:        #202020;   /* foreground */
+  --color-slate:        #3a322e;   /* neutro cálido oscuro */
+  --color-mist:         #f9f9f9;   /* background */
+
+  /* Neutrals (cálidos) */
   --color-white:        #ffffff;
-  --color-gray-50:      #f8fafb;
-  --color-gray-100:     #f1f5f3;
-  --color-gray-200:     #e2e8e5;
-  --color-gray-300:     #cbd5d0;
-  --color-gray-400:     #8fa8a0;
-  --color-gray-600:     #4d6359;
-  --color-gray-800:     #253530;
+  --color-gray-50:      #fcfcfc;
+  --color-gray-100:     #efefef;
+  --color-gray-200:     #d8d8d8;
+  --color-gray-300:     #c4c4c4;
+  --color-gray-400:     #8a8a8a;
+  --color-gray-600:     #646464;
+  --color-gray-800:     #202020;
 
   /* Semantic */
-  --color-danger:       #e63946;
+  --color-danger:       #e54d2e;
   --color-warning:      #f4a833;
   --color-info:         #2980b9;
   --color-success:      #27ae60;
@@ -46,10 +73,10 @@
   --radius-pill: 999px;
 
   /* ── Shadows ─────────────────────── */
-  --shadow-xs:    0 1px 3px rgba(13,27,42,0.06);
-  --shadow-card:  0 2px 12px rgba(13,27,42,0.08);
-  --shadow-hover: 0 8px 28px rgba(13,27,42,0.15);
-  --shadow-deep:  0 16px 40px rgba(13,27,42,0.22);
+  --shadow-xs:    0 1px 3px rgba(32,32,32,0.06);
+  --shadow-card:  0 2px 12px rgba(32,32,32,0.08);
+  --shadow-hover: 0 8px 28px rgba(32,32,32,0.15);
+  --shadow-deep:  0 16px 40px rgba(32,32,32,0.22);
 
   /* ── Motion ──────────────────────── */
   --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
@@ -57,4 +84,42 @@
   /* ── Layout ──────────────────────── */
   --max-width: 1020px;
   --navbar-h:  62px;
+}
+
+/* ── Modo oscuro (sin toggle por ahora; disponible vía .dark) ── */
+.dark {
+  --card:                 #191919;
+  --card-foreground:      #eeeeee;
+  --popover:              #191919;
+  --popover-foreground:   #eeeeee;
+  --background:           #111111;
+  --foreground:           #eeeeee;
+  --primary:              #ffe0c2;
+  --primary-foreground:   #081a1b;
+  --secondary:            #393028;
+  --secondary-foreground: #ffe0c2;
+  --muted:                #222222;
+  --muted-foreground:     #b4b4b4;
+  --accent:               #2a2a2a;
+  --accent-foreground:    #eeeeee;
+  --border:               #201e18;
+  --input:                #484848;
+  --ring:                 #ffe0c2;
+  --destructive:          #e54d2e;
+  --destructive-foreground:#ffffff;
+
+  --color-pitch:        #ffe0c2;
+  --color-pitch-mid:    #ffe0c2;
+  --color-pitch-light:  #393028;
+  --color-night:        #eeeeee;
+  --color-slate:        #2a2a2a;
+  --color-mist:         #111111;
+  --color-white:        #191919;
+  --color-gray-50:      #191919;
+  --color-gray-100:     #222222;
+  --color-gray-200:     #2a2a2a;
+  --color-gray-300:     #3a3a3a;
+  --color-gray-400:     #b4b4b4;
+  --color-gray-600:     #b4b4b4;
+  --color-gray-800:     #eeeeee;
 }

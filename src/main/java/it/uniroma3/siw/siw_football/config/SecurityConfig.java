@@ -1,5 +1,6 @@
 package it.uniroma3.siw.siw_football.config;
 
+import it.uniroma3.siw.siw_football.service.CustomOAuth2UserService;
 import it.uniroma3.siw.siw_football.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -43,6 +47,7 @@ public class SecurityConfig {
                 // Req 4.1: funciones públicas de lectura
                 .requestMatchers(
                     "/", "/login", "/register",
+                    "/oauth2/**", "/login/oauth2/**",
                     "/css/**", "/js/**", "/images/**",
                     "/favicon.ico", "/*.png", "/site.webmanifest", "/about.txt",
                     "/tournament/**", "/team/**",
@@ -56,6 +61,12 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .defaultSuccessUrl("/", true)
                 .permitAll()
+            )
+            .oauth2Login((oauth) -> oauth
+                .loginPage("/login")
+                .defaultSuccessUrl("/", true)
+                .userInfoEndpoint((userInfo) -> userInfo
+                    .userService(customOAuth2UserService))
             )
             .logout((logout) -> logout
                 .logoutSuccessUrl("/")
