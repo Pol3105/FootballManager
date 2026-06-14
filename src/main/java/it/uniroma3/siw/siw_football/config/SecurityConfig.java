@@ -49,7 +49,7 @@ public class SecurityConfig {
                     "/", "/login", "/register",
                     "/oauth2/**", "/login/oauth2/**",
                     "/css/**", "/js/**", "/images/**",
-                    "/favicon.ico", "/*.png", "/site.webmanifest", "/about.txt",
+                    "/favicon.ico", "/*.png", "/*.webp", "/site.webmanifest", "/about.txt",
                     "/tournament/**", "/team/**",
                     "/match/**",
                     "/players", "/referees", "/teams",
