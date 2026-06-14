@@ -278,8 +278,10 @@
     plusBtn.addEventListener('click', function () {
       var f = document.getElementById('match-form');
       if (!f) return;
-      var ids = ['match-home-score', 'match-away-score', 'match-location', 'match-date'];
+      var ids = ['match-id', 'match-return-url', 'match-home-score', 'match-away-score', 'match-location', 'match-date'];
       ids.forEach(function (id) { var el = document.getElementById(id); if (el) el.value = ''; });
+      var title = document.getElementById('match-title');
+      if (title) title.textContent = 'Programar partido';
       // selects: dejar primera opción
       ['match-home-team', 'match-away-team', 'match-referee'].forEach(function (id) {
         var el = document.getElementById(id);
@@ -540,7 +542,17 @@
       document.getElementById('match-location').value = location;
       document.getElementById('match-status').value = status;
       document.getElementById('match-referee').value = referee;
-      document.getElementById('match-date').value = date;
+      document.getElementById('match-date').value = date ? date.substring(0, 16) : '';
+
+      var retUrlEl = document.getElementById('match-return-url');
+      if (retUrlEl) {
+        retUrlEl.value = window.location.pathname + window.location.search;
+      }
+
+      var title = document.getElementById('match-title');
+      if (title) {
+        title.textContent = 'Editar Resultado';
+      }
 
       // Disparar la lógica de visibilidad de marcadores si existe
       if (window.toggleEditMatchScores) {
@@ -606,6 +618,39 @@
     document.querySelectorAll('.team-dropdown-menu').forEach(function (el) {
       el.style.display = 'none';
     });
+  });
+
+  // Torneos
+  document.querySelectorAll('.btn-delete-tournament').forEach(function (btn) {
+    var holdTimer = null;
+    var id = btn.getAttribute('data-id');
+    var progressEl = btn.querySelector('.hold-progress');
+    var textEl = btn.querySelector('.hold-text');
+    var originalText = textEl.textContent;
+
+    function handleStart(e) {
+      e.preventDefault();
+      textEl.textContent = 'Soltar';
+      progressEl.style.transition = 'width ' + (holdDuration / 1000) + 's linear';
+      progressEl.style.width = '100%';
+      holdTimer = setTimeout(function () {
+        window.location.href = '/admin/tournament/delete/' + id;
+      }, holdDuration);
+    }
+    function handleEnd() {
+      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+      textEl.textContent = originalText;
+      progressEl.style.transition = 'width 0.15s ease-out';
+      progressEl.style.width = '0%';
+    }
+
+    btn.addEventListener('mousedown', handleStart);
+    btn.addEventListener('mouseup', handleEnd);
+    btn.addEventListener('mouseleave', handleEnd);
+    btn.addEventListener('touchstart', handleStart, { passive: false });
+    btn.addEventListener('touchend', handleEnd);
+    btn.addEventListener('touchcancel', handleEnd);
+    btn.addEventListener('click', function (e) { e.stopPropagation(); });
   });
 
   // Evento click en la tarjeta para navegar

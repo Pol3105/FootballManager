@@ -61,12 +61,18 @@ public class MatchController {
     }
 
     @PostMapping("/admin/match/save")
-    public String saveMatch(@ModelAttribute("match") Match match, RedirectAttributes redirectAttributes) {
+    public String saveMatch(@ModelAttribute("match") Match match,
+                            @RequestParam(required = false) String returnUrl,
+                            RedirectAttributes redirectAttributes) {
         if (match.getHomeTeam().equals(match.getAwayTeam())) {
             return "redirect:/admin/tournament/" + match.getTournament().getId() + "/match/new?error=sameTeam";
         }
-        
+
         matchService.saveMatch(match);
+        // Volver a la página de origen (detalle del partido o torneo) si se indicó ruta interna segura
+        if (returnUrl != null && returnUrl.startsWith("/") && !returnUrl.startsWith("//")) {
+            return "redirect:" + returnUrl;
+        }
         return "redirect:/tournament/" + match.getTournament().getId();
     }
 
