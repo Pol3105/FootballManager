@@ -247,5 +247,71 @@
     </div>
 </div>
 
+<!-- ═══════════ Modal: crear/editar jugador (solo admin) ═══════════ -->
+<div th:fragment="playerModal" sec:authorize="hasRole('ADMIN')"
+     class="modal-overlay" id="player-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="player-title">
+        <div class="modal-card__head">
+            <h3 class="modal-card__title" id="player-title">Añadir nuevo jugador</h3>
+            <button type="button" class="modal-card__close" data-close-modal aria-label="Cerrar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <form th:action="@{/admin/player/save}" method="post" class="modal-form" id="player-form">
+            <!-- Campo oculto para edición -->
+            <input type="hidden" id="player-id" name="id" />
+            
+            <div class="modal-fields-section" style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-md);">
+                <div class="modal-field">
+                    <label for="player-name">Nombre <span class="req">*</span></label>
+                    <input type="text" id="player-name" name="name" required placeholder="Ej: Lionel"/>
+                </div>
+                <div class="modal-field">
+                    <label for="player-surname">Apellido <span class="req">*</span></label>
+                    <input type="text" id="player-surname" name="surname" required placeholder="Ej: Messi"/>
+                </div>
+            </div>
+
+            <div class="modal-fields-section" style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-md);">
+                <div class="modal-field">
+                    <label for="player-birth">Fecha de Nacimiento <span class="req">*</span></label>
+                    <input type="date" id="player-birth" name="birthDate" required/>
+                </div>
+                <div class="modal-field">
+                    <label for="player-height">Altura (metros) <span class="req">*</span></label>
+                    <input type="number" step="0.01" id="player-height" name="height" required placeholder="Ej: 1.70"/>
+                </div>
+            </div>
+
+            <div class="modal-fields-section" style="display:grid; grid-template-columns:1fr 1fr; gap:var(--space-md);">
+                <div class="modal-field">
+                    <label for="player-position">Posición <span class="req">*</span></label>
+                    <select id="player-position" name="position" required>
+                        <option value="">-- Seleccionar --</option>
+                        <option value="Portero">Portero</option>
+                        <option value="Defensa">Defensa</option>
+                        <option value="Centrocampista">Centrocampista</option>
+                        <option value="Delantero">Delantero</option>
+                    </select>
+                </div>
+                <div class="modal-field">
+                    <label for="player-team">Equipo</label>
+                    <select id="player-team" name="team">
+                        <option value="">Agente Libre (Sin equipo)</option>
+                        <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn--ghost" data-close-modal>Cancelar</button>
+                <button type="submit" class="modal-btn modal-btn--primary" id="player-submit-btn">Guardar jugador</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 </body>
 </html>

@@ -144,6 +144,39 @@
     });
   });
 
+  // ── Editar Jugador Modal Prefill ────────────────────────
+  document.querySelectorAll('.edit-player-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var modal = document.getElementById('player-modal');
+      if (!modal) return;
+
+      var id = btn.getAttribute('data-id');
+      var name = btn.getAttribute('data-name');
+      var surname = btn.getAttribute('data-surname');
+      var birth = btn.getAttribute('data-birth');
+      var height = btn.getAttribute('data-height');
+      var position = btn.getAttribute('data-position');
+      var team = btn.getAttribute('data-team');
+
+      // Llenar campos
+      document.getElementById('player-id').value = id;
+      document.getElementById('player-name').value = name;
+      document.getElementById('player-surname').value = surname;
+      document.getElementById('player-birth').value = birth;
+      document.getElementById('player-height').value = height;
+      document.getElementById('player-position').value = position;
+      document.getElementById('player-team').value = team;
+
+      // Cambiar Título del Modal y texto del Botón
+      document.getElementById('player-title').textContent = 'Editar Jugador';
+      document.getElementById('player-submit-btn').textContent = 'Guardar cambios';
+      document.getElementById('player-form').setAttribute('action', '/admin/player/save');
+
+      open('player-modal');
+    });
+  });
+
   // Asegurar que al abrir para añadir equipo se limpie el formulario
   if (plusBtn && window.location.pathname.startsWith('/teams')) {
     plusBtn.addEventListener('click', function () {
@@ -170,6 +203,22 @@
       document.getElementById('referee-title').textContent = 'Añadir nuevo árbitro';
       document.getElementById('referee-submit-btn').textContent = 'Guardar árbitro';
       document.getElementById('referee-form').setAttribute('action', '/admin/referee/save');
+    });
+  }
+
+  // Asegurar que al abrir para añadir jugador se limpie el formulario
+  if (plusBtn && window.location.pathname.startsWith('/players')) {
+    plusBtn.addEventListener('click', function () {
+      document.getElementById('player-id').value = '';
+      document.getElementById('player-name').value = '';
+      document.getElementById('player-surname').value = '';
+      document.getElementById('player-birth').value = '';
+      document.getElementById('player-height').value = '';
+      document.getElementById('player-position').value = '';
+      document.getElementById('player-team').value = '';
+      document.getElementById('player-title').textContent = 'Añadir nuevo jugador';
+      document.getElementById('player-submit-btn').textContent = 'Guardar jugador';
+      document.getElementById('player-form').setAttribute('action', '/admin/player/save');
     });
   }
 
@@ -266,8 +315,53 @@
     });
   });
 
+  // Jugadores
+  document.querySelectorAll('.btn-delete-player').forEach(function (btn) {
+    var holdTimer = null;
+    var startTime = null;
+    var id = btn.getAttribute('data-id');
+    var progressEl = btn.querySelector('.hold-progress');
+    var textEl = btn.querySelector('.hold-text');
+    var originalText = textEl.textContent;
+
+    function handleStart(e) {
+      e.preventDefault();
+      startTime = Date.now();
+      textEl.textContent = 'Soltar';
+      
+      progressEl.style.transition = 'width ' + (holdDuration / 1000) + 's linear';
+      progressEl.style.width = '100%';
+
+      holdTimer = setTimeout(function () {
+        window.location.href = '/admin/player/delete/' + id;
+      }, holdDuration);
+    }
+
+    function handleEnd() {
+      if (holdTimer) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+      textEl.textContent = originalText;
+      progressEl.style.transition = 'width 0.15s ease-out';
+      progressEl.style.width = '0%';
+    }
+
+    btn.addEventListener('mousedown', handleStart);
+    btn.addEventListener('mouseup', handleEnd);
+    btn.addEventListener('mouseleave', handleEnd);
+
+    btn.addEventListener('touchstart', handleStart, { passive: false });
+    btn.addEventListener('touchend', handleEnd);
+    btn.addEventListener('touchcancel', handleEnd);
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+    });
+  });
+
   // Evitar propagación del botón editar al contenedor
-  document.querySelectorAll('.edit-team-btn, .edit-referee-btn').forEach(function (btn) {
+  document.querySelectorAll('.edit-team-btn, .edit-referee-btn, .edit-player-btn').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       // Cerrar todos los dropdowns al hacer clic en editar
