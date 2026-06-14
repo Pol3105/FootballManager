@@ -50,48 +50,41 @@
 
     <div class="grid-teams">
         <div th:each="team : ${teams}" class="card-container">
-            <div class="frosted-glass-card" style="--team-color: var(--color-pitch-light);">
+            <div class="frosted-glass-card team-clickable-card" th:data-href="@{/team/{id}/players(id=${team.id})}" style="cursor: pointer; --team-color: var(--color-pitch-light);">
                 <div class="frosted-card-content">
                     <div class="flex items-center gap-4 mb-4">
                         <div>
-                            <h2 class="text-xl font-bold" th:text="${team.name}">Nombre del Club</h2>
-                            <p class="text-muted" style="font-size: 0.82rem; margin-top: 2px;">
+                            <h2 class="text-xl font-bold" style="color: var(--color-white);" th:text="${team.name}">Nombre del Club</h2>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 0.82rem; margin-top: 2px;">
                                 <span th:text="${team.city}">Ciudad</span> &nbsp;·&nbsp; Fund. <span th:text="${team.foundationYear}">1900</span>
                             </p>
                         </div>
                     </div>
                     
-                    <p class="text-muted leading-relaxed" style="font-size: 0.8rem; min-height: 40px; margin-bottom: var(--space-md);">
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; min-height: 40px; margin-bottom: var(--space-md);">
                         <span th:each="t : ${team.tournaments}"
                               th:text="'[' + ${t.name} + '] '"
                               style="margin-right: 4px; display: inline-block;"></span>
-                        <span th:if="${#lists.isEmpty(team.tournaments)}" class="text-muted">Sin torneo asignado</span>
+                        <span th:if="${#lists.isEmpty(team.tournaments)}" style="color: rgba(255,255,255,0.4);">Sin torneo asignado</span>
                     </p>
 
-                    <div style="display:flex; gap: var(--space-sm); align-items:center; justify-content: space-between; margin-top: var(--space-md);">
-                        <a th:href="@{/team/{id}/players(id=${team.id})}"
-                           class="btn btn--outline btn--sm"
-                           style="border-color: var(--color-info); color: var(--color-info);">
-                            Plantilla
-                        </a>
-                        <div sec:authorize="hasRole('ADMIN')" style="display:flex; gap: 8px;">
-                            <button type="button" class="btn btn--warning btn--sm edit-team-btn"
-                                    th:data-id="${team.id}"
-                                    th:data-name="${team.name}"
-                                    th:data-city="${team.city}"
-                                    th:data-year="${team.foundationYear}"
-                                    th:data-tournaments="${#strings.listJoin(team.tournaments.![id], ',')}">
-                                <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                            </button>
-                            <button type="button" class="btn-hold-and-release btn-delete-team"
-                                    th:data-id="${team.id}">
-                                <div class="hold-progress"></div>
-                                <span class="hold-content">
-                                    <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                    <span class="hold-text">Eliminar</span>
-                                </span>
-                            </button>
-                        </div>
+                    <div sec:authorize="hasRole('ADMIN')" style="display:flex; gap: 8px; justify-content: flex-end; margin-top: var(--space-md); position: relative; z-index: 10;">
+                        <button type="button" class="btn btn--warning btn--sm edit-team-btn"
+                                th:data-id="${team.id}"
+                                th:data-name="${team.name}"
+                                th:data-city="${team.city}"
+                                th:data-year="${team.foundationYear}"
+                                th:data-tournaments="${#strings.join(team.tournaments.![id], ',')}">
+                            <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </button>
+                        <button type="button" class="btn-hold-and-release btn-delete-team"
+                                th:data-id="${team.id}">
+                            <div class="hold-progress"></div>
+                            <span class="hold-content">
+                                <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                <span class="hold-text">Eliminar</span>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>

@@ -165,5 +165,27 @@
     btn.addEventListener('touchstart', handleStart, { passive: false });
     btn.addEventListener('touchend', handleEnd);
     btn.addEventListener('touchcancel', handleEnd);
+
+    // Evitar propagación del click al contenedor de la tarjeta
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+    });
+  });
+
+  // Evitar propagación del botón editar al contenedor
+  document.querySelectorAll('.edit-team-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+    });
+  });
+
+  // Evento click en la tarjeta para navegar
+  document.querySelectorAll('.team-clickable-card').forEach(function (card) {
+    card.addEventListener('click', function () {
+      var url = card.getAttribute('data-href');
+      if (url) {
+        window.location.href = url;
+      }
+    });
   });
 })();
