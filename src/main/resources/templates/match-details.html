@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#644a40">
-    <title th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name} + ' — SIW Football'">Partido</title>
+    <title th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name} + ' — Football Manager'">Partido</title>
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
     <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32.png}">
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16.png}">
@@ -21,7 +21,7 @@
 <nav class="navbar">
     <a th:href="@{/}" class="navbar__brand">
         <img th:src="@{/logo.webp}" alt="Logo" class="navbar__brand-logo"/>
-        <span class="navbar__brand-text">SIW Football</span>
+        <span class="navbar__brand-text">Football Manager</span>
     </a>
     <div class="navbar__right">
         <div sec:authorize="isAuthenticated()" class="navbar__user">
