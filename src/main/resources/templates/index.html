@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#644a40">
     <title>SIW Football Manager</title>
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
     <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32.png}">
@@ -28,7 +29,7 @@
         <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn--danger">Cerrar Sesión</button>
         </form>
-        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn--outline-light">🔐 Iniciar Sesión</a>
+        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn--outline-light">Iniciar Sesión</a>
     </div>
 </nav>
 
@@ -36,14 +37,14 @@
     <div class="container" style="padding: 0; overflow: hidden;">
 
         <!-- Hero header -->
-        <header class="site-header">
+        <header class="site-header blur-fade" style="animation-delay:0.02s;">
             <h1 class="site-header__title">⚽ SIW Football Manager</h1>
             <p class="site-header__subtitle">Plataforma oficial de gestión de torneos</p>
         </header>
 
         <div style="padding: var(--space-xl);">
             <!-- Section header -->
-            <div class="section-header">
+            <div class="section-header blur-fade" style="animation-delay:0.06s;">
                 <h2 style="margin-bottom: 0;">Torneos Activos</h2>
             </div>
 
@@ -75,6 +76,8 @@
 <div th:replace="~{fragments :: footer}"></div>
 <div th:replace="~{fragments :: dock}"></div>
 <script th:src="@{/js/dock.js}"></script>
+<div th:replace="~{fragments :: tournamentModal}"></div>
+<script th:src="@{/js/modal.js}"></script>
 
 </body>
 </html>

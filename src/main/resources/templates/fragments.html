@@ -16,7 +16,11 @@
     <a th:href="@{/referees}" class="dock__item" data-label="Árbitros"><span>🧑‍⚖️</span></a>
     <a th:href="@{/teams}" class="dock__item" data-label="Equipos"><span>📋</span></a>
     <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/tournament/new}"
-       class="dock__item dock__item--admin" data-label="Nuevo Torneo"><span>➕</span></a>
+       class="dock__item dock__item--admin" data-label="Nuevo Torneo"
+       data-open-modal="tournament-modal">
+        <svg class="dock__plus" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+    </a>
 </nav>
 
 <!-- ═══════════ Footer ═══════════ -->
@@ -63,6 +67,42 @@
     </div>
     <p class="site-footer__copy">&copy; 2026 SIW Football — Università Roma Tre</p>
 </footer>
+
+<!-- ═══════════ Modal: crear torneo (solo admin) ═══════════ -->
+<div th:fragment="tournamentModal" sec:authorize="hasRole('ADMIN')"
+     class="modal-overlay" id="tournament-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="tm-title">
+        <div class="modal-card__head">
+            <h3 class="modal-card__title" id="tm-title">Crear nuevo torneo</h3>
+            <button type="button" class="modal-card__close" data-close-modal aria-label="Cerrar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- name/startDate/description con name= directos (bindea por @ModelAttribute) -->
+        <form th:action="@{/admin/tournament/new}" method="post" class="modal-form">
+            <div class="modal-field">
+                <label for="tm-name">Nombre del torneo <span class="req">*</span></label>
+                <input type="text" id="tm-name" name="name" required
+                       placeholder="Ej: Champions League 2026"/>
+            </div>
+            <div class="modal-field">
+                <label for="tm-date">Fecha de inicio <span class="req">*</span></label>
+                <input type="date" id="tm-date" name="startDate" required/>
+            </div>
+            <div class="modal-field">
+                <label for="tm-desc">Descripción <span class="req">*</span></label>
+                <textarea id="tm-desc" name="description" rows="4" required
+                          placeholder="Describe brevemente el formato y las reglas del torneo..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn--ghost" data-close-modal>Cancelar</button>
+                <button type="submit" class="modal-btn modal-btn--primary">Guardar torneo</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 </body>
 </html>

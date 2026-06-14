@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#644a40">
     <title th:text="${status} + ' — SIW Football'">Error — SIW Football</title>
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
     <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32.png}">
@@ -64,6 +65,8 @@
 <div th:replace="~{fragments :: footer}"></div>
 <div th:replace="~{fragments :: dock}"></div>
 <script th:src="@{/js/dock.js}"></script>
+<div th:replace="~{fragments :: tournamentModal}"></div>
+<script th:src="@{/js/modal.js}"></script>
 
 </body>
 </html>
