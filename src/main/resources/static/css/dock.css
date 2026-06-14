@@ -39,8 +39,18 @@
 
 .dock__item:hover { background: var(--color-pitch); color: var(--primary-foreground); }
 
-/* Emoji centrado */
-.dock__item span { line-height: 1; pointer-events: none; }
+/* Emoji centrado y dock__icon para SVGs */
+.dock__item span, .dock__icon { line-height: 1; pointer-events: none; }
+.dock__icon { width: 20px; height: 20px; color: var(--primary-foreground); }
+
+/* Flechas de paginación a los extremos del dock */
+.dock__item--arrow {
+  background: color-mix(in srgb, var(--primary) 35%, transparent);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.dock__item--arrow:hover {
+  background: var(--primary);
+}
 
 /* Tooltip con el nombre */
 .dock__item::after {
@@ -75,4 +85,6 @@
 @media (max-width: 480px) {
   .dock { gap: 10px; padding: 8px 12px; bottom: 12px; }
   .dock__item { width: 42px; height: 42px; font-size: 1.2rem; }
+  .dock__icon { width: 18px; height: 18px; }
 }
+

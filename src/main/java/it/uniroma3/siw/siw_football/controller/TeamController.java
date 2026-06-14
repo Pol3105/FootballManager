@@ -8,6 +8,9 @@ import it.uniroma3.siw.siw_football.service.TournamentService;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
 
@@ -31,11 +35,20 @@ public class TeamController {
     private PlayerService playerService;
 
     @GetMapping("/teams")
-    public String showAllTeams(Model model) {
-        model.addAttribute("teams", teamService.findAll());
+    public String showAllTeams(@RequestParam(value = "page", defaultValue = "0") int page,
+                               @RequestParam(value = "size", defaultValue = "6") int size,
+                               Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Team> teamsPage = teamService.findAll(pageable);
+        
+        model.addAttribute("teamsPage", teamsPage);
+        model.addAttribute("teams", teamsPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", teamsPage.getTotalPages());
         model.addAttribute("tournaments", tournamentService.findAll());
         return "teams-list"; // Nueva página
     }
+
 
     @GetMapping("/team/{id}")
     public String showTeamDetails(@PathVariable("id") Long id, Model model) {

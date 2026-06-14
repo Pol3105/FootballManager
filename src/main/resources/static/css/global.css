@@ -204,17 +204,115 @@ code {
 }
 
 .grid-teams {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-xl);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  perspective: 1000px;
 }
 
-.grid-players {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
+@media (min-width: 600px) {
+  .grid-teams { grid-template-columns: repeat(2, 1fr); }
 }
+@media (min-width: 900px) {
+  .grid-teams { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ── Frosted Glass Card 3D Tilt ─────────────────────────── */
+.card-container {
+  perspective: 1000px;
+  width: 100%;
+}
+
+.frosted-glass-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.06);
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+}
+
+.frosted-glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle 260px at var(--mouse-x, 0) var(--mouse-y, 0),
+    rgba(255, 255, 255, 0.06),
+    transparent 80%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.frosted-glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.12);
+}
+
+.frosted-card-content {
+  transform: translateZ(20px);
+  z-index: 2;
+  position: relative;
+}
+
+/* ── Botón Hold and Release ────────────────────────────── */
+.btn-hold-and-release {
+  position: relative;
+  min-width: 120px;
+  overflow: hidden;
+  touch-action: none;
+  background: #fee2e2 !important;
+  color: #ef4444 !important;
+  border: 1px solid #fca5a5 !important;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 700;
+  transition: transform 0.2s, box-shadow 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.btn-hold-and-release:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
+}
+
+.hold-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0%;
+  background: rgba(239, 68, 68, 0.2);
+  pointer-events: none;
+  z-index: 1;
+  transition: width 0.1s linear;
+}
+
+.hold-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 
 
 /* ── 4. Card component ──────────────────────────────────── */

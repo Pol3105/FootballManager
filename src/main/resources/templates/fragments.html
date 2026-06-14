@@ -12,14 +12,41 @@
 
 <!-- ═══════════ Dock macOS (navegación) ═══════════ -->
 <nav th:fragment="dock" class="dock" data-dock aria-label="Navegación rápida">
-    <a th:href="@{/players}" class="dock__item" data-label="Jugadores"><span>🏃</span></a>
-    <a th:href="@{/referees}" class="dock__item" data-label="Árbitros"><span>🧑‍⚖️</span></a>
-    <a th:href="@{/teams}" class="dock__item" data-label="Equipos"><span>📋</span></a>
+    <!-- Flecha izquierda para paginación (si se está en /teams y hay página anterior) -->
+    <a th:if="${currentPage != null and currentPage > 0}"
+       th:href="@{/teams(page=${currentPage - 1})}"
+       class="dock__item dock__item--arrow" data-label="Página Anterior">
+        <svg class="dock__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </a>
+
+    <!-- Botón Jugadores (Reemplaza Emoji 🏃) -->
+    <a th:href="@{/players}" class="dock__item" data-label="Jugadores">
+        <svg class="dock__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 21a6 6 0 0 0-12 0"></path><circle cx="12" cy="10" r="4"></circle><path d="M12 2v2"></path></svg>
+    </a>
+    
+    <!-- Botón Árbitros (Reemplaza Emoji 🧑‍⚖️) -->
+    <a th:href="@{/referees}" class="dock__item" data-label="Árbitros">
+        <svg class="dock__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8M5 12h14M19 12l-4-4M19 12l-4 4M5 12l4-4M5 12l4 4"></path></svg>
+    </a>
+    
+    <!-- Botón Equipos (Reemplaza Emoji 📋) -->
+    <a th:href="@{/teams}" class="dock__item" data-label="Equipos">
+        <svg class="dock__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+    </a>
+    
+    <!-- Botón Admin añadir (+) -->
     <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/tournament/new}"
        class="dock__item dock__item--admin" data-label="Nuevo Torneo"
        data-open-modal="tournament-modal">
         <svg class="dock__plus" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+    </a>
+
+    <!-- Flecha derecha para paginación (si se está en /teams y hay página siguiente) -->
+    <a th:if="${currentPage != null and currentPage + 1 < totalPages}"
+       th:href="@{/teams(page=${currentPage + 1})}"
+       class="dock__item dock__item--arrow" data-label="Página Siguiente">
+        <svg class="dock__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
     </a>
 </nav>
 
@@ -104,7 +131,7 @@
     </div>
 </div>
 
-<!-- ═══════════ Modal: crear equipo (solo admin) ═══════════ -->
+<!-- ═══════════ Modal: crear/editar equipo (solo admin) ═══════════ -->
 <div th:fragment="teamModal" sec:authorize="hasRole('ADMIN')"
      class="modal-overlay" id="team-modal" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="team-title">
@@ -116,35 +143,25 @@
             </button>
         </div>
 
-        <form th:action="@{/admin/team/new}" method="post" class="modal-form">
-            <!-- Grid de dos columnas similar al de AuthorFormCard -->
-            <div class="modal-grid">
-                <!-- Columna izquierda: Subida de escudo simulada -->
-                <div class="modal-avatar-section">
-                    <div class="modal-avatar-container">
-                        <span class="modal-avatar-fallback">ESCUDO</span>
-                    </div>
-                    <span class="modal-avatar-label">Subir imagen</span>
-                    <span class="modal-avatar-sublabel">Límite: 1MB</span>
+        <form th:action="@{/admin/team/new}" method="post" class="modal-form" id="team-form">
+            <!-- Campo oculto para edición -->
+            <input type="hidden" id="team-id" name="id" />
+            
+            <div class="modal-fields-section">
+                <div class="modal-field">
+                    <label for="team-name">Nombre del Club <span class="req">*</span></label>
+                    <input type="text" id="team-name" name="name" required
+                           placeholder="Ej: AS Roma"/>
                 </div>
-
-                <!-- Columna derecha: Campos del formulario -->
-                <div class="modal-fields-section">
-                    <div class="modal-field">
-                        <label for="team-name">Nombre del Club <span class="req">*</span></label>
-                        <input type="text" id="team-name" name="name" required
-                               placeholder="Ej: AS Roma"/>
-                    </div>
-                    <div class="modal-field">
-                        <label for="team-city">Ciudad <span class="req">*</span></label>
-                        <input type="text" id="team-city" name="city" required
-                               placeholder="Ej: Roma"/>
-                    </div>
-                    <div class="modal-field">
-                        <label for="team-year">Año de Fundación <span class="req">*</span></label>
-                        <input type="number" id="team-year" name="foundationYear" required min="1800" max="2100"
-                               placeholder="Ej: 1927"/>
-                    </div>
+                <div class="modal-field">
+                    <label for="team-city">Ciudad <span class="req">*</span></label>
+                    <input type="text" id="team-city" name="city" required
+                           placeholder="Ej: Roma"/>
+                </div>
+                <div class="modal-field">
+                    <label for="team-year">Año de Fundación <span class="req">*</span></label>
+                    <input type="number" id="team-year" name="foundationYear" required min="1800" max="2100"
+                           placeholder="Ej: 1927"/>
                 </div>
             </div>
 
@@ -154,7 +171,7 @@
                 <div class="grid-list" role="group" aria-label="Selección de torneos">
                     <div th:each="t : ${tournaments}" class="grid-list-item">
                         <label class="custom-checkbox">
-                            <input type="checkbox" name="tournaments" th:value="${t.id}"/>
+                            <input type="checkbox" name="tournaments" th:value="${t.id}" class="tournament-checkbox"/>
                             <span class="checkbox-indicator">
                                 <svg class="checkbox-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"></path></svg>
                             </span>
@@ -166,7 +183,7 @@
 
             <div class="modal-actions">
                 <button type="button" class="modal-btn modal-btn--ghost" data-close-modal>Cancelar</button>
-                <button type="submit" class="modal-btn modal-btn--primary">Guardar equipo</button>
+                <button type="submit" class="modal-btn modal-btn--primary" id="team-submit-btn">Guardar equipo</button>
             </div>
         </form>
     </div>

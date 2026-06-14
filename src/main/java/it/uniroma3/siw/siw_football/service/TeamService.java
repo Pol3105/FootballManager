@@ -9,6 +9,8 @@ import it.uniroma3.siw.siw_football.repository.TeamRepository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +25,21 @@ public class TeamService {
     private MatchRepository matchRepository;
 
     /**
+     * Listar todos los equipos paginados
+     */
+    @Transactional(readOnly = true)
+    public Page<Team> findAll(Pageable pageable) {
+        return teamRepository.findAll(pageable);
+    }
+
+    /**
      * Listar todos los equipos
      */
     @Transactional(readOnly = true)
     public List<Team> findAll() {
         return (List<Team>) teamRepository.findAll();
     }
+
 
     /**
      * Busco un team basandome en el ID

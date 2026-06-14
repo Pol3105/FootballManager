@@ -5,7 +5,9 @@ import it.uniroma3.siw.siw_football.model.Team;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface TeamRepository extends CrudRepository<Team , Long> {
+public interface TeamRepository extends CrudRepository<Team, Long>, PagingAndSortingRepository<Team, Long> {
     List<Team> findByName(String name);
 }
+
