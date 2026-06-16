@@ -39,6 +39,7 @@ public class TournamentController {
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("tournaments", tournamentService.findAll());
+        model.addAttribute("allTeams", teamService.findAll());
         return "index";
     }
 
@@ -54,6 +55,7 @@ public class TournamentController {
         model.addAttribute("tournament", tournament);
         model.addAttribute("matchPage", matchPage);
         model.addAttribute("referees", refereeService.findAll());
+        model.addAttribute("allTeams", teamService.findAll());
         // Para las flechas de paginación del dock
         model.addAttribute("currentPage", matchPage.getNumber());
         model.addAttribute("totalPages", matchPage.getTotalPages());
@@ -71,9 +73,10 @@ public class TournamentController {
     // 2. Recibir los datos y guardarlos (POST)
     @PostMapping("/admin/tournament/new")
     public String saveNewTournament(@Valid @ModelAttribute("tournament") Tournament tournament,
-                                    BindingResult result) {
+                                    BindingResult result,
+                                    @RequestParam(value = "teams", required = false) List<Long> teams) {
         if (result.hasErrors()) return "admin/form-tournament";
-        tournamentService.save(tournament);
+        tournamentService.saveWithTeams(tournament, teams);
         return "redirect:/";
     }
 
@@ -93,10 +96,11 @@ public class TournamentController {
     @PostMapping("/admin/tournament/edit/{id}")
     public String updateTournament(@PathVariable("id") Long id,
                                    @Valid @ModelAttribute("tournament") Tournament tournament,
-                                   BindingResult result) {
+                                   BindingResult result,
+                                   @RequestParam(value = "teams", required = false) List<Long> teams) {
         if (result.hasErrors()) return "admin/form-tournament";
         tournament.setId(id);
-        tournamentService.save(tournament);
+        tournamentService.saveWithTeams(tournament, teams);
         return "redirect:/tournament/" + id;
     }
 

@@ -230,6 +230,7 @@
       document.getElementById('tm-name').value = '';
       document.getElementById('tm-date').value = '';
       document.getElementById('tm-desc').value = '';
+      modal.querySelectorAll('.tournament-team-checkbox').forEach(function (cb) { cb.checked = false; });
       document.getElementById('tm-title').textContent = 'Crear nuevo torneo';
       var form = document.getElementById('tournament-form');
       form.setAttribute('action', '/admin/tournament/new');
@@ -648,6 +649,13 @@
       document.getElementById('tm-name').value = name;
       document.getElementById('tm-date').value = startDate;
       document.getElementById('tm-desc').value = description;
+
+      // Marcar los equipos ya participantes
+      var teamsStr = btn.getAttribute('data-teams') || '';
+      var activeTeams = teamsStr.split(',').filter(Boolean);
+      modal.querySelectorAll('.tournament-team-checkbox').forEach(function (cb) {
+        cb.checked = activeTeams.indexOf(cb.value) !== -1;
+      });
 
       // Cambiar Título, Acción del formulario y Botón
       document.getElementById('tm-title').textContent = 'Editar Torneo';

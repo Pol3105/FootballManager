@@ -106,6 +106,31 @@ public class TournamentService {
     }
 
     /**
+     * Guarda el torneo y sincroniza los equipos participantes.
+     * El lado propietario de la relación es Team.tournaments, así que hay que
+     * actualizar cada equipo (no basta con Tournament.teams, que es el lado inverso).
+     */
+    @Transactional
+    public void saveWithTeams(Tournament tournament, List<Long> teamIds) {
+        Tournament saved = tournamentRepository.save(tournament);
+        java.util.Set<Long> selected = (teamIds == null)
+                ? java.util.Collections.emptySet()
+                : new java.util.HashSet<>(teamIds);
+
+        for (Team team : teamRepository.findAll()) {
+            boolean shouldHave = selected.contains(team.getId());
+            boolean has = team.getTournaments().contains(saved);
+            if (shouldHave && !has) {
+                team.getTournaments().add(saved);
+                teamRepository.save(team);
+            } else if (!shouldHave && has) {
+                team.getTournaments().remove(saved);
+                teamRepository.save(team);
+            }
+        }
+    }
+
+    /**
      * Lógica : Eliminar un torneo por su ID.∫
      */
     @Transactional

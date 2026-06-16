@@ -146,6 +146,26 @@
                 <textarea id="tm-desc" name="description" rows="4" required
                           placeholder="Describe brevemente el formato y las reglas del torneo..."></textarea>
             </div>
+
+            <!-- Selección de equipos participantes -->
+            <div class="modal-field">
+                <label>Equipos participantes</label>
+                <div class="grid-list" role="group" aria-label="Selección de equipos">
+                    <th:block th:if="${allTeams != null}">
+                        <div th:each="tm : ${allTeams}" class="grid-list-item">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" name="teams" th:value="${tm.id}" class="tournament-team-checkbox"/>
+                                <span class="checkbox-indicator">
+                                    <svg class="checkbox-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                                </span>
+                                <span class="checkbox-label" th:text="${tm.name}">Nombre del equipo</span>
+                            </label>
+                        </div>
+                    </th:block>
+                    <p th:if="${allTeams == null or #lists.isEmpty(allTeams)}" style="font-size:0.8rem;color:var(--muted-foreground);margin:0;">No hay equipos disponibles.</p>
+                </div>
+            </div>
+
             <div class="modal-actions">
                 <button type="button" class="modal-btn modal-btn--ghost" data-close-modal>Cancelar</button>
                 <button type="submit" class="modal-btn modal-btn--primary">Guardar torneo</button>
