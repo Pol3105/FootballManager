@@ -65,6 +65,21 @@
 
 .modal-form { display: flex; flex-direction: column; gap: var(--space-md); }
 
+/* Aviso de validación dentro del modal */
+.modal-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: #fdecea;
+  border: 1px solid var(--destructive);
+  color: #8a2012;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.modal-warning[hidden] { display: none; }
+
 .modal-field { display: flex; flex-direction: column; gap: 6px; }
 .modal-field label {
   font-size: 0.82rem;

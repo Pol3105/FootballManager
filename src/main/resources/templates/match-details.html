@@ -263,6 +263,8 @@ function confirmDeleteMatch(id) {
             <input type="hidden" id="match-return-url" name="returnUrl"/>
             <input type="hidden" name="tournament" th:value="${match.tournament.id}"/>
 
+            <div id="match-warning" class="modal-warning" hidden></div>
+
             <div class="modal-fields-section form-grid-2">
                 <div class="modal-field">
                     <label for="match-home-team">Equipo Local <span class="req">*</span></label>

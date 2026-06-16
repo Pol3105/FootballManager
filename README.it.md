@@ -12,9 +12,9 @@ Applicazione web completa per la gestione di tornei di calcio: squadre, giocator
 |---------|-----------|
 | Backend | Java 21, Spring Boot 3.4.5 |
 | Persistenza | Spring Data JPA, Hibernate, PostgreSQL 15 |
-| Frontend | Thymeleaf 3.1.3, HTML5, CSS3 |
-| Componenti dinamici | React 18 via CDN (senza build step) |
-| Sicurezza | Spring Security 6, BCrypt |
+| Frontend | Thymeleaf 3.1.3, HTML5, CSS3 (theming con custom property) |
+| Componenti dinamici | React 18 via CDN (classifica) + JS vanilla (dock, modali, dot-map, fancy-select, carosello) |
+| Sicurezza | Spring Security 6, BCrypt, OAuth2 Login (Google) |
 | Database | PostgreSQL in Docker (porta 5435) |
 
 ---
@@ -35,7 +35,7 @@ I controller non accedono mai direttamente ai repository. Tutta la logica di bus
 
 | Entità | Campi principali |
 |--------|-----------------|
-| `User` | username, password (BCrypt), role (ADMIN/USER) |
+| `User` | username, password (BCrypt, nullable per utenti OAuth), role (ADMIN/USER), provider (LOCAL/GOOGLE) |
 | `Tournament` | name, description, startDate |
 | `Team` | name, foundationYear, city |
 | `Player` | name, surname, position, birthDate, height, team |
@@ -215,12 +215,13 @@ Per testare:
 
 | Configurazione | Dettaglio |
 |---------------|----------|
-| Password | BCrypt (`BCryptPasswordEncoder`) |
+| Password | BCrypt (`BCryptPasswordEncoder`); `null` per gli account Google |
 | CSRF | Attivo (protezione predefinita Spring Security) |
-| Route pubbliche | `/`, `/tournament/**`, `/team/**`, `/match/**`, `/players`, `/referees`, `/teams`, `/api/**`, `/css/**`, `/js/**`, `/images/**`, `/login`, `/register` |
+| Metodi di login | Form login (username/password) **e** OAuth2 Login con Google |
+| Route pubbliche | `/`, `/tournament/**`, `/team/**`, `/match/**`, `/players`, `/referees`, `/teams`, `/api/**`, `/css/**`, `/js/**`, `/images/**`, `/login`, `/register`, `/oauth2/**`, `/login/oauth2/**` |
 | Autenticazione richiesta | `POST /match/*/comment` |
 | Solo ADMIN | `/admin/**` |
-| Ruoli | `ROLE_ADMIN`, `ROLE_USER` (prefisso `ROLE_` aggiunto da `CustomUserDetailsService`) |
+| Ruoli | `ROLE_ADMIN`, `ROLE_USER` (prefisso `ROLE_` aggiunto da `CustomUserDetailsService` / `CustomOAuth2UserService`) |
 
 ---
 
@@ -284,6 +285,70 @@ n+1/
 
 ---
 
+## Restyling UI/UX (branch vps-deploy)
+
+Rinnovamento visivo completo, realizzato in Thymeleaf + CSS puro + JS vanilla (i riferimenti
+di design erano componenti React/shadcn, re-implementati nativamente — nessun build step,
+nessun React tranne il widget classifica esistente).
+
+### Tema & branding
+- **Tema marrone/crema caldo** guidato da CSS custom property in `static/css/variables.css`
+  (`--background`, `--foreground`, `--primary #644a40`, `--secondary`, `--muted`, `--border`,
+  `--ring`, …) con un blocco di token `.dark` pronto. I vecchi token `--color-*` sono rimappati
+  alla nuova palette, così ogni pagina cambia stile senza riscrivere ogni foglio di stile.
+- Rebranding in **"Football Manager"** con asset `logo.webp`.
+- `theme_color` PWA aggiornato a `#644a40` + `<meta name="theme-color">` su ogni pagina
+  (risolve la barra di Safari tinta di verde).
+
+### Pagine di autenticazione
+- **Login** ridisegnato come glass card (input con icone, toggle mostra/nascondi password in
+  `static/js/auth.js`, "ricordami", CTA con freccia).
+- **Registrazione** come split card con una **canvas dot-map animata** (`static/js/dotmap.js`)
+  nel pannello sinistro; mantiene la sfida anti-bot matematica e la validazione.
+- Pulsante **OAuth2 Login con Google** su entrambe le pagine → `/oauth2/authorization/google`.
+
+### OAuth2 Login con Google (backend)
+- Dipendenza `spring-boot-starter-oauth2-client`; registrazione configurata in
+  `application.properties` dalle variabili d'ambiente `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`.
+- `CustomOAuth2UserService` esegue l'upsert dell'utente tramite l'email Google (lo crea con
+  ruolo `USER` e `provider = GOOGLE`, senza password locale) e assegna `ROLE_USER`.
+- Colonna `User.provider` (`LOCAL` / `GOOGLE`, default `LOCAL` con un default di colonna sicuro
+  per il backfill delle righe esistenti da parte di Hibernate); `password` ora è nullable.
+- `SecurityConfig` aggiunge `.oauth2Login(...)` collegato al service custom, il form login resta intatto.
+
+### UI globale
+- **Sfondo animato "ethereal"** (`static/css/etheral-shadow.css`) su ogni pagina — una forma
+  mascherata sfocata che deriva lentamente + rumore. Il pesante filtro SVG `feDisplacementMap`
+  originale è stato rimosso perché Safari/WebKit lo calcola sulla CPU a schermo intero e scatta;
+  sostituito da `blur` + deriva `transform` (leggeri per la GPU), fluido su tutti i browser.
+- **Dock in stile macOS** (`static/css/dock.css`, `static/js/dock.js`): navigazione fissa in
+  basso con effetto magnify all'hover (Giocatori / Arbitri / Squadre). Per gli admin mostra un
+  item **"+"** bianco **contestuale** — apre la modale di creazione giusta per la pagina corrente
+  (nuovo torneo in home, nuova squadra su `/teams`, nuovo arbitro, nuovo giocatore, programma
+  partita, nuovo commento, …).
+- **Footer** (`static/css/footer.css`): footer glass con colonne brand, navigazione, account e info,
+  su tutto il sito.
+- **Card dei tornei** ricostruite: l'intera card è cliccabile, banner a gradiente del brand con
+  numero di squadre, e la descrizione **si espande all'hover** (solo CSS).
+- **Animazione d'ingresso blur-fade** nella home (fade + blur scaglionati).
+
+### CRUD tramite modali (niente redirect a pagina intera)
+- I flussi admin di creazione/modifica avvengono ora in **modali dialog** invece di navigare a
+  pagine separate: modali per torneo, squadra, arbitro, giocatore, partita e commento
+  (`static/css/modal.css`, `static/js/modal.js`). Il JS gestisce apertura/chiusura (click,
+  overlay, Esc), il prefill in modifica dai `data-*` e una return-URL per tornare dove si era
+  dopo il salvataggio. I POST riusano gli endpoint admin esistenti.
+- **Select personalizzate** (`static/css/fancy-select.css`, `static/js/fancy-select.js`) e un
+  **carosello di commenti** (`static/js/comments-carousel.js`).
+
+### Fragment Thymeleaf condivisi
+- `templates/fragments.html` definisce fragment riutilizzabili (`ethereal`, `dock`, `footer` e i
+  blocchi modali) inclusi via `th:replace` in tutte le pagine non-auth — nessuna duplicazione.
+- Gli stili globali sono collegati via `@import` in `global.css`, così un solo set di link nel
+  `<head>` applica i nuovi componenti ovunque.
+
+---
+
 ## Changelog
 
 | Fase | Descrizione |
@@ -301,6 +366,11 @@ n+1/
 | 11 | Pagina di errore personalizzata (404/403/500) via templates/error.html |
 | 12 | Paginazione partite per torneo (5/pagina, la più recente prima) |
 | 13 | Ricerca e filtri giocatori per nome/cognome e posizione |
+| 14 | Tema marrone/crema con CSS custom property + rebrand "Football Manager" |
+| 15 | Restyling auth (login glass card, registrazione split + canvas dot-map) + sfondo ethereal |
+| 16 | OAuth2 Login con Google (CustomOAuth2UserService, `User.provider`, password nullable) |
+| 17 | Dock macOS, footer glass, card tornei ridisegnate, animazione blur-fade in home |
+| 18 | CRUD tramite modali (torneo/squadra/arbitro/giocatore/partita/commento) + fancy-select; fix performance sfondo su Safari |
 
 ---
 
@@ -339,6 +409,15 @@ Eseguiamo l'intera applicazione (Spring Boot monolitico + PostgreSQL) in Docker:
   USER_PASSWORD=la_tua_password_pablo_sicura
   ```
   All'avvio del container, Spring Boot aggiorna automaticamente gli hash delle password nel database con queste variabili.
+- **Credenziali Google OAuth:** per abilitare "Accedi con Google", aggiungi allo stesso `.env`:
+  ```env
+  GOOGLE_CLIENT_ID=il_tuo_client_id
+  GOOGLE_CLIENT_SECRET=il_tuo_client_secret
+  ```
+  Creale nella Google Cloud Console (schermata di consenso OAuth + credenziali Web application) e
+  registra le redirect URI `https://TUO_DOMINIO/login/oauth2/code/google` (e
+  `http://localhost:8081/login/oauth2/code/google` per i test locali). Il `.env` è in gitignore,
+  quindi il secret reale risiede solo sul VPS. Il form login funziona anche se queste non sono impostate.
 - **Sicurezza:** Le porte sono mappate solo su `127.0.0.1` (`127.0.0.1:8081:8081` per l'app e `127.0.0.1:5435:5432` per PostgreSQL) per impedire l'accesso esterno diretto tramite il firewall.
 - **Spring Boot Multi-stage Build:** L'applicazione viene compilata ed eseguita all'interno di Docker utilizzando il `Dockerfile` multi-stage.
 
@@ -354,7 +433,7 @@ uni.pablo-server.178.105.2.24.sslip.io {
 ### 3. Integrazione PWA e macOS "Aggiungi al Dock"
 Abbiamo aggiunto il supporto per le Progressive Web Apps (PWA) e le web app indipendenti su macOS:
 - Le icone (favicon, icone touch Apple) e `site.webmanifest` si trovano in `src/main/resources/static/`.
-- Il file manifest è stato configurato con il nome dell'app `SIW Football Manager` e i relativi colori del brand.
+- Il file manifest è configurato con il nome dell'app `SIW Football Manager` e il colore brand marrone (`theme_color #644a40`, coerente con `<meta name="theme-color">` su ogni pagina).
 - **Configurazione di Sicurezza:** Spring Security (`SecurityConfig.java`) consente l'accesso pubblico a `/favicon.ico`, `/*.png`, `/site.webmanifest` e `/about.txt` in modo che vengano caricati da browser/macOS senza reindirizzamenti alla pagina di login.
 - In Safari su macOS, seleziona **File > Aggiungi al Dock...** per installare l'applicazione con l'icona del pallone da calcio ad alta risoluzione.
 

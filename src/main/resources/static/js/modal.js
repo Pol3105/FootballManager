@@ -303,6 +303,7 @@
         if (el && el.options.length) setSelect(id, el.options[0].value);
       });
       setSelect('match-status', 'SCHEDULED');
+      if (window.clearMatchWarning) window.clearMatchWarning();
     });
   }
 
@@ -577,9 +578,57 @@
       // Cerrar dropdowns
       document.querySelectorAll('.team-dropdown-menu').forEach(function (el) { el.style.display = 'none'; });
 
+      if (window.clearMatchWarning) window.clearMatchWarning();
       open('match-modal');
     });
   });
+
+  // Validación cliente del modal de partido (mismo equipo + fecha según estado)
+  (function () {
+    var matchForm = document.getElementById('match-form');
+    if (!matchForm) return;
+
+    function showMatchWarning(msg) {
+      var w = document.getElementById('match-warning');
+      if (!w) return;
+      w.textContent = msg;
+      w.hidden = false;
+    }
+    function clearMatchWarning() {
+      var w = document.getElementById('match-warning');
+      if (w) { w.hidden = true; w.textContent = ''; }
+    }
+    window.clearMatchWarning = clearMatchWarning;
+
+    matchForm.addEventListener('submit', function (e) {
+      clearMatchWarning();
+      var home = document.getElementById('match-home-team');
+      var away = document.getElementById('match-away-team');
+      var status = document.getElementById('match-status');
+      var dateEl = document.getElementById('match-date');
+
+      if (home && away && home.value && home.value === away.value) {
+        e.preventDefault();
+        showMatchWarning('El equipo local y el visitante no pueden ser el mismo.');
+        return;
+      }
+
+      if (dateEl && dateEl.value && status) {
+        var when = new Date(dateEl.value);
+        var now = new Date();
+        if (status.value === 'SCHEDULED' && when <= now) {
+          e.preventDefault();
+          showMatchWarning('Un partido PROGRAMADO debe tener una fecha futura.');
+          return;
+        }
+        if (status.value === 'PLAYED' && when >= now) {
+          e.preventDefault();
+          showMatchWarning('Un partido JUGADO debe tener una fecha pasada.');
+          return;
+        }
+      }
+    });
+  })();
 
   // Editar Torneo Modal Prefill
   document.querySelectorAll('.edit-tournament-details-btn').forEach(function (btn) {
