@@ -4,6 +4,8 @@ Progetto obbligatorio per **Sistemi Informativi su Web (SIW)** — Università d
 
 Applicazione web completa per la gestione di tornei di calcio: squadre, giocatori, arbitri, partite e classifiche in tempo reale.
 
+[![Guarda il Video di Presentazione](https://img.shields.io/badge/Video_di_Presentazione-Guarda_su_YouTube-red?style=for-the-badge&logo=youtube)](https://youtu.be/re42CX0M8ec)
+
 ---
 
 ## Stack tecnologico

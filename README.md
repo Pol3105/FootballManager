@@ -4,6 +4,8 @@ Mandatory project for **Sistemi Informativi su Web (SIW)** — Università degli
 
 Full-stack web application for managing football tournaments: teams, players, referees, matches and live standings.
 
+[![Watch the Showcase Video](https://img.shields.io/badge/Showcase_Video-Watch_on_YouTube-red?style=for-the-badge&logo=youtube)](https://youtu.be/re42CX0M8ec)
+
 ---
 
 ## Tech Stack
