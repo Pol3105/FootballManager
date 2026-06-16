@@ -550,15 +550,16 @@
       var referee = btn.getAttribute('data-referee');
       var date = btn.getAttribute('data-date');
 
-      // Llenar campos
+      // Llenar campos. Los <select> vía setSelect para que el fancy-select
+      // refresque su display (no basta con asignar .value).
       document.getElementById('match-id').value = id;
-      document.getElementById('match-home-team').value = homeTeam;
-      document.getElementById('match-away-team').value = awayTeam;
+      setSelect('match-home-team', homeTeam);
+      setSelect('match-away-team', awayTeam);
       document.getElementById('match-home-score').value = (homeScore !== 'null' && homeScore !== null) ? homeScore : '';
       document.getElementById('match-away-score').value = (awayScore !== 'null' && awayScore !== null) ? awayScore : '';
       document.getElementById('match-location').value = location;
-      document.getElementById('match-status').value = status;
-      document.getElementById('match-referee').value = referee;
+      setSelect('match-status', status);
+      setSelect('match-referee', referee);
       document.getElementById('match-date').value = date ? date.substring(0, 16) : '';
 
       var retUrlEl = document.getElementById('match-return-url');

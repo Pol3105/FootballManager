@@ -47,7 +47,9 @@ Controllers never access repositories directly. All business logic lives in the 
 
 - `Tournament` 1:N `Match` — cascade ALL
 - `Match` 1:N `Comment` — cascade ALL
-- `Team` N:M `Tournament` — join table `team_tournament`
+- `Team` N:M `Tournament` — join table `team_tournament`; **`Team` is the owning side**
+  (`Tournament.teams` is `mappedBy`), so writes from the tournament side go through
+  `TournamentService.saveWithTeams(...)`
 - `Player` N:1 `Team` — FetchType.LAZY
 - `Match` N:1 `Team` (home/away) — explicit `@JoinColumn` to avoid column name conflict
 
@@ -108,9 +110,10 @@ Restart the application. `DataInitializer` inserts: 3 tournaments, 12 teams, ~44
 
 ### Administrator (ADMIN role)
 
-- Full CRUD for tournaments, teams, players, referees and matches
-- Register match results
-- Manage participating teams per tournament
+- Full CRUD for tournaments, teams, players, referees and matches (via dialog modals)
+- Register match results (with same-team and date-vs-status validation)
+- Manage participating teams per tournament — from the dedicated page **or** the team selector
+  inside the create/edit tournament modal
 - Delete any user's comments
 
 ---
@@ -259,10 +262,16 @@ src/main/java/.../
     └── StandingEntry.java              -- Java record for JSON serialisation
 
 src/main/resources/
-├── static/js/standings.js              -- React 18 (React.createElement, no JSX)
+├── static/js/standings.js              -- React 18 (React.createElement, no JSX), themed table
+├── static/js/modal.js                  -- Modal open/close, edit-prefill, match validation
+├── static/js/fancy-select.js           -- Custom themed <select> dropdowns
+├── static/js/comments-carousel.js      -- Auto-rotating comments carousel
+├── static/css/{modal,fancy-select,match-details,dock,footer}.css
+├── templates/fragments.html            -- Shared fragments (dock, footer, modals)
 ├── templates/error.html                -- Custom error page (404/403/500)
 ├── templates/comment-edit.html         -- Own comment edit form
-├── templates/tournament-details.html   -- Standings + paginated matches
+├── templates/tournament-details.html   -- Themed standings + match cards + match/tournament modals
+├── templates/match-details.html        -- Scoreboard + comments carousel + edit/comment modals
 └── templates/players.html              -- Player list with search and filters
 
 n+1/
@@ -340,6 +349,34 @@ no React except the existing standings widget).
   they were after saving. Form POSTs reuse the existing admin controller endpoints.
 - **Custom select** dropdowns (`static/css/fancy-select.css`, `static/js/fancy-select.js`) and
   a **comments carousel** (`static/js/comments-carousel.js`).
+- **Match scheduling/editing modal** with client-side validation (`static/js/modal.js`):
+  blocks same home/away team and enforces date-vs-status rules (SCHEDULED → future date,
+  PLAYED → past date), showing an inline `.modal-warning` instead of a server redirect. The
+  `datetime-local` field is auto-filled on edit (ISO value trimmed to `yyyy-MM-ddTHH:mm`).
+- **Tournament modal team selector:** a checkbox grid-list (`name="teams"`) lets the admin pick
+  the participating teams when creating or editing a tournament. Because `Team.tournaments` is
+  the owning side of the N:M relation, `TournamentService.saveWithTeams(...)` reconciles each
+  team's side instead of relying on the inverse `Tournament.teams`.
+- **Per-row "Opciones" dropdowns** (Edit / Delete-on-hold) on tournament header, match cards and
+  comments, matching the team/player/referee cards. Delete uses the hold-to-confirm button.
+
+### Tournament & match detail redesign
+- **Tournament detail** (`templates/tournament-details.html`): removed the redundant "teams"
+  badge strip (teams already appear in the standings), restyled the **standings table**
+  (`static/js/standings.js`) to the theme (muted header, hover rows, numeric ranks — no medal
+  emojis), and rebuilt the **match calendar as elongated, full-width clickable cards** (click →
+  match detail). Match pagination moved to the **dock arrows**; the dock **"+"** opens the
+  schedule-match modal.
+- **Match detail** (`templates/match-details.html`, `static/css/match-details.css`): polished
+  scoreboard (theme accent, status badges), and the comments are shown as an **auto-rotating
+  testimonial carousel** (default user-icon avatar, no star ratings, prev/next + dots).
+- **Emoji sweep:** all decorative emojis removed across views (kept only the error-page glyph).
+
+### Responsive (mobile & tablet)
+- Site-wide responsive pass: modal forms collapse 2-column grids to 1 column (`.form-grid-2`),
+  modals get `max-height`/scroll on small screens, tables scroll horizontally, the 3D card-tilt
+  is disabled on touch widths, and navbar/dock keep their touch targets (`global.css`,
+  `modal.css`, `navbar.css`, `dock.css`).
 
 ### Shared Thymeleaf fragments
 - `templates/fragments.html` defines reusable fragments (`ethereal`, `dock`, `footer`, and the
@@ -371,6 +408,9 @@ no React except the existing standings widget).
 | 16 | OAuth2 Login with Google (CustomOAuth2UserService, `User.provider`, nullable password) |
 | 17 | macOS dock, glassy footer, redesigned tournament cards, blur-fade home animation |
 | 18 | CRUD via dialog modals (tournament/team/referee/player/match/comment) + fancy-select; Safari background perf fix |
+| 19 | Tournament & match detail redesign: themed standings table, elongated clickable match cards, dock-arrow match pagination, polished scoreboard, auto-rotating comments carousel; site-wide emoji removal |
+| 20 | Match scheduling/editing as a modal with client-side validation (same-team + date-vs-status) and auto-filled date; per-row "Opciones" dropdowns on tournament/match/comments; match save return-URL |
+| 21 | Tournament create/edit team selector (checkbox grid-list) with owning-side reconciliation in `TournamentService.saveWithTeams`; full responsive (mobile/tablet) pass; team cards recolored |
 
 ---
 

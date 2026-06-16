@@ -47,7 +47,9 @@ I controller non accedono mai direttamente ai repository. Tutta la logica di bus
 
 - `Tournament` 1:N `Match` — cascade ALL
 - `Match` 1:N `Comment` — cascade ALL
-- `Team` N:M `Tournament` — tabella intermedia `team_tournament`
+- `Team` N:M `Tournament` — tabella intermedia `team_tournament`; **`Team` è il lato proprietario**
+  (`Tournament.teams` è `mappedBy`), quindi le scritture dal lato torneo passano per
+  `TournamentService.saveWithTeams(...)`
 - `Player` N:1 `Team` — FetchType.LAZY
 - `Match` N:1 `Team` (home/away) — `@JoinColumn` esplicito per evitare conflitti sui nomi delle colonne
 
@@ -108,9 +110,10 @@ Riavviare l'applicazione. `DataInitializer` inserisce: 3 tornei, 12 squadre, ~44
 
 ### Amministratore (ruolo ADMIN)
 
-- CRUD completo di tornei, squadre, giocatori, arbitri e partite
-- Registrare risultati delle partite
-- Gestire le squadre partecipanti per torneo
+- CRUD completo di tornei, squadre, giocatori, arbitri e partite (tramite modali dialog)
+- Registrare risultati delle partite (con validazione stessa-squadra e data-vs-stato)
+- Gestire le squadre partecipanti per torneo — dalla pagina dedicata **oppure** dal selettore
+  di squadre dentro la modale di creazione/modifica torneo
 - Eliminare commenti di qualsiasi utente
 
 ---
@@ -371,6 +374,9 @@ nessun React tranne il widget classifica esistente).
 | 16 | OAuth2 Login con Google (CustomOAuth2UserService, `User.provider`, password nullable) |
 | 17 | Dock macOS, footer glass, card tornei ridisegnate, animazione blur-fade in home |
 | 18 | CRUD tramite modali (torneo/squadra/arbitro/giocatore/partita/commento) + fancy-select; fix performance sfondo su Safari |
+| 19 | Riprogettazione dei dettagli del torneo e della partita: tabella della classifica a tema, card delle partite allungate e cliccabili, paginazione delle partite con frecce integrate nel dock, tabellone dei punteggi rifinito, carosello dei commenti a rotazione automatica; rimozione globale delle emoji |
+| 20 | Programmazione/modifica della partita come modale con validazione lato client (stessa squadra + data vs stato) e data precompilata; dropdown "Opciones" per riga su torneo/partita/commenti; return-URL al salvataggio della partita |
+| 21 | Selettore delle squadre per la creazione/modifica del torneo (griglia di checkbox) con riconciliazione del lato proprietario in `TournamentService.saveWithTeams`; adattamento responsive completo (mobile/tablet); ricolorazione delle card delle squadre |
 
 ---
 
