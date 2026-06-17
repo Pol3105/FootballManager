@@ -32,6 +32,11 @@ public class TeamService {
         return teamRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public long count() {
+        return teamRepository.count();
+    }   
+
     /**
      * Listar todos los equipos
      */

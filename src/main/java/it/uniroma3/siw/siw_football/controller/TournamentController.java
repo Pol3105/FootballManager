@@ -40,6 +40,7 @@ public class TournamentController {
     public String index(Model model) {
         model.addAttribute("tournaments", tournamentService.findAll());
         model.addAttribute("allTeams", teamService.findAll());
+        model.addAttribute("numberOfTeams", teamService.count());
         return "index";
     }
 
