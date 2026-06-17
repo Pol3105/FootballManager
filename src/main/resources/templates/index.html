@@ -45,7 +45,9 @@
         <div style="padding: var(--space-xl);">
             <!-- Section header -->
             <div class="section-header blur-fade" style="animation-delay:0.06s;">
-                <h2 style="margin-bottom: 0;">Torneos Activos</h2>
+                <h2 style="margin-bottom: 0;">Torneos Activos
+                    <span style="color: var(--color-gray-400); font-weight: 700;" th:text="${#lists.size(tournaments)}">0</span>
+                </h2>
             </div>
 
             <!-- Tournament grid -->
