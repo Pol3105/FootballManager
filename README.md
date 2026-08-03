@@ -79,10 +79,7 @@ Open: `http://localhost:8081`
 
 ### Default credentials
 
-| Username | Password | Role |
-|----------|---------|------|
-| `admin` | `admin` | ADMIN |
-| `pablo` | `1234` | USER |
+Default production credentials must be set in the `.env` file via `ADMIN_PASSWORD` and `USER_PASSWORD` variables, overriding the local development defaults. Refer to the **VPS Hetzner Deployment** section for more details.
 
 ### Reset demo data
 

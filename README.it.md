@@ -79,10 +79,7 @@ Aprire: `http://localhost:8081`
 
 ### Credenziali predefinite
 
-| Utente | Password | Ruolo |
-|--------|---------|-------|
-| `admin` | `admin` | ADMIN |
-| `pablo` | `1234` | USER |
+Le credenziali di produzione predefinite devono essere configurate nel file `.env` tramite le variabili `ADMIN_PASSWORD` e `USER_PASSWORD`, sovrascrivendo i valori di sviluppo locale. Per maggiori dettagli, fare riferimento alla sezione **Distribuzione su VPS Hetzner**.
 
 ### Reset dei dati demo
 
