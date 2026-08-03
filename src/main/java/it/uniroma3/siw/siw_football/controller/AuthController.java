@@ -27,28 +27,11 @@ public class AuthController {
 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
-        model.addAttribute("user", new User());
-        return "register";
+        return "redirect:/login?disabled";
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("user") User user, 
-                               BindingResult result,
-                               @RequestParam(value = "securityAnswer", required = false) String securityAnswer,
-                               Model model) {
-        
-        // Reto matemático anti-bot
-        if (securityAnswer == null || !"8".equals(securityAnswer.trim())) {
-            model.addAttribute("securityError", "Respuesta incorrecta. Por favor, resuelve la suma para demostrar que eres humano.");
-            return "register";
-        }
-
-        if (result.hasErrors()) {
-            return "register";
-        }
-        user.setRole("USER");
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.saveUser(user);
-        return "redirect:/login";
+    public String registerUser() {
+        return "redirect:/login?disabled";
     }
 }

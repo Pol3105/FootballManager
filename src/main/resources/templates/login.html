@@ -32,6 +32,9 @@
         <div th:if="${param.error}" class="auth-error">
             Usuario o contraseña incorrectos.
         </div>
+        <div th:if="${param.disabled}" class="auth-error" style="background:rgba(100,74,64,0.08);border-color:rgba(100,74,64,0.3);color:var(--primary);">
+            El registro manual de nuevos usuarios está desactivado. Utiliza el inicio de sesión con Google.
+        </div>
         <div th:if="${param.logout}" class="auth-error" style="background:rgba(100,74,64,0.08);border-color:rgba(100,74,64,0.3);color:var(--primary);">
             Has cerrado sesión correctamente.
         </div>

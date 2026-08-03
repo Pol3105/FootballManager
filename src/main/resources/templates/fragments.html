@@ -101,7 +101,6 @@
                 <p class="site-footer__col-title">Cuenta</p>
                 <ul>
                     <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Iniciar sesión</a></li>
-                    <li sec:authorize="isAnonymous()"><a th:href="@{/register}">Registro</a></li>
                     <li sec:authorize="isAuthenticated()"><span sec:authentication="name">Usuario</span></li>
                 </ul>
             </div>
